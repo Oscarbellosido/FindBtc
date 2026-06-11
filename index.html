@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explorador de Transaccions Bitcoin</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0d0d0d;
+  color: #e0e0e0;
+  font-family: 'Courier New', monospace;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+}
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+h1 {
+  color: #f7931a;
+  font-size: 1.6rem;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.subtitle {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+}
+.search-box {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+input[type="text"] {
+  flex: 1;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus { border-color: #f7931a; }
+input[type="text"]::placeholder { color: #555; }
+button {
+  background: #f7931a;
+  color: #000;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+button:hover { background: #e8821a; }
+button:disabled { background: #555; color: #888; cursor: not-allowed; }
+
+#status {
+  text-align: center;
+  padding: 1.5rem;
+  color: #888;
+  font-size: 0.9rem;
+  display: none;
+}
+#status.loading { display: block; }
+#status.error { display: block; color: #e05050; }
+
+.card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #f7931a;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #2a2a2a;
+  padding-bottom: 0.5rem;
+}
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+.meta-item label {
+  display: block;
+  color: #888;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
+}
+.meta-item span {
+  color: #e0e0e0;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+.meta-item span.highlight { color: #f7931a; }
+.txid-val {
+  font-size: 0.72rem;
+  word-break: break-all;
+  color: #aaa;
+}
+
+.wallet-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.wallet-item {
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  transition: border-color 0.15s;
+}
+.wallet-item:hover { border-color: #f7931a44; }
+.wallet-addr {
+  font-size: 0.78rem;
+  color: #d0d0d0;
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.wallet-addr .idx {
+  color: #555;
+  font-size: 0.7rem;
+  min-width: 1.5rem;
+}
+.addr-text { color: #64b5f6; }
+.addr-text.op-return { color: #666; font-style: italic; }
+.wallet-amount {
+  text-align: right;
+  white-space: nowrap;
+}
+.wallet-amount .btc {
+  color: #f7931a;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+.wallet-amount .sat {
+  color: #666;
+  font-size: 0.7rem;
+}
+.copy-btn {
+  background: #2a2a2a;
+  color: #aaa;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: #333; color: #fff; }
+.copy-btn.copied { background: #1a3a1a; color: #4caf50; }
+
+.total-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #0f0f0f;
+  border: 1px solid #f7931a33;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.total-bar span { color: #888; font-size: 0.85rem; }
+.total-bar strong { color: #f7931a; font-size: 1rem; }
+
+.example-link {
+  color: #666;
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+.example-link a {
+  color: #f7931a88;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid #333;
+  border-top-color: #f7931a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#result { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>₿ Explorador de Transaccions Bitcoin</h1>
+  <p class="subtitle">Introdueix un ID de transacció per veure totes les adreces destinatàries</p>
+
+  <div class="search-box">
+    <input type="text" id="txInput" placeholder="ID de transacció (txid) — 64 caràcters hexadecimals" maxlength="64" spellcheck="false" autocomplete="off">
+    <button id="searchBtn" onclick="search()">Cercar</button>
+  </div>
+  <span class="example-link">Exemple: <a onclick="loadExample()">4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b</a></span>
+
+  <div id="status"></div>
+
+  <div id="result">
+    <div class="card" id="txMeta">
+      <h2>Detalls de la transacció</h2>
+      <div class="meta-grid">
+        <div class="meta-item" style="grid-column:1/-1">
+          <label>TXID</label>
+          <span class="txid-val" id="metaTxid"></span>
+        </div>
+        <div class="meta-item">
+          <label>Confirmacions</label>
+          <span class="highlight" id="metaConf"></span>
+        </div>
+        <div class="meta-item">
+          <label>Bloc</label>
+          <span id="metaBlock"></span>
+        </div>
+        <div class="meta-item">
+          <label>Mida</label>
+          <span id="metaSize"></span>
+        </div>
+        <div class="meta-item">
+          <label>Tarifa</label>
+          <span id="metaFee"></span>
+        </div>
+        <div class="meta-item">
+          <label>Entrades</label>
+          <span id="metaIns"></span>
+        </div>
+        <div class="meta-item">
+          <label>Sortides</label>
+          <span id="metaOuts"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Adreces destinatàries (outputs)</h2>
+      <div class="total-bar">
+        <span>Total enviat</span>
+        <strong id="totalBtc"></strong>
+      </div>
+      <div class="wallet-list" id="walletList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const EXAMPLE_TXID = '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b';
+
+function loadExample() {
+  document.getElementById('txInput').value = EXAMPLE_TXID;
+  search();
+}
+
+document.getElementById('txInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') search();
+});
+
+async function search() {
+  const txid = document.getElementById('txInput').value.trim();
+  if (!txid) return;
+  if (!/^[0-9a-fA-F]{64}$/.test(txid)) {
+    showError('El txid ha de tenir exactament 64 caràcters hexadecimals.');
+    return;
+  }
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  document.getElementById('result').style.display = 'none';
+  showLoading('Consultant la xarxa Bitcoin...');
+
+  try {
+    const data = await fetchTx(txid);
+    renderResult(data);
+  } catch (e) {
+    showError(e.message || 'Error en consultar la transacció.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function fetchTx(txid) {
+  const apis = [
+    `https://mempool.space/api/tx/${txid}`,
+    `https://blockstream.info/api/tx/${txid}`,
+  ];
+  let lastErr;
+  for (const url of apis) {
+    try {
+      const r = await fetch(url);
+      if (!r.ok) {
+        if (r.status === 404) throw new Error('Transacció no trobada. Comprova el txid.');
+        throw new Error(`Error HTTP ${r.status}`);
+      }
+      return await r.json();
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
+function satsToBtc(sats) {
+  return (sats / 1e8).toFixed(8).replace(/\.?0+$/, m => m.replace(/\d/g,'0').slice(0,m.length));
+}
+
+function fmtSats(sats) {
+  return sats.toLocaleString('ca') + ' sat';
+}
+
+function renderResult(tx) {
+  hideStatus();
+
+  document.getElementById('metaTxid').textContent = tx.txid;
+
+  const confirmed = tx.status && tx.status.confirmed;
+  const blockHeight = tx.status && tx.status.block_height;
+  document.getElementById('metaConf').textContent = confirmed ? `Confirmada (bloc ${blockHeight})` : 'Pendent (mempool)';
+  document.getElementById('metaBlock').textContent = blockHeight ? `#${blockHeight}` : '—';
+  document.getElementById('metaSize').textContent = tx.size ? `${tx.size} bytes (${tx.weight || '?'} wu)` : '—';
+
+  const fee = tx.fee !== undefined ? tx.fee : null;
+  document.getElementById('metaFee').textContent = fee !== null ? `${fmtSats(fee)} (${satsToBtc(fee)} BTC)` : '—';
+  document.getElementById('metaIns').textContent = tx.vin ? tx.vin.length : '—';
+  document.getElementById('metaOuts').textContent = tx.vout ? tx.vout.length : '—';
+
+  const outs = tx.vout || [];
+  const totalSats = outs.reduce((s, o) => s + (o.value || 0), 0);
+  document.getElementById('totalBtc').textContent = `${satsToBtc(totalSats)} BTC (${fmtSats(totalSats)})`;
+
+  const list = document.getElementById('walletList');
+  list.innerHTML = '';
+  outs.forEach((out, i) => {
+    const addr = out.scriptpubkey_address || null;
+    const isOpReturn = out.scriptpubkey_type === 'op_return';
+    const addrDisplay = addr ? addr : (isOpReturn ? 'OP_RETURN (dades)' : 'Script no estàndard');
+
+    const item = document.createElement('div');
+    item.className = 'wallet-item';
+    item.innerHTML = `
+      <div class="wallet-addr">
+        <span class="idx">#${i}</span>
+        <span class="addr-text${!addr ? ' op-return' : ''}" id="addr-${i}">${addrDisplay}</span>
+        ${addr ? `<button class="copy-btn" onclick="copyAddr('${addr}', ${i})">copiar</button>` : ''}
+      </div>
+      <div class="wallet-amount">
+        <div class="btc">${satsToBtc(out.value || 0)} BTC</div>
+        <div class="sat">${fmtSats(out.value || 0)}</div>
+      </div>`;
+    list.appendChild(item);
+  });
+
+  document.getElementById('result').style.display = 'block';
+}
+
+function copyAddr(addr, idx) {
+  navigator.clipboard.writeText(addr).then(() => {
+    const btn = document.querySelector(`#addr-${idx} ~ .copy-btn`) ||
+                document.querySelectorAll('.copy-btn')[idx];
+    if (btn) {
+      btn.textContent = 'copiat!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500);
+    }
+  });
+}
+
+function showLoading(msg) {
+  const s = document.getElementById('status');
+  s.className = 'loading';
+  s.innerHTML = `<span class="spinner"></span>${msg}`;
+}
+function showError(msg) {
+  const s = document.getElementById('status');
+  s.className = 'error';
+  s.textContent = '⚠ ' + msg;
+}
+function hideStatus() {
+  const s = document.getElementById('status');
+  s.className = '';
+  s.style.display = 'none';
+}
+</script>
+</body>
+</html>
