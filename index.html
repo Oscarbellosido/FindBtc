@@ -265,21 +265,48 @@ async function apiFetch(path) {
   throw new Error('Cap API disponible. Comprova la connexió a Internet i torna-ho a intentar.');
 }
 
-// ── Preu BTC en EUR/USD ───────────────────────────────────────────────────────
+// ── Preu BTC en EUR/USD (fallback: CoinGecko → blockchain.info → Binance) ─────
 async function fetchBtcPrice() {
   if (priceCache && Date.now() - priceCache.ts < PRICE_TTL) return priceCache.price;
-  try {
-    const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
-    if (!r.ok) return null;
-    const d = await r.json();
-    const price = { usd: d.bitcoin.usd, eur: d.bitcoin.eur };
-    priceCache = { price, ts: Date.now() };
-    return price;
-  } catch { return null; }
+
+  const sources = [
+    async () => {
+      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      return { usd: +d.bitcoin.usd, eur: +d.bitcoin.eur, src: 'CoinGecko' };
+    },
+    async () => {
+      const r = await fetch('https://blockchain.info/ticker');
+      if (!r.ok) throw new Error();
+      const d = await r.json();
+      return { usd: +d.USD.last, eur: +d.EUR.last, src: 'Blockchain.info' };
+    },
+    async () => {
+      const [ru, re] = await Promise.all([
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
+        fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR')
+      ]);
+      if (!ru.ok || !re.ok) throw new Error();
+      const [du, de] = await Promise.all([ru.json(), re.json()]);
+      return { usd: parseFloat(du.price), eur: parseFloat(de.price), src: 'Binance' };
+    }
+  ];
+
+  for (const fn of sources) {
+    try {
+      const price = await fn();
+      if (price && price.usd > 0 && price.eur > 0) {
+        priceCache = { price, ts: Date.now() };
+        return price;
+      }
+    } catch {}
+  }
+  return null;
 }
 
 function fmtFiat(sats, price) {
-  if (!price || !sats) return '';
+  if (!sats || !price) return '';
   const btc = sats / 1e8;
   const n = v => v.toLocaleString('ca', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `€${n(btc * price.eur)} · $${n(btc * price.usd)}`;
@@ -356,13 +383,13 @@ function fmtSats(s)   { return (s || 0).toLocaleString('ca') + ' sat'; }
 function fmtDate(ts)  { return ts ? new Date(ts * 1000).toLocaleString('ca') : 'Pendent'; }
 
 function mkPriceBar(price) {
-  if (!price) return '';
+  if (!price) return `<div class="price-bar"><span class="pl">Preu BTC:</span><span style="color:#555;font-style:italic">no disponible (APIs de preus no accessibles)</span></div>`;
   const usd = price.usd.toLocaleString('ca');
   const eur = price.eur.toLocaleString('ca');
   return `<div class="price-bar">
     <span class="pl">Preu BTC:</span>
     <span class="pv">$${usd} · €${eur}</span>
-    <span class="src">CoinGecko</span>
+    <span class="src">${price.src}</span>
   </div>`;
 }
 
