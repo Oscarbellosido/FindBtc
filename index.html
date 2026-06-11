@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Explorador de Transaccions Bitcoin</title>
+<title>FindBtc — Explorador Bitcoin</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -13,28 +13,10 @@ body {
   min-height: 100vh;
   padding: 2rem 1rem;
 }
-.container {
-  max-width: 860px;
-  margin: 0 auto;
-}
-h1 {
-  color: #f7931a;
-  font-size: 1.6rem;
-  margin-bottom: 0.3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-.subtitle {
-  color: #888;
-  font-size: 0.85rem;
-  margin-bottom: 2rem;
-}
-.search-box {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
+.container { max-width: 860px; margin: 0 auto; }
+h1 { color: #f7931a; font-size: 1.6rem; margin-bottom: 0.3rem; }
+.subtitle { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+.search-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 input[type="text"] {
   flex: 1;
   background: #1a1a1a;
@@ -50,156 +32,99 @@ input[type="text"] {
 input[type="text"]:focus { border-color: #f7931a; }
 input[type="text"]::placeholder { color: #555; }
 button {
-  background: #f7931a;
-  color: #000;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
+  background: #f7931a; color: #000; border: none;
+  padding: 0.75rem 1.5rem; border-radius: 6px;
+  font-weight: bold; font-size: 0.95rem; cursor: pointer;
+  transition: background 0.2s; white-space: nowrap;
 }
 button:hover { background: #e8821a; }
 button:disabled { background: #555; color: #888; cursor: not-allowed; }
+.hint { color: #555; font-size: 0.75rem; margin-bottom: 1.5rem; }
+.hint span { color: #f7931a88; }
 
-#status {
-  text-align: center;
-  padding: 1.5rem;
-  color: #888;
-  font-size: 0.9rem;
-  display: none;
-}
+#status { text-align: center; padding: 1.5rem; color: #888; font-size: 0.9rem; display: none; }
 #status.loading { display: block; }
 #status.error { display: block; color: #e05050; }
 
 .card {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
+  background: #1a1a1a; border: 1px solid #2a2a2a;
+  border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
 }
 .card h2 {
-  color: #f7931a;
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #2a2a2a;
-  padding-bottom: 0.5rem;
+  color: #f7931a; font-size: 1rem; margin-bottom: 1rem;
+  border-bottom: 1px solid #2a2a2a; padding-bottom: 0.5rem;
 }
-.meta-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.75rem;
-}
+.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
 .meta-item label {
-  display: block;
-  color: #888;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.2rem;
+  display: block; color: #888; font-size: 0.72rem;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem;
 }
-.meta-item span {
-  color: #e0e0e0;
-  font-size: 0.9rem;
-  word-break: break-all;
-}
+.meta-item span { color: #e0e0e0; font-size: 0.9rem; word-break: break-all; }
 .meta-item span.highlight { color: #f7931a; }
-.txid-val {
-  font-size: 0.72rem;
-  word-break: break-all;
-  color: #aaa;
-}
+.txid-val { font-size: 0.72rem; word-break: break-all; color: #aaa; }
 
-.wallet-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.wallet-item {
-  background: #111;
-  border: 1px solid #2a2a2a;
-  border-radius: 6px;
-  padding: 0.9rem 1rem;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 0.5rem;
-  transition: border-color 0.15s;
+.balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
+.balance-card {
+  background: #111; border: 1px solid #2a2a2a;
+  border-radius: 6px; padding: 1rem;
 }
-.wallet-item:hover { border-color: #f7931a44; }
-.wallet-addr {
-  font-size: 0.78rem;
-  color: #d0d0d0;
-  word-break: break-all;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.balance-card label { display: block; color: #888; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+.balance-card .val { color: #f7931a; font-size: 1.05rem; font-weight: bold; }
+.balance-card .sub { color: #555; font-size: 0.7rem; }
+
+.tx-item {
+  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
+  padding: 0.9rem 1rem; margin-bottom: 0.6rem; transition: border-color 0.15s;
 }
-.wallet-addr .idx {
-  color: #555;
-  font-size: 0.7rem;
-  min-width: 1.5rem;
-}
-.addr-text { color: #64b5f6; }
-.addr-text.op-return { color: #666; font-style: italic; }
-.wallet-amount {
-  text-align: right;
-  white-space: nowrap;
-}
-.wallet-amount .btc {
-  color: #f7931a;
-  font-size: 0.9rem;
-  font-weight: bold;
-}
-.wallet-amount .sat {
-  color: #666;
-  font-size: 0.7rem;
-}
+.tx-item:hover { border-color: #f7931a44; }
+.tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.3rem; }
+.tx-id { color: #64b5f6; font-size: 0.72rem; word-break: break-all; flex: 1; cursor: pointer; }
+.tx-id:hover { text-decoration: underline; }
+.tx-status { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 10px; white-space: nowrap; }
+.tx-status.confirmed { background: #1a3a1a; color: #4caf50; }
+.tx-status.pending { background: #3a3a1a; color: #ffb300; }
+.tx-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.3rem; }
+.tx-date { color: #666; font-size: 0.72rem; }
+.tx-amount { font-size: 0.9rem; font-weight: bold; }
+.tx-amount.received { color: #4caf50; }
+.tx-amount.sent { color: #e05050; }
+
 .copy-btn {
-  background: #2a2a2a;
-  color: #aaa;
-  border: none;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: #2a2a2a; color: #aaa; border: none;
+  padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem;
+  cursor: pointer; transition: all 0.15s; margin-left: 0.4rem;
 }
 .copy-btn:hover { background: #333; color: #fff; }
 .copy-btn.copied { background: #1a3a1a; color: #4caf50; }
 
+.wallet-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.wallet-item {
+  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
+  padding: 0.9rem 1rem; display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 0.5rem; transition: border-color 0.15s;
+}
+.wallet-item:hover { border-color: #f7931a44; }
+.wallet-addr { font-size: 0.78rem; color: #d0d0d0; word-break: break-all; display: flex; align-items: center; gap: 0.5rem; }
+.wallet-addr .idx { color: #555; font-size: 0.7rem; min-width: 1.5rem; }
+.addr-text { color: #64b5f6; cursor: pointer; }
+.addr-text:hover { text-decoration: underline; }
+.addr-text.op-return { color: #666; font-style: italic; cursor: default; }
+.wallet-amount { text-align: right; white-space: nowrap; }
+.wallet-amount .btc { color: #f7931a; font-size: 0.9rem; font-weight: bold; }
+.wallet-amount .sat { color: #666; font-size: 0.7rem; }
 .total-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background: #0f0f0f;
-  border: 1px solid #f7931a33;
-  border-radius: 6px;
-  margin-bottom: 1rem;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.75rem 1rem; background: #0f0f0f;
+  border: 1px solid #f7931a33; border-radius: 6px; margin-bottom: 1rem;
 }
 .total-bar span { color: #888; font-size: 0.85rem; }
 .total-bar strong { color: #f7931a; font-size: 1rem; }
 
-.example-link {
-  color: #666;
-  font-size: 0.78rem;
-  margin-top: 0.5rem;
-  display: block;
-}
-.example-link a {
-  color: #f7931a88;
-  cursor: pointer;
-  text-decoration: underline;
-}
 .spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
-  border: 2px solid #333;
-  border-top-color: #f7931a;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  vertical-align: middle;
-  margin-right: 0.4rem;
+  display: inline-block; width: 16px; height: 16px;
+  border: 2px solid #333; border-top-color: #f7931a;
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+  vertical-align: middle; margin-right: 0.4rem;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 #result { display: none; }
@@ -207,188 +132,203 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 </head>
 <body>
 <div class="container">
-  <h1>₿ Explorador de Transaccions Bitcoin</h1>
-  <p class="subtitle">Introdueix un ID de transacció per veure totes les adreces destinatàries</p>
+  <h1>₿ FindBtc</h1>
+  <p class="subtitle">Cerca per ID de transacció o per adreça Bitcoin</p>
 
   <div class="search-box">
-    <input type="text" id="txInput" placeholder="ID de transacció (txid) — 64 caràcters hexadecimals" maxlength="64" spellcheck="false" autocomplete="off">
+    <input type="text" id="txInput"
+      placeholder="txid (64 hex) o adreça Bitcoin (bc1..., 1..., 3...)"
+      spellcheck="false" autocomplete="off">
     <button id="searchBtn" onclick="search()">Cercar</button>
   </div>
-  <span class="example-link">Exemple: <a onclick="loadExample()">4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b</a></span>
+  <p class="hint">Detecta automàticament si és una <span>transacció</span> o una <span>adreça</span></p>
 
   <div id="status"></div>
-
-  <div id="result">
-    <div class="card" id="txMeta">
-      <h2>Detalls de la transacció</h2>
-      <div class="meta-grid">
-        <div class="meta-item" style="grid-column:1/-1">
-          <label>TXID</label>
-          <span class="txid-val" id="metaTxid"></span>
-        </div>
-        <div class="meta-item">
-          <label>Confirmacions</label>
-          <span class="highlight" id="metaConf"></span>
-        </div>
-        <div class="meta-item">
-          <label>Bloc</label>
-          <span id="metaBlock"></span>
-        </div>
-        <div class="meta-item">
-          <label>Mida</label>
-          <span id="metaSize"></span>
-        </div>
-        <div class="meta-item">
-          <label>Tarifa</label>
-          <span id="metaFee"></span>
-        </div>
-        <div class="meta-item">
-          <label>Entrades</label>
-          <span id="metaIns"></span>
-        </div>
-        <div class="meta-item">
-          <label>Sortides</label>
-          <span id="metaOuts"></span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Adreces destinatàries (outputs)</h2>
-      <div class="total-bar">
-        <span>Total enviat</span>
-        <strong id="totalBtc"></strong>
-      </div>
-      <div class="wallet-list" id="walletList"></div>
-    </div>
-  </div>
+  <div id="result"></div>
 </div>
 
 <script>
-const EXAMPLE_TXID = '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b';
-
-function loadExample() {
-  document.getElementById('txInput').value = EXAMPLE_TXID;
-  search();
-}
-
 document.getElementById('txInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') search();
 });
 
+function detectInputType(val) {
+  if (/^[0-9a-fA-F]{64}$/.test(val)) return 'txid';
+  if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,89}$/.test(val)) return 'address';
+  return null;
+}
+
 async function search() {
-  const txid = document.getElementById('txInput').value.trim();
-  if (!txid) return;
-  if (!/^[0-9a-fA-F]{64}$/.test(txid)) {
-    showError('El txid ha de tenir exactament 64 caràcters hexadecimals.');
+  const val = document.getElementById('txInput').value.trim();
+  if (!val) return;
+  const type = detectInputType(val);
+  if (!type) {
+    showError('Format no reconegut. Introdueix un txid (64 hex) o una adreça Bitcoin vàlida.');
     return;
   }
-
   const btn = document.getElementById('searchBtn');
   btn.disabled = true;
   document.getElementById('result').style.display = 'none';
-  showLoading('Consultant la xarxa Bitcoin...');
-
+  document.getElementById('result').innerHTML = '';
+  showLoading(type === 'txid' ? 'Cercant la transacció...' : 'Cercant transaccions de l\'adreça...');
   try {
-    const data = await fetchTx(txid);
-    renderResult(data);
+    if (type === 'txid') {
+      renderTx(await apiFetch('/tx/' + val));
+    } else {
+      const [info, txs] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs')]);
+      renderAddress(val, info, txs);
+    }
   } catch (e) {
-    showError(e.message || 'Error en consultar la transacció.');
+    showError(e.message || 'Error en la consulta.');
   } finally {
     btn.disabled = false;
   }
 }
 
-async function fetchTx(txid) {
-  const apis = [
-    `https://mempool.space/api/tx/${txid}`,
-    `https://blockstream.info/api/tx/${txid}`,
-  ];
+function searchAddr(addr) {
+  document.getElementById('txInput').value = addr;
+  search();
+}
+
+function searchTx(txid) {
+  document.getElementById('txInput').value = txid;
+  search();
+}
+
+async function apiFetch(path) {
+  const bases = ['https://mempool.space/api', 'https://blockstream.info/api'];
   let lastErr;
-  for (const url of apis) {
+  for (const base of bases) {
     try {
-      const r = await fetch(url);
+      const r = await fetch(base + path);
       if (!r.ok) {
-        if (r.status === 404) throw new Error('Transacció no trobada. Comprova el txid.');
-        throw new Error(`Error HTTP ${r.status}`);
+        if (r.status === 404) throw new Error('No s\'ha trobat. Comprova que sigui correcte.');
+        throw new Error('Error HTTP ' + r.status);
       }
       return await r.json();
-    } catch (e) {
-      lastErr = e;
-    }
+    } catch (e) { lastErr = e; }
   }
   throw lastErr;
 }
 
 function satsToBtc(sats) {
-  return (sats / 1e8).toFixed(8).replace(/\.?0+$/, m => m.replace(/\d/g,'0').slice(0,m.length));
+  if (sats == null) return '—';
+  return (sats / 1e8).toFixed(8);
+}
+function fmtSats(sats) { return (sats || 0).toLocaleString('ca') + ' sat'; }
+function fmtDate(ts) {
+  if (!ts) return 'Pendent';
+  return new Date(ts * 1000).toLocaleString('ca');
 }
 
-function fmtSats(sats) {
-  return sats.toLocaleString('ca') + ' sat';
-}
-
-function renderResult(tx) {
+function renderTx(tx) {
   hideStatus();
-
-  document.getElementById('metaTxid').textContent = tx.txid;
-
-  const confirmed = tx.status && tx.status.confirmed;
-  const blockHeight = tx.status && tx.status.block_height;
-  document.getElementById('metaConf').textContent = confirmed ? `Confirmada (bloc ${blockHeight})` : 'Pendent (mempool)';
-  document.getElementById('metaBlock').textContent = blockHeight ? `#${blockHeight}` : '—';
-  document.getElementById('metaSize').textContent = tx.size ? `${tx.size} bytes (${tx.weight || '?'} wu)` : '—';
-
-  const fee = tx.fee !== undefined ? tx.fee : null;
-  document.getElementById('metaFee').textContent = fee !== null ? `${fmtSats(fee)} (${satsToBtc(fee)} BTC)` : '—';
-  document.getElementById('metaIns').textContent = tx.vin ? tx.vin.length : '—';
-  document.getElementById('metaOuts').textContent = tx.vout ? tx.vout.length : '—';
-
   const outs = tx.vout || [];
   const totalSats = outs.reduce((s, o) => s + (o.value || 0), 0);
-  document.getElementById('totalBtc').textContent = `${satsToBtc(totalSats)} BTC (${fmtSats(totalSats)})`;
-
-  const list = document.getElementById('walletList');
-  list.innerHTML = '';
+  const confirmed = tx.status && tx.status.confirmed;
+  const blockHeight = tx.status && tx.status.block_height;
+  let html = `
+    <div class="card">
+      <h2>Detalls de la transacció</h2>
+      <div class="meta-grid">
+        <div class="meta-item" style="grid-column:1/-1">
+          <label>TXID</label>
+          <span class="txid-val">${tx.txid}</span>
+        </div>
+        <div class="meta-item"><label>Estat</label><span class="highlight">${confirmed ? 'Confirmada · bloc #' + blockHeight : 'Pendent (mempool)'}</span></div>
+        <div class="meta-item"><label>Data</label><span>${fmtDate(tx.status && tx.status.block_time)}</span></div>
+        <div class="meta-item"><label>Mida</label><span>${tx.size ? tx.size + ' bytes' : '—'}</span></div>
+        <div class="meta-item"><label>Tarifa</label><span>${tx.fee != null ? fmtSats(tx.fee) + ' (' + satsToBtc(tx.fee) + ' BTC)' : '—'}</span></div>
+        <div class="meta-item"><label>Entrades</label><span>${(tx.vin || []).length}</span></div>
+        <div class="meta-item"><label>Sortides</label><span>${outs.length}</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Adreces destinatàries</h2>
+      <div class="total-bar"><span>Total enviat</span><strong>${satsToBtc(totalSats)} BTC (${fmtSats(totalSats)})</strong></div>
+      <div class="wallet-list">`;
   outs.forEach((out, i) => {
     const addr = out.scriptpubkey_address || null;
     const isOpReturn = out.scriptpubkey_type === 'op_return';
-    const addrDisplay = addr ? addr : (isOpReturn ? 'OP_RETURN (dades)' : 'Script no estàndard');
-
-    const item = document.createElement('div');
-    item.className = 'wallet-item';
-    item.innerHTML = `
+    const addrDisplay = addr || (isOpReturn ? 'OP_RETURN (dades)' : 'Script no estàndard');
+    html += `<div class="wallet-item">
       <div class="wallet-addr">
         <span class="idx">#${i}</span>
-        <span class="addr-text${!addr ? ' op-return' : ''}" id="addr-${i}">${addrDisplay}</span>
-        ${addr ? `<button class="copy-btn" onclick="copyAddr('${addr}', ${i})">copiar</button>` : ''}
+        <span class="addr-text${!addr ? ' op-return' : ''}" ${addr ? `onclick="searchAddr('${addr}')" title="Cerca aquesta adreça"` : ''}>${addrDisplay}</span>
+        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}', this)">copiar</button>` : ''}
       </div>
       <div class="wallet-amount">
         <div class="btc">${satsToBtc(out.value || 0)} BTC</div>
         <div class="sat">${fmtSats(out.value || 0)}</div>
+      </div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  showResult(html);
+}
+
+function renderAddress(addr, info, txs) {
+  hideStatus();
+  const cs = info.chain_stats || {};
+  const ms = info.mempool_stats || {};
+  const balance = (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0);
+  const totalReceived = cs.funded_txo_sum || 0;
+  const totalSent = cs.spent_txo_sum || 0;
+  const txCount = (cs.tx_count || 0) + (ms.tx_count || 0);
+  let html = `
+    <div class="card">
+      <h2>Adreça Bitcoin</h2>
+      <div class="meta-item" style="margin-bottom:1rem">
+        <label>Adreça</label>
+        <span class="txid-val">${addr} <button class="copy-btn" onclick="copyText('${addr}', this)">copiar</button></span>
+      </div>
+      <div class="balance-grid">
+        <div class="balance-card"><label>Saldo actual</label><div class="val">${satsToBtc(balance)} BTC</div><div class="sub">${fmtSats(balance)}</div></div>
+        <div class="balance-card"><label>Total rebut</label><div class="val" style="color:#4caf50">${satsToBtc(totalReceived)} BTC</div><div class="sub">${fmtSats(totalReceived)}</div></div>
+        <div class="balance-card"><label>Total enviat</label><div class="val" style="color:#e05050">${satsToBtc(totalSent)} BTC</div><div class="sub">${fmtSats(totalSent)}</div></div>
+        <div class="balance-card"><label>Transaccions</label><div class="val">${txCount.toLocaleString('ca')}</div><div class="sub">${ms.tx_count ? ms.tx_count + ' pendents' : 'totes confirmades'}</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>`;
+  if (txs.length === 0) {
+    html += `<p style="color:#666;text-align:center;padding:1rem">Sense transaccions.</p>`;
+  } else {
+    txs.forEach(tx => {
+      const confirmed = tx.status && tx.status.confirmed;
+      const received = (tx.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
+      html += `<div class="tx-item">
+        <div class="tx-header">
+          <span class="tx-id" onclick="searchTx('${tx.txid}')" title="Veure detalls">${tx.txid}</span>
+          <span class="tx-status ${confirmed ? 'confirmed' : 'pending'}">${confirmed ? 'Confirmada' : 'Pendent'}</span>
+        </div>
+        <div class="tx-meta">
+          <span class="tx-date">${fmtDate(tx.status && tx.status.block_time)}</span>
+          <span class="tx-amount ${received > 0 ? 'received' : 'sent'}">${received > 0 ? '+' + satsToBtc(received) + ' BTC' : '—'}</span>
+        </div>
       </div>`;
-    list.appendChild(item);
-  });
-
-  document.getElementById('result').style.display = 'block';
+    });
+  }
+  html += `</div>`;
+  showResult(html);
 }
 
-function copyAddr(addr, idx) {
-  navigator.clipboard.writeText(addr).then(() => {
-    const btn = document.querySelector(`#addr-${idx} ~ .copy-btn`) ||
-                document.querySelectorAll('.copy-btn')[idx];
-    if (btn) {
-      btn.textContent = 'copiat!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500);
-    }
+function showResult(html) {
+  const r = document.getElementById('result');
+  r.innerHTML = html;
+  r.style.display = 'block';
+}
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copiat!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500);
   });
 }
-
 function showLoading(msg) {
   const s = document.getElementById('status');
   s.className = 'loading';
-  s.innerHTML = `<span class="spinner"></span>${msg}`;
+  s.innerHTML = '<span class="spinner"></span>' + msg;
 }
 function showError(msg) {
   const s = document.getElementById('status');
