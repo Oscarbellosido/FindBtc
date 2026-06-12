@@ -279,6 +279,25 @@ details[open] summary::before { transform: rotate(90deg); }
 .tx-badge.conf { background: #1a3a1a; color: #4caf50; }
 .tx-badge.pend { background: #3a2a00; color: #ffb300; animation: blink 1.8s ease-in-out infinite; }
 
+/* ── UTXO section ──────────────────────────────────────────────────────────── */
+.utxo-details { border-top: 1px solid #1e1e1e; }
+.utxo-details > summary { color: #666 !important; font-size: 0.77rem !important; cursor: pointer; padding: 0.9rem 1.25rem !important; list-style: none; display: flex !important; align-items: center; gap: 0.5rem; user-select: none; transition: color 0.15s; }
+.utxo-details > summary:hover { color: #aaa !important; }
+.utxo-details > summary strong { color: #f7931a; }
+.utxo-list { padding: 0 1.25rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
+.utxo-row { display: grid; grid-template-columns: auto 1fr auto; gap: 0.6rem; align-items: center; background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 6px; padding: 0.5rem 0.75rem; font-size: 0.72rem; }
+.utxo-txid { color: #64b5f6; cursor: pointer; white-space: nowrap; font-family: 'Courier New', monospace; }
+.utxo-txid:hover { text-decoration: underline; }
+.utxo-age { color: #555; text-align: center; }
+.utxo-amt { color: #f7931a; font-weight: bold; text-align: right; white-space: nowrap; }
+.utxo-fiat { color: #666; font-weight: normal; font-size: 0.66rem; }
+.utxo-more { grid-template-columns: 1fr; justify-items: center; background: transparent; border-style: dashed; color: #444; }
+
+/* ── Privacy badge ─────────────────────────────────────────────────────────── */
+.privacy-badge { padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: bold; border-bottom: 1px solid; }
+.privacy-badge.pv-green { background: #071a0e; border-color: #1a4a25; color: #4ade80; }
+.privacy-badge.pv-red   { background: #1a0707; border-color: #4a1515; color: #f87171; }
+
 /* ── Animations ────────────────────────────────────────────────────────────── */
 @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 #result.fade-in { animation: fadeSlide 0.35s ease-out; }
@@ -325,8 +344,9 @@ details[open] summary::before { transform: rotate(90deg); }
 const CACHE_TTL  = 5 * 60 * 1000;
 const PRICE_TTL  = 2 * 60 * 1000;
 const MAX_HIST   = 10;
-const WALLET_KEY = 'findbtc_wallet';
-const ALERTS_KEY = 'findbtc_alerts';
+const WALLET_KEY     = 'findbtc_wallet';
+const ALERTS_KEY     = 'findbtc_alerts';
+const PRICE_HIST_PRE = 'findbtc_prices_';
 
 const apiCache = new Map();
 let priceCache = null;
@@ -751,7 +771,7 @@ async function search() {
   const price = await fetchBtcPrice();
   try {
     if (det.type === 'txid') { await renderTx(await apiFetch('/tx/' + val), price); }
-    else { const [info, txs] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs')]); renderAddress(val, det.addrType, info, txs, price); }
+    else { const [info, txs, utxos] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs'), fetchUtxos(val)]); renderAddress(val, det.addrType, info, txs, price, utxos); }
     saveHistory(val);
   } catch (e) { showError(e.message || 'Error en la consulta.'); }
   finally { btn.disabled = false; }
@@ -799,6 +819,129 @@ function buildPlainSummary(tx, price, knownDests) {
   }
   if (knownDests && knownDests.length > 0) text += ` Els fons han anat a <strong>${knownDests.join(' i ')}</strong>.`;
   return `<div class="plain-summary"><span class="ps-icon">📖</span>${text}</div>`;
+}
+
+// ── Preu BTC en el moment de la transacció ────────────────────────────────────
+function isToday(ts) {
+  const d = new Date(ts * 1000), n = new Date();
+  return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+}
+
+async function fetchHistoricalPrice(blockTime) {
+  if (!blockTime) return null;
+  if (isToday(blockTime)) return null;
+  const d = new Date(blockTime * 1000);
+  const dateKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  try { const cached = JSON.parse(localStorage.getItem(PRICE_HIST_PRE + dateKey)); if (cached?.usd) return cached; } catch {}
+  const dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0'), yyyy = d.getFullYear();
+  // Try CoinGecko first (has EUR too)
+  try {
+    const r = await fetch(`https://api.coingecko.com/api/v3/coins/bitcoin/history?date=${dd}-${mm}-${yyyy}&localization=false`, { signal: AbortSignal.timeout(7000) });
+    if (r.ok) {
+      const data = await r.json();
+      const cp = data.market_data?.current_price;
+      if (cp?.usd) {
+        const result = { usd: cp.usd, eur: cp.eur || null, date: dateKey };
+        try { localStorage.setItem(PRICE_HIST_PRE + dateKey, JSON.stringify(result)); } catch {}
+        return result;
+      }
+    }
+  } catch {}
+  // Fallback: Kraken OHLC daily (USD only)
+  try {
+    const since = Math.floor(d.getTime() / 1000) - 86400;
+    const r = await fetch(`https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval=1440&since=${since}`, { signal: AbortSignal.timeout(7000) });
+    if (r.ok) {
+      const data = await r.json();
+      const ohlc = data.result?.XXBTZUSD;
+      if (ohlc?.length) {
+        const target = Math.floor(d.getTime() / 1000);
+        let best = ohlc[0];
+        for (const row of ohlc) { if (Math.abs(row[0] - target) < Math.abs(best[0] - target)) best = row; }
+        const usd = parseFloat(best[4]);
+        if (usd > 0) {
+          const result = { usd, eur: null, date: dateKey };
+          try { localStorage.setItem(PRICE_HIST_PRE + dateKey, JSON.stringify(result)); } catch {}
+          return result;
+        }
+      }
+    }
+  } catch {}
+  return null;
+}
+
+// ── UTXO tracker ─────────────────────────────────────────────────────────────
+async function fetchUtxos(addr) {
+  try {
+    const r = await fetch(`https://mempool.space/api/address/${addr}/utxo`, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
+
+function utxoAgeStr(ts) {
+  if (!ts) return '';
+  const days = Math.floor((Date.now() / 1000 - ts) / 86400);
+  if (days === 0) return 'avui';
+  if (days === 1) return 'ahir';
+  if (days < 30) return `fa ${days} dies`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `fa ${months} mes${months > 1 ? 'os' : ''}`;
+  const years = Math.floor(days / 365);
+  return `fa ${years} any${years > 1 ? 's' : ''}`;
+}
+
+function buildUtxoSection(utxos, price) {
+  if (!utxos) return '';
+  if (!utxos.length) return `<details class="utxo-details"><summary>💰 Sense UTXOs (saldo zero o no carregat)</summary></details>`;
+  const total = utxos.reduce((s, u) => s + u.value, 0);
+  const SHOW = 10;
+  const toShow = utxos.slice(0, SHOW);
+  const hidden = utxos.length - SHOW;
+  const rows = toShow.map(u => {
+    const conf = u.status?.confirmed, ts = u.status?.block_time;
+    const txidS = u.txid.slice(0,8) + '…' + u.txid.slice(-6);
+    const uFiat = fmtFiat(u.value, price);
+    const ageCell = conf
+      ? `<span class="utxo-age">${utxoAgeStr(ts)}</span>`
+      : `<span class="utxo-age"><span class="tx-badge pend" style="font-size:0.6rem;padding:0.1rem 0.4rem;animation:none">⏳ pendent</span></span>`;
+    return `<div class="utxo-row"><span class="utxo-txid" onclick="searchTx('${u.txid}')" title="${u.txid}">${txidS}:${u.vout}</span>${ageCell}<span class="utxo-amt">${satsToBtc(u.value)} BTC${uFiat ? ` <span class="utxo-fiat">(${uFiat})</span>` : ''}</span></div>`;
+  }).join('') + (hidden > 0 ? `<div class="utxo-row utxo-more"><span>… i ${hidden} UTXOs més</span></div>` : '');
+  const tFiat = fmtFiat(total, price);
+  return `<details class="utxo-details"><summary>💰 UTXOs disponibles (${utxos.length}) &nbsp;·&nbsp; Total: <strong>${satsToBtc(total)} BTC</strong>${tFiat ? ` &nbsp;·&nbsp; ${tFiat}` : ''}</summary><div class="utxo-list">${rows}</div></details>`;
+}
+
+// ── Anàlisi de privadesa ──────────────────────────────────────────────────────
+function detectCoinJoin(tx) {
+  const inCount = tx.vin.length, outCount = tx.vout.length;
+  if (inCount < 3 || outCount < 3) return false;
+  const outValues = tx.vout.map(o => o.value).filter(v => v > 0);
+  if (!outValues.length) return false;
+  const refVal = outValues[0];
+  const equalOutputs = outValues.filter(v => Math.abs(v - refVal) / Math.max(refVal, 1) < 0.05);
+  return equalOutputs.length >= outCount * 0.6 && inCount >= 5;
+}
+
+function analyzePrivacy(tx) {
+  const vins = tx.vin || [], outs = tx.vout || [];
+  if (vins.some(v => v.is_coinbase)) return null;
+  if (detectCoinJoin(tx)) return { level: 'green', text: '🔒 Possible CoinJoin — privadesa alta', detail: `${vins.length} entrades, ${outs.length} sortides amb valor similar` };
+  const inTypes  = vins.map(v => v.prevout?.scriptpubkey_type).filter(Boolean);
+  const outTypes = outs.map(o => o.scriptpubkey_type).filter(t => t && t !== 'op_return');
+  const allModern = [...inTypes, ...outTypes].every(t => t === 'v0_p2wpkh' || t === 'v0_p2wsh' || t === 'v1_p2tr');
+  if (allModern && inTypes.length > 0) return { level: 'green', text: '✓ SegWit/Taproot pur — bona higiene d\'adreces', detail: 'Tots els inputs i outputs usen formats moderns' };
+  if (vins.length <= 2 && outs.length >= 8) return { level: 'red', text: '⚠ Batching evident — típic d\'exchange o servei', detail: `${outs.length} destinataris des de ${vins.length} entrada${vins.length > 1 ? 'des' : ''}` };
+  const allTypes = [...inTypes, ...outTypes];
+  const hasLegacy = allTypes.some(t => t === 'p2pkh' || t === 'p2sh');
+  const hasSegwit = allTypes.some(t => t === 'v0_p2wpkh' || t === 'v0_p2wsh' || t === 'v1_p2tr');
+  if (hasLegacy && hasSegwit) return { level: 'red', text: '⚠ Barreja de tipus d\'adreces — menys privat', detail: 'Input/output amb Legacy i SegWit simultàniament' };
+  return null;
+}
+
+function buildPrivacyBadge(tx) {
+  const a = analyzePrivacy(tx);
+  if (!a) return '';
+  return `<div class="privacy-badge pv-${a.level}" title="${a.detail}">${a.text}</div>`;
 }
 
 // ── Anàlisi de moviments ──────────────────────────────────────────────────────
@@ -865,8 +1008,13 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
 async function renderTx(tx, price) {
   const outAddrs = (tx.vout || []).map(o => o.scriptpubkey_address).filter(Boolean);
   let outspends = null;
-  const [osp] = await Promise.allSettled([apiFetch('/tx/' + tx.txid + '/outspends'), fetchEntityLabels(outAddrs)]);
+  const [osp,, histRes] = await Promise.allSettled([
+    apiFetch('/tx/' + tx.txid + '/outspends'),
+    fetchEntityLabels(outAddrs),
+    fetchHistoricalPrice(tx.status?.block_time)
+  ]);
   if (osp.status === 'fulfilled') outspends = osp.value;
+  const histPrice = histRes?.status === 'fulfilled' ? histRes.value : null;
   hideStatus();
 
   const outs = tx.vout||[], vins = tx.vin||[];
@@ -882,6 +1030,14 @@ async function renderTx(tx, price) {
 
   const bannerCls = conf ? 'confirmed' : 'pending';
   const plainSummary = buildPlainSummary(tx, price, knownDests);
+  const privacyBadge = buildPrivacyBadge(tx);
+  const histPriceRow = (() => {
+    if (!conf || !tx.status?.block_time) return '';
+    const n = v => Math.round(v).toLocaleString('ca');
+    if (histPrice?.usd) return `<div class="tx-meta-cell"><span class="lbl">📅 Preu en aquell moment</span><span class="val" style="color:#7a9a8a">$${n(histPrice.usd)}${histPrice.eur ? ` · €${n(histPrice.eur)}` : ''}</span></div>`;
+    if (price && isToday(tx.status.block_time)) return `<div class="tx-meta-cell"><span class="lbl">📅 Preu en aquell moment</span><span class="val" style="color:#666">preu actual (tx d'avui)</span></div>`;
+    return '';
+  })();
 
   let html = mkPriceBar(price) + `
   <div class="tx-hero">
@@ -889,12 +1045,13 @@ async function renderTx(tx, price) {
       <span class="tx-status-icon">${conf ? '✓' : '⏳'}</span>
       <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>
     </div>
-    ${plainSummary}
+    ${plainSummary}${privacyBadge}
     <div class="tx-hero-body">
       <div class="tx-amount-hero">${satsToBtc(total)}<span class="unit">BTC</span></div>
       ${totFiat ? `<div class="tx-fiat-hero">${totFiat}</div>` : ''}
       <div class="tx-meta-row">
         <div class="tx-meta-cell"><span class="lbl">Data</span><span class="val">${fmtDate(tx.status && tx.status.block_time)}</span></div>
+        ${histPriceRow}
         ${tx.fee != null ? `<div class="tx-meta-cell"><span class="lbl">Tarifa</span><span class="val">${fmtSats(tx.fee)}${feeRate ? ` · ${feeRate} sat/vB` : ''}${feeFiat ? ` · ${feeFiat}` : ''}</span></div>` : ''}
         <div class="tx-meta-cell"><span class="lbl">Mida</span><span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span></div>
       </div>
@@ -936,7 +1093,7 @@ async function renderTx(tx, price) {
   showResult(html);
 }
 
-function renderAddress(addr, addrType, info, txs, price) {
+function renderAddress(addr, addrType, info, txs, price, utxos = null) {
   hideStatus();
   const cs = info.chain_stats||{}, ms = info.mempool_stats||{};
   const bal = (cs.funded_txo_sum||0)-(cs.spent_txo_sum||0), rcv = cs.funded_txo_sum||0, snt = cs.spent_txo_sum||0;
@@ -968,6 +1125,7 @@ function renderAddress(addr, addrType, info, txs, price) {
       <div class="addr-stat"><div class="lbl"><span class="arrow up">↑</span> Enviat</div><div class="v red">${satsToBtc(snt)} BTC</div>${fmtFiat(snt,price)?`<div class="sub">${fmtFiat(snt,price)}</div>`:''}</div>
       <div class="addr-stat"><div class="lbl">Transaccions</div><div class="v neu">${cnt.toLocaleString('ca')}</div><div class="sub">${ms.tx_count ? ms.tx_count+' pendents' : 'totes confirmades'}</div></div>
     </div>
+    ${buildUtxoSection(utxos, price)}
   </div>` + buildAddressSummary(addr, info, txs, price) + `
   <div class="card">
     <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>
