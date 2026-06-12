@@ -5,29 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FindBtc — Explorador Bitcoin</title>
 <style>
+/* ── Base ──────────────────────────────────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: #0d0d0d;
-  color: #e0e0e0;
+  background: #0d0d0d; color: #e0e0e0;
   font-family: 'Courier New', monospace;
-  min-height: 100vh;
-  padding: 2rem 1rem;
+  min-height: 100vh; padding: 2rem 1rem;
 }
 .container { max-width: 860px; margin: 0 auto; }
 h1 { color: #f7931a; font-size: 1.6rem; margin-bottom: 0.3rem; }
 .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+
+/* ── Search ────────────────────────────────────────────────────────────────── */
 .search-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 input[type="text"] {
-  flex: 1;
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: #e0e0e0;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.85rem;
-  outline: none;
-  transition: border-color 0.2s;
+  flex: 1; background: #1a1a1a; border: 1px solid #333; color: #e0e0e0;
+  padding: 0.75rem 1rem; border-radius: 6px;
+  font-family: 'Courier New', monospace; font-size: 0.85rem;
+  outline: none; transition: border-color 0.2s;
 }
 input[type="text"]:focus { border-color: #f7931a; }
 input[type="text"]::placeholder { color: #555; }
@@ -42,147 +37,91 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .hint { color: #555; font-size: 0.75rem; margin-bottom: 0.75rem; }
 .hint span { color: #f7931a88; }
 
-/* History */
+/* ── History ───────────────────────────────────────────────────────────────── */
 .history-section { margin-bottom: 1.5rem; }
-.history-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 0.4rem;
-}
-.history-label {
-  color: #555; font-size: 0.72rem;
-  text-transform: uppercase; letter-spacing: 0.05em;
-}
-.history-clear {
-  background: none; border: none; color: #555; font-size: 0.7rem;
-  cursor: pointer; padding: 0; font-family: 'Courier New', monospace;
-  transition: color 0.15s;
-}
+.history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.history-label { color: #555; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.history-clear { background: none; border: none; color: #555; font-size: 0.7rem; cursor: pointer; padding: 0; font-family: 'Courier New', monospace; transition: color 0.15s; }
 .history-clear:hover { background: none; color: #e05050; }
 .history-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.hist-item {
-  background: #1a1a1a; border: 1px solid #2a2a2a; color: #aaa;
-  font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 4px;
-  cursor: pointer; max-width: 260px; overflow: hidden;
-  text-overflow: ellipsis; white-space: nowrap;
-  transition: all 0.15s; font-family: 'Courier New', monospace;
-}
+.hist-item { background: #1a1a1a; border: 1px solid #2a2a2a; color: #aaa; font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 4px; cursor: pointer; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: all 0.15s; font-family: 'Courier New', monospace; }
 .hist-item:hover { border-color: #f7931a66; color: #e0e0e0; background: #222; }
 
+/* ── Status ────────────────────────────────────────────────────────────────── */
 #status { text-align: center; padding: 1.5rem; color: #888; font-size: 0.9rem; display: none; }
 #status.loading { display: block; }
 #status.error { display: block; color: #e05050; }
 
-.card {
-  background: #1a1a1a; border: 1px solid #2a2a2a;
-  border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
-}
-.card h2 {
-  color: #f7931a; font-size: 1rem; margin-bottom: 1rem;
-  border-bottom: 1px solid #2a2a2a; padding-bottom: 0.5rem;
-  display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem;
-}
-.meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; }
-.meta-item label {
-  display: block; color: #888; font-size: 0.72rem;
-  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem;
-}
-.meta-item span { color: #e0e0e0; font-size: 0.9rem; word-break: break-all; }
-.meta-item span.highlight { color: #f7931a; }
-.meta-item .fiat { color: #666; font-size: 0.72rem; margin-top: 0.15rem; }
-.txid-val { font-size: 0.72rem; word-break: break-all; color: #aaa; }
-
-.balance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; }
-.balance-card {
-  background: #111; border: 1px solid #2a2a2a;
-  border-radius: 6px; padding: 1rem;
-}
-.balance-card label { display: block; color: #888; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
-.balance-card .val { color: #f7931a; font-size: 1.05rem; font-weight: bold; }
-.balance-card .sub { color: #555; font-size: 0.7rem; }
-.balance-card .fiat { color: #888; font-size: 0.7rem; margin-top: 0.2rem; }
-
-.tx-item {
-  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
-  padding: 0.9rem 1rem; margin-bottom: 0.6rem; transition: border-color 0.15s;
-}
-.tx-item:hover { border-color: #f7931a44; }
-.tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.3rem; }
-.tx-id { color: #64b5f6; font-size: 0.72rem; word-break: break-all; flex: 1; cursor: pointer; }
-.tx-id:hover { text-decoration: underline; }
-.tx-status { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 10px; white-space: nowrap; }
-.tx-status.confirmed { background: #1a3a1a; color: #4caf50; }
-.tx-status.pending { background: #3a3a1a; color: #ffb300; }
-.tx-meta { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.3rem; }
-.tx-date { color: #666; font-size: 0.72rem; }
-.tx-amount-wrap { text-align: right; }
-.tx-amount { font-size: 0.9rem; font-weight: bold; }
-.tx-amount.received { color: #4caf50; }
-.tx-amount.sent { color: #e05050; }
-.tx-fiat { color: #555; font-size: 0.68rem; margin-top: 0.1rem; }
-
-.copy-btn {
-  background: #2a2a2a; color: #aaa; border: none;
-  padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem;
-  cursor: pointer; transition: all 0.15s; margin-left: 0.4rem;
-}
-.copy-btn:hover { background: #333; color: #fff; }
-.copy-btn.copied { background: #1a3a1a; color: #4caf50; }
-
-.wallet-list { display: flex; flex-direction: column; gap: 0.75rem; }
-.wallet-item {
-  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
-  padding: 0.9rem 1rem; display: grid; grid-template-columns: 1fr auto;
-  align-items: center; gap: 0.5rem; transition: border-color 0.15s;
-}
-.wallet-item:hover { border-color: #f7931a44; }
-.wallet-addr { font-size: 0.78rem; color: #d0d0d0; word-break: break-all; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.wallet-addr .idx { color: #555; font-size: 0.7rem; min-width: 1.5rem; }
-.addr-text { color: #64b5f6; cursor: pointer; flex: 1; min-width: 16ch; }
-.addr-text:hover { text-decoration: underline; }
-.addr-text.op-return { color: #666; font-style: italic; cursor: default; }
-.wallet-amount { text-align: right; white-space: nowrap; }
-.wallet-amount .btc { color: #f7931a; font-size: 0.9rem; font-weight: bold; }
-.wallet-amount .sat { color: #666; font-size: 0.7rem; }
-.wallet-amount .fiat { color: #888; font-size: 0.68rem; }
-.total-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0.75rem 1rem; background: #0f0f0f;
-  border: 1px solid #f7931a33; border-radius: 6px; margin-bottom: 1rem;
-  flex-wrap: wrap; gap: 0.3rem;
-}
-.total-bar span { color: #888; font-size: 0.85rem; }
-.total-bar .total-right { text-align: right; }
-.total-bar strong { color: #f7931a; font-size: 1rem; }
-.total-bar .fiat { color: #888; font-size: 0.75rem; display: block; margin-top: 0.1rem; }
-
-.addr-type-badge {
-  background: #1a2a3a; color: #64b5f6; font-size: 0.65rem;
-  padding: 0.15rem 0.5rem; border-radius: 10px; border: 1px solid #2a4a6a;
-  font-weight: normal; white-space: nowrap;
-}
-
-.price-bar {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.45rem 0.85rem; background: #111; border: 1px solid #2a2a2a;
-  border-radius: 6px; margin-bottom: 1.25rem; font-size: 0.75rem;
-}
+/* ── Price bar ─────────────────────────────────────────────────────────────── */
+.price-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.85rem; background: #111; border: 1px solid #2a2a2a; border-radius: 6px; margin-bottom: 1.5rem; font-size: 0.75rem; }
 .price-bar .pl { color: #555; }
 .price-bar .pv { color: #f7931a; font-weight: bold; }
 .price-bar .src { color: #444; font-size: 0.68rem; margin-left: auto; }
 
-/* Resum del moviment */
-.summary-text { color: #bbb; font-size: 0.82rem; line-height: 1.6; }
+/* ── Transaction hero ──────────────────────────────────────────────────────── */
+.tx-hero { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; margin-bottom: 1.75rem; overflow: hidden; }
+.tx-status-banner { padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 0.75rem; font-size: 1.05rem; font-weight: bold; letter-spacing: 0.04em; }
+.tx-status-banner.confirmed { background: #14532d; color: #86efac; border-bottom: 1px solid #166534; }
+.tx-status-banner.pending   { background: #451a03; color: #fdba74; border-bottom: 1px solid #78350f; animation: blink 1.8s ease-in-out infinite; }
+.tx-status-icon { font-size: 1.3rem; }
+.tx-hero-body { padding: 1.75rem 1.5rem 1.5rem; }
+.tx-amount-hero { font-size: 2.4rem; font-weight: bold; color: #f7931a; line-height: 1; margin-bottom: 0.4rem; letter-spacing: -0.02em; }
+.tx-amount-hero .unit { font-size: 1.15rem; color: #777; font-weight: normal; margin-left: 0.35rem; }
+.tx-fiat-hero { font-size: 1.1rem; color: #888; margin-bottom: 1.5rem; }
+.tx-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.tx-meta-cell { display: flex; flex-direction: column; gap: 0.15rem; }
+.tx-meta-cell .lbl { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.tx-meta-cell .val { color: #ccc; font-size: 0.88rem; }
+.tx-flow-line { display: flex; align-items: center; gap: 0.6rem; color: #666; font-size: 0.82rem; padding-top: 1rem; margin-top: 0.5rem; border-top: 1px solid #1e1e1e; }
+.tx-flow-line .fc { color: #64b5f6; font-weight: bold; font-size: 0.88rem; }
+.tx-flow-line .arr { color: #f7931a; font-size: 1.1rem; }
+
+/* Collapsible tech details */
+details { margin-top: 1rem; }
+details summary { color: #444; font-size: 0.75rem; cursor: pointer; padding: 0.3rem 0; list-style: none; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: color 0.15s; }
+details summary:hover { color: #888; }
+details summary::before { content: '▶'; font-size: 0.55rem; transition: transform 0.2s; }
+details[open] summary::before { transform: rotate(90deg); }
+.det-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem; margin-top: 0.75rem; }
+.det-cell { background: #0a0a0a; border: 1px solid #1e1e1e; border-radius: 6px; padding: 0.6rem 0.8rem; }
+.det-cell .lbl { color: #444; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+.det-cell .val { color: #bbb; font-size: 0.8rem; word-break: break-all; }
+.txid-mono { font-size: 0.62rem; color: #666; word-break: break-all; line-height: 1.5; }
+
+/* ── Address hero ──────────────────────────────────────────────────────────── */
+.addr-hero { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 1.75rem 1.5rem 0; margin-bottom: 1.75rem; overflow: hidden; }
+.addr-hero-top { margin-bottom: 1.5rem; }
+.addr-hero-sublabel { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+.addr-type-badge { background: #1a2a3a; color: #64b5f6; font-size: 0.62rem; padding: 0.12rem 0.45rem; border-radius: 8px; border: 1px solid #2a4a6a; font-weight: normal; white-space: nowrap; text-transform: none; letter-spacing: 0; }
+.addr-str { color: #777; font-size: 0.7rem; word-break: break-all; margin-top: 0.1rem; }
+.addr-balance-hero { font-size: 2.6rem; font-weight: bold; color: #f7931a; line-height: 1; margin-bottom: 0.4rem; letter-spacing: -0.025em; }
+.addr-balance-hero .unit { font-size: 1.1rem; color: #777; font-weight: normal; }
+.addr-fiat-hero { font-size: 1.05rem; color: #888; margin-bottom: 1.75rem; }
+.addr-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #1e1e1e; }
+.addr-stat { padding: 1.1rem 1.25rem; border-right: 1px solid #1e1e1e; }
+.addr-stat:last-child { border-right: none; }
+.addr-stat .lbl { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.3rem; }
+.addr-stat .arrow { font-size: 0.95rem; }
+.addr-stat .arrow.dn { color: #4caf50; }
+.addr-stat .arrow.up { color: #e05050; }
+.addr-stat .v { font-size: 1rem; font-weight: bold; }
+.addr-stat .v.grn { color: #4caf50; }
+.addr-stat .v.red { color: #e05050; }
+.addr-stat .v.neu { color: #e0e0e0; }
+.addr-stat .sub { color: #555; font-size: 0.67rem; margin-top: 0.25rem; }
+
+/* ── Shared card (flow analysis) ───────────────────────────────────────────── */
+.card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; }
+.card h2 { color: #f7931a; font-size: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #2a2a2a; padding-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+
+/* ── Flow analysis (kept as-is) ────────────────────────────────────────────── */
+.summary-text { color: #bbb; font-size: 0.82rem; line-height: 1.65; }
 .summary-text p { margin-bottom: 0.5rem; }
 .summary-text strong { color: #f7931a; }
 .summary-note { color: #555; font-size: 0.7rem; font-style: italic; margin-top: 0.75rem; }
 .flow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.75rem; }
 .flow-col h3 { color: #888; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-.flow-item {
-  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
-  padding: 0.5rem 0.7rem; margin-bottom: 0.4rem;
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 0.5rem; font-size: 0.72rem;
-}
+.flow-item { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 0.5rem 0.7rem; margin-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; font-size: 0.72rem; }
 .flow-addr { color: #64b5f6; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
 .flow-addr:hover { text-decoration: underline; }
 .flow-addr.nolink { color: #888; cursor: default; }
@@ -190,16 +129,55 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .flow-amt { color: #f7931a; white-space: nowrap; font-weight: bold; }
 .flow-cnt { color: #555; white-space: nowrap; }
 .tag { font-size: 0.62rem; padding: 0.12rem 0.45rem; border-radius: 8px; white-space: nowrap; }
-.tag.change { background: #1a2a3a; color: #64b5f6; }
-.tag.spent { background: #3a1a1a; color: #e08080; }
+.tag.change  { background: #1a2a3a; color: #64b5f6; }
+.tag.spent   { background: #3a1a1a; color: #e08080; }
 .tag.unspent { background: #1a3a1a; color: #4caf50; }
 
-.spinner {
-  display: inline-block; width: 16px; height: 16px;
-  border: 2px solid #333; border-top-color: #f7931a;
-  border-radius: 50%; animation: spin 0.7s linear infinite;
-  vertical-align: middle; margin-right: 0.4rem;
-}
+/* ── Outputs card (inside tx) ──────────────────────────────────────────────── */
+.outputs-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.outputs-hd h2 { margin: 0; border: none; padding: 0; }
+.total-pill { background: #f7931a18; border: 1px solid #f7931a33; border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.8rem; color: #f7931a; font-weight: bold; white-space: nowrap; }
+.total-pill .fiat { color: #888; font-size: 0.7rem; font-weight: normal; }
+.wallet-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.wallet-item { background: #0f0f0f; border: 1px solid #222; border-radius: 8px; padding: 0.85rem 1rem; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 0.5rem; transition: border-color 0.15s; }
+.wallet-item:hover { border-color: #f7931a44; }
+.wallet-addr { font-size: 0.78rem; color: #d0d0d0; word-break: break-all; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+.wallet-addr .idx { color: #444; font-size: 0.68rem; min-width: 1.5rem; }
+.addr-text { color: #64b5f6; cursor: pointer; flex: 1; min-width: 14ch; }
+.addr-text:hover { text-decoration: underline; }
+.addr-text.op-return { color: #555; font-style: italic; cursor: default; }
+.wallet-amount { text-align: right; white-space: nowrap; }
+.wallet-amount .btc  { color: #f7931a; font-size: 0.9rem; font-weight: bold; }
+.wallet-amount .sat  { color: #555; font-size: 0.67rem; }
+.wallet-amount .fiat { color: #777; font-size: 0.67rem; }
+.copy-btn { background: #222; color: #888; border: none; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.63rem; cursor: pointer; transition: all 0.15s; margin-left: 0.25rem; }
+.copy-btn:hover { background: #333; color: #fff; }
+.copy-btn.copied { background: #1a3a1a; color: #4caf50; }
+
+/* ── Transaction list (inside address) ────────────────────────────────────── */
+.tx-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.tx-list-item { display: grid; grid-template-columns: 2rem 1fr auto auto; align-items: center; gap: 0.75rem; background: #0f0f0f; border: 1px solid #222; border-radius: 8px; padding: 0.9rem 1rem; transition: border-color 0.15s; cursor: pointer; }
+.tx-list-item:hover { border-color: #f7931a44; }
+.tx-dir { font-size: 1.2rem; text-align: center; line-height: 1; }
+.tx-li-info { min-width: 0; }
+.tx-li-id { color: #64b5f6; font-size: 0.72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tx-li-date { color: #555; font-size: 0.67rem; margin-top: 0.15rem; }
+.tx-li-amt { text-align: right; }
+.tx-li-btc { font-size: 0.95rem; font-weight: bold; white-space: nowrap; }
+.tx-li-btc.rcv { color: #4caf50; }
+.tx-li-btc.snt { color: #e05050; }
+.tx-li-fiat { color: #555; font-size: 0.67rem; text-align: right; margin-top: 0.15rem; }
+.tx-badge { font-size: 0.63rem; padding: 0.2rem 0.5rem; border-radius: 10px; white-space: nowrap; align-self: center; }
+.tx-badge.conf { background: #1a3a1a; color: #4caf50; }
+.tx-badge.pend { background: #3a2a00; color: #ffb300; animation: blink 1.8s ease-in-out infinite; }
+
+/* ── Animations ────────────────────────────────────────────────────────────── */
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+#result.fade-in { animation: fadeSlide 0.35s ease-out; }
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* ── Spinner ───────────────────────────────────────────────────────────────── */
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #f7931a; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 #result { display: none; }
 </style>
@@ -405,21 +383,16 @@ function searchTx(txid)   { document.getElementById('txInput').value = txid;   s
 function satsToBtc(s) { return s == null ? '—' : (s / 1e8).toFixed(8); }
 function fmtSats(s)   { return (s || 0).toLocaleString('ca') + ' sat'; }
 function fmtDate(ts)  { return ts ? new Date(ts * 1000).toLocaleString('ca') : 'Pendent'; }
+function shortAddr(a) { return a.length > 26 ? a.slice(0, 14) + '…' + a.slice(-8) : a; }
 
 function mkPriceBar(price) {
   if (!price) return `<div class="price-bar"><span class="pl">Preu BTC:</span><span style="color:#555;font-style:italic">no disponible (APIs de preus no accessibles)</span></div>`;
   const usd = price.usd.toLocaleString('ca');
   const eur = price.eur.toLocaleString('ca');
-  return `<div class="price-bar">
-    <span class="pl">Preu BTC:</span>
-    <span class="pv">$${usd} · €${eur}</span>
-    <span class="src">${price.src}</span>
-  </div>`;
+  return `<div class="price-bar"><span class="pl">Preu BTC:</span><span class="pv">$${usd} · €${eur}</span><span class="src">${price.src}</span></div>`;
 }
 
 // ── Anàlisi de moviments ──────────────────────────────────────────────────────
-function shortAddr(a) { return a.length > 26 ? a.slice(0, 14) + '…' + a.slice(-8) : a; }
-
 function addFlow(map, key, sats) {
   const e = map.get(key) || { sats: 0, n: 0 };
   e.sats += sats; e.n++;
@@ -458,10 +431,8 @@ function buildAddressSummary(addr, info, txs, price) {
       if (!firstTs || ts < firstTs) firstTs = ts;
       if (!lastTs  || ts > lastTs)  lastTs  = ts;
     }
-    const recv = (tx.vout || []).filter(o => o.scriptpubkey_address === addr)
-                                .reduce((s, o) => s + (o.value || 0), 0);
-    const sent = (tx.vin || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr)
-                               .reduce((s, v) => s + (v.prevout.value || 0), 0);
+    const recv = (tx.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
+    const sent = (tx.vin  || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
 
     if (recv > sent) {
       inTx++;
@@ -478,7 +449,7 @@ function buildAddressSummary(addr, info, txs, price) {
       outTx++;
       (tx.vout || []).forEach(o => {
         const a = o.scriptpubkey_address;
-        if (a === addr) return; // canvi que torna a la mateixa adreça
+        if (a === addr) return;
         if (o.scriptpubkey_type === 'op_return') { addFlow(dests, 'op_return', 0); return; }
         addFlow(dests, a || 'nostd', o.value || 0);
       });
@@ -486,35 +457,23 @@ function buildAddressSummary(addr, info, txs, price) {
   }
 
   const p = [];
-  if (coinbase)
-    p.push(`Una part dels fons prové <strong>directament de la mineria</strong> (recompensa de bloc): són BTC de nova creació, sense origen previ.`);
-  if (origins.size === 1 && !coinbase)
-    p.push(`Tots els fons rebuts a la mostra provenen d'<strong>una única font</strong>: pot ser el mateix propietari movent fons o un únic pagador.`);
-  else if (origins.size > 5)
-    p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: patró de cobraments múltiples (pagaments, donacions o retirades d'un servei).`);
-
-  if (bal > 0 && outTx === 0)
-    p.push(`Els fons <strong>encara no s'han mogut</strong>: tot el que ha rebut continua a l'adreça (acumulació).`);
-  else if (bal > 0)
-    p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong> a l'adreça; la resta ja s'ha reenviat als destins llistats.`);
-  else if (outTx > 0)
-    p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat cap als destins llistats.`);
+  if (coinbase) p.push(`Una part dels fons prové <strong>directament de la mineria</strong> (recompensa de bloc): són BTC de nova creació, sense origen previ.`);
+  if (origins.size === 1 && !coinbase) p.push(`Tots els fons rebuts a la mostra provenen d'<strong>una única font</strong>: pot ser el mateix propietari movent fons o un únic pagador.`);
+  else if (origins.size > 5) p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: patró de cobraments múltiples (pagaments, donacions o retirades d'un servei).`);
+  if (bal > 0 && outTx === 0) p.push(`Els fons <strong>encara no s'han mogut</strong>: tot el que ha rebut continua a l'adreça (acumulació).`);
+  else if (bal > 0) p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong> a l'adreça; la resta ja s'ha reenviat als destins llistats.`);
+  else if (outTx > 0) p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat cap als destins llistats.`);
 
   const dEntries = [...dests.entries()].filter(([k]) => k !== 'op_return');
   const totalOut = dEntries.reduce((s, [, v]) => s + v.sats, 0);
   if (dEntries.length > 1 && totalOut > 0) {
     const top = dEntries.sort((a, b) => b[1].sats - a[1].sats)[0];
-    if (top[1].sats / totalOut > 0.7)
-      p.push(`La major part dels fons enviats (${Math.round(top[1].sats / totalOut * 100)}%) van anar a <strong>${shortAddr(top[0])}</strong>: destí principal probable.`);
+    if (top[1].sats / totalOut > 0.7) p.push(`La major part dels fons enviats (${Math.round(top[1].sats / totalOut * 100)}%) van anar a <strong>${shortAddr(top[0])}</strong>: destí principal probable.`);
   }
   for (const [k] of origins) {
-    if (dests.has(k)) {
-      p.push(`L'adreça <strong>${shortAddr(k)}</strong> apareix com a origen i com a destí: relació recurrent o moviments interns del mateix propietari.`);
-      break;
-    }
+    if (dests.has(k)) { p.push(`L'adreça <strong>${shortAddr(k)}</strong> apareix com a origen i com a destí: relació recurrent o moviments interns del mateix propietari.`); break; }
   }
-  if (firstTs)
-    p.push(`Activitat analitzada: del <strong>${new Date(firstTs * 1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs * 1000).toLocaleDateString('ca')}</strong>.`);
+  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs * 1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs * 1000).toLocaleDateString('ca')}</strong>.`);
 
   const partial = (cs.tx_count || 0) > txs.length;
   return `<div class="card">
@@ -548,24 +507,19 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
     p.push(`És una <strong>transacció coinbase</strong>: els BTC són de nova creació (recompensa de mineria més tarifes del bloc) i <strong>no tenen cap origen previ</strong>.`);
   } else {
     p.push(`Els fons surten ${origins.size === 1 ? `d'<strong>una única adreça d'origen</strong>` : `de <strong>${origins.size} adreces d'origen</strong>`} (${vins.length} entrad${vins.length === 1 ? 'a' : 'es'}) per un total de <strong>${satsToBtc(totalIn)} BTC</strong>.`);
-    if (vins.length >= 5 && outs.length <= 2)
-      p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en ${outs.length === 1 ? 'una única sortida' : 'poques sortides'} — típic quan un wallet o servei reordena els seus propis fons.`);
-    else if (vins.length <= 2 && outs.length >= 5)
-      p.push(`Patró de <strong>pagament múltiple (batching)</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
+    if (vins.length >= 5 && outs.length <= 2) p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en ${outs.length === 1 ? 'una única sortida' : 'poques sortides'} — típic quan un wallet o servei reordena els seus propis fons.`);
+    else if (vins.length <= 2 && outs.length >= 5) p.push(`Patró de <strong>pagament múltiple (batching)</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
     else if (outs.length === 2) {
       const changeConfirmed = outs.some(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
-      p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament real i l'altra probablement el <strong>canvi</strong> que torna a l'emissor${changeConfirmed ? ' (confirmat: una sortida torna a una adreça d’origen)' : ''}.`);
+      p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament real i l'altra probablement el <strong>canvi</strong> que torna a l'emissor${changeConfirmed ? ' (confirmat: una sortida torna a una adreça d\'origen)' : ''}.`);
     }
   }
   if (outspends) {
     const spendable = outs.filter(o => o.scriptpubkey_type !== 'op_return').length;
     const spent = outspends.filter(o => o && o.spent).length;
-    if (spent === 0)
-      p.push(`<strong>Cap sortida s'ha gastat encara</strong>: els fons continuen a les adreces destinatàries.`);
-    else if (spent >= spendable)
-      p.push(`<strong>Totes les sortides ja s'han gastat</strong>: els fons han continuat movent-se. Fes clic a l'etiqueta «gastada →» de cada sortida per seguir-ne el rastre.`);
-    else
-      p.push(`<strong>${spent} de ${spendable} sortides ja s'han gastat</strong>: part dels fons ha continuat movent-se i part segueix a les adreces de destí.`);
+    if (spent === 0) p.push(`<strong>Cap sortida s'ha gastat encara</strong>: els fons continuen a les adreces destinatàries.`);
+    else if (spent >= spendable) p.push(`<strong>Totes les sortides ja s'han gastat</strong>: els fons han continuat movent-se. Fes clic a l'etiqueta «gastada →» de cada sortida per seguir-ne el rastre.`);
+    else p.push(`<strong>${spent} de ${spendable} sortides ja s'han gastat</strong>: part dels fons ha continuat movent-se i part segueix a les adreces de destí.`);
   }
 
   return `<div class="card">
@@ -583,60 +537,81 @@ async function renderTx(tx, price) {
   let outspends = null;
   try { outspends = await apiFetch('/tx/' + tx.txid + '/outspends'); } catch {}
   hideStatus();
-  const outs    = tx.vout || [];
-  const total   = outs.reduce((s, o) => s + (o.value || 0), 0);
-  const conf    = tx.status && tx.status.confirmed;
-  const blk     = tx.status && tx.status.block_height;
-  const feeFiat = fmtFiat(tx.fee, price);
-  const totFiat = fmtFiat(total, price);
-  const inAddrSet = new Set((tx.vin || [])
-    .map(v => v.prevout && v.prevout.scriptpubkey_address)
-    .filter(Boolean));
+
+  const outs     = tx.vout || [];
+  const vins     = tx.vin  || [];
+  const total    = outs.reduce((s, o) => s + (o.value || 0), 0);
+  const conf     = tx.status && tx.status.confirmed;
+  const blk      = tx.status && tx.status.block_height;
+  const isCb     = vins.some(v => v.is_coinbase);
+  const totFiat  = fmtFiat(total, price);
+  const feeFiat  = fmtFiat(tx.fee, price);
+  const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
+
+  // Status banner
+  const bannerCls  = conf ? 'confirmed' : 'pending';
+  const bannerIcon = conf ? '✓' : '⏳';
+  const bannerText = conf
+    ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}`
+    : `PENDENT — SENSE CONFIRMAR (mempool)`;
 
   let html = mkPriceBar(price) + `
-    <div class="card">
-      <h2>Detalls de la transacció</h2>
-      <div class="meta-grid">
-        <div class="meta-item" style="grid-column:1/-1">
-          <label>TXID</label>
-          <span class="txid-val">${tx.txid}</span>
+  <div class="tx-hero">
+    <div class="tx-status-banner ${bannerCls}">
+      <span class="tx-status-icon">${bannerIcon}</span>
+      <span>${bannerText}</span>
+    </div>
+    <div class="tx-hero-body">
+      <div class="tx-amount-hero">${satsToBtc(total)}<span class="unit">BTC</span></div>
+      ${totFiat ? `<div class="tx-fiat-hero">${totFiat}</div>` : ''}
+      <div class="tx-meta-row">
+        <div class="tx-meta-cell">
+          <span class="lbl">Data</span>
+          <span class="val">${fmtDate(tx.status && tx.status.block_time)}</span>
         </div>
-        <div class="meta-item">
-          <label>Estat</label>
-          <span class="highlight">${conf ? 'Confirmada · bloc #' + blk : 'Pendent (mempool)'}</span>
+        ${tx.fee != null ? `<div class="tx-meta-cell">
+          <span class="lbl">Tarifa</span>
+          <span class="val">${fmtSats(tx.fee)}${feeFiat ? ` &nbsp;·&nbsp; ${feeFiat}` : ''}</span>
+        </div>` : ''}
+        <div class="tx-meta-cell">
+          <span class="lbl">Mida</span>
+          <span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span>
         </div>
-        <div class="meta-item">
-          <label>Data</label>
-          <span>${fmtDate(tx.status && tx.status.block_time)}</span>
-        </div>
-        <div class="meta-item">
-          <label>Mida</label>
-          <span>${tx.size ? tx.size + ' bytes' : '—'}</span>
-        </div>
-        <div class="meta-item">
-          <label>Tarifa</label>
-          <span>${tx.fee != null ? fmtSats(tx.fee) + ' (' + satsToBtc(tx.fee) + ' BTC)' : '—'}</span>
-          ${feeFiat ? `<div class="fiat">${feeFiat}</div>` : ''}
-        </div>
-        <div class="meta-item"><label>Entrades</label><span>${(tx.vin || []).length}</span></div>
-        <div class="meta-item"><label>Sortides</label><span>${outs.length}</span></div>
       </div>
-    </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
-    <div class="card">
+      <div class="tx-flow-line">
+        <span class="fc">${isCb ? '⛏ Mineria' : vins.length + (vins.length === 1 ? ' entrada' : ' entrades')}</span>
+        <span class="arr">→</span>
+        <span class="fc">${outs.length} ${outs.length === 1 ? 'sortida' : 'sortides'}</span>
+      </div>
+      <details>
+        <summary>Detalls tècnics</summary>
+        <div class="det-grid">
+          <div class="det-cell" style="grid-column:1/-1">
+            <div class="lbl">TXID</div>
+            <div class="val txid-mono">${tx.txid} <button class="copy-btn" onclick="copyText('${tx.txid}',this)">copiar</button></div>
+          </div>
+          <div class="det-cell"><div class="lbl">Entrades</div><div class="val">${vins.length}</div></div>
+          <div class="det-cell"><div class="lbl">Sortides</div><div class="val">${outs.length}</div></div>
+          <div class="det-cell"><div class="lbl">Mida</div><div class="val">${tx.size ? tx.size + ' bytes' : '—'}</div></div>
+          ${tx.weight ? `<div class="det-cell"><div class="lbl">Pes</div><div class="val">${tx.weight} WU</div></div>` : ''}
+          ${tx.fee != null ? `<div class="det-cell"><div class="lbl">Tarifa</div><div class="val">${fmtSats(tx.fee)}</div></div>` : ''}
+        </div>
+      </details>
+    </div>
+  </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
+  <div class="card">
+    <div class="outputs-hd">
       <h2>Adreces destinatàries</h2>
-      <div class="total-bar">
-        <span>Total enviat</span>
-        <div class="total-right">
-          <strong>${satsToBtc(total)} BTC</strong>
-          ${totFiat ? `<span class="fiat">${totFiat}</span>` : ''}
-        </div>
-      </div>
-      <div class="wallet-list">`;
+      <div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> &nbsp;·&nbsp; ${totFiat}</span>` : ''}</div>
+    </div>
+    <div class="wallet-list">`;
 
   outs.forEach((out, i) => {
     const addr    = out.scriptpubkey_address || null;
     const isOpRet = out.scriptpubkey_type === 'op_return';
-    const display = addr || (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
+    const disp    = addr
+      ? (addr.length > 32 ? addr.slice(0, 14) + '…' + addr.slice(-10) : addr)
+      : (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
     const oFiat   = fmtFiat(out.value || 0, price);
     const osp     = outspends && outspends[i];
     let tags = '';
@@ -646,7 +621,7 @@ async function renderTx(tx, price) {
     html += `<div class="wallet-item">
       <div class="wallet-addr">
         <span class="idx">#${i}</span>
-        <span class="addr-text${!addr ? ' op-return' : ''}" ${addr ? `onclick="searchAddr('${addr}')" title="Cerca aquesta adreça"` : ''}>${display}</span>
+        <span class="addr-text${!addr ? ' op-return' : ''}" title="${addr || ''}" ${addr ? `onclick="searchAddr('${addr}')"` : ''}>${disp}</span>
         ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}${tags}
       </div>
       <div class="wallet-amount">
@@ -668,71 +643,70 @@ function renderAddress(addr, addrType, info, txs, price) {
   const rcv = cs.funded_txo_sum || 0;
   const snt = cs.spent_txo_sum  || 0;
   const cnt = (cs.tx_count || 0) + (ms.tx_count || 0);
-
   const balFiat = fmtFiat(bal, price);
   const rcvFiat = fmtFiat(rcv, price);
   const sntFiat = fmtFiat(snt, price);
+  const addrDisp = addr.length > 40 ? addr.slice(0, 20) + '…' + addr.slice(-12) : addr;
 
   let html = mkPriceBar(price) + `
-    <div class="card">
-      <h2>Adreça Bitcoin ${addrType ? `<span class="addr-type-badge">${addrType}</span>` : ''}</h2>
-      <div class="meta-item" style="margin-bottom:1rem">
-        <label>Adreça</label>
-        <span class="txid-val">${addr} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button></span>
+  <div class="addr-hero">
+    <div class="addr-hero-top">
+      <div class="addr-hero-sublabel">
+        Adreça Bitcoin
+        ${addrType ? `<span class="addr-type-badge">${addrType}</span>` : ''}
       </div>
-      <div class="balance-grid">
-        <div class="balance-card">
-          <label>Saldo actual</label>
-          <div class="val">${satsToBtc(bal)} BTC</div>
-          <div class="sub">${fmtSats(bal)}</div>
-          ${balFiat ? `<div class="fiat">${balFiat}</div>` : ''}
-        </div>
-        <div class="balance-card">
-          <label>Total rebut</label>
-          <div class="val" style="color:#4caf50">${satsToBtc(rcv)} BTC</div>
-          <div class="sub">${fmtSats(rcv)}</div>
-          ${rcvFiat ? `<div class="fiat">${rcvFiat}</div>` : ''}
-        </div>
-        <div class="balance-card">
-          <label>Total enviat</label>
-          <div class="val" style="color:#e05050">${satsToBtc(snt)} BTC</div>
-          <div class="sub">${fmtSats(snt)}</div>
-          ${sntFiat ? `<div class="fiat">${sntFiat}</div>` : ''}
-        </div>
-        <div class="balance-card">
-          <label>Transaccions</label>
-          <div class="val">${cnt.toLocaleString('ca')}</div>
-          <div class="sub">${ms.tx_count ? ms.tx_count + ' pendents' : 'totes confirmades'}</div>
-        </div>
+      <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button></div>
+    </div>
+    <div class="addr-balance-hero">${satsToBtc(bal)}<span class="unit"> BTC</span></div>
+    ${balFiat ? `<div class="addr-fiat-hero">${balFiat}</div>` : ''}
+    <div class="addr-stats-row">
+      <div class="addr-stat">
+        <div class="lbl"><span class="arrow dn">↓</span> Rebut</div>
+        <div class="v grn">${satsToBtc(rcv)} BTC</div>
+        ${rcvFiat ? `<div class="sub">${rcvFiat}</div>` : ''}
       </div>
-    </div>` + buildAddressSummary(addr, info, txs, price) + `
-    <div class="card">
-      <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>`;
+      <div class="addr-stat">
+        <div class="lbl"><span class="arrow up">↑</span> Enviat</div>
+        <div class="v red">${satsToBtc(snt)} BTC</div>
+        ${sntFiat ? `<div class="sub">${sntFiat}</div>` : ''}
+      </div>
+      <div class="addr-stat">
+        <div class="lbl">Transaccions</div>
+        <div class="v neu">${cnt.toLocaleString('ca')}</div>
+        <div class="sub">${ms.tx_count ? ms.tx_count + ' pendents' : 'totes confirmades'}</div>
+      </div>
+    </div>
+  </div>` + buildAddressSummary(addr, info, txs, price) + `
+  <div class="card">
+    <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>
+    <div class="tx-list">`;
 
   if (!txs.length) {
-    html += `<p style="color:#666;text-align:center;padding:1rem">Sense transaccions.</p>`;
+    html += `<p style="color:#555;text-align:center;padding:1.25rem">Sense transaccions.</p>`;
   } else {
     txs.forEach(tx => {
       const conf   = tx.status && tx.status.confirmed;
-      const rcvAmt = (tx.vout || []).filter(o => o.scriptpubkey_address === addr)
-                                    .reduce((s, o) => s + (o.value || 0), 0);
-      const txFiat = fmtFiat(rcvAmt, price);
-      html += `<div class="tx-item">
-        <div class="tx-header">
-          <span class="tx-id" onclick="searchTx('${tx.txid}')" title="Veure detalls">${tx.txid}</span>
-          <span class="tx-status ${conf ? 'confirmed' : 'pending'}">${conf ? 'Confirmada' : 'Pendent'}</span>
+      const rcvAmt = (tx.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
+      const sntAmt = (tx.vin  || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
+      const isRcv  = rcvAmt >= sntAmt;
+      const net    = isRcv ? rcvAmt - sntAmt : sntAmt - rcvAmt;
+      const txFiat = fmtFiat(net, price);
+      const txidS  = tx.txid.slice(0, 8) + '…' + tx.txid.slice(-8);
+      html += `<div class="tx-list-item" onclick="searchTx('${tx.txid}')">
+        <span class="tx-dir" style="color:${isRcv ? '#4caf50' : '#e05050'}">${isRcv ? '↓' : '↑'}</span>
+        <div class="tx-li-info">
+          <div class="tx-li-id">${txidS}</div>
+          <div class="tx-li-date">${fmtDate(tx.status && tx.status.block_time)}</div>
         </div>
-        <div class="tx-meta">
-          <span class="tx-date">${fmtDate(tx.status && tx.status.block_time)}</span>
-          <div class="tx-amount-wrap">
-            <span class="tx-amount ${rcvAmt > 0 ? 'received' : 'sent'}">${rcvAmt > 0 ? '+' + satsToBtc(rcvAmt) + ' BTC' : '—'}</span>
-            ${txFiat ? `<div class="tx-fiat">${txFiat}</div>` : ''}
-          </div>
+        <div class="tx-li-amt">
+          <div class="tx-li-btc ${isRcv ? 'rcv' : 'snt'}">${isRcv ? '+' : '−'}${satsToBtc(net)} BTC</div>
+          ${txFiat ? `<div class="tx-li-fiat">${txFiat}</div>` : ''}
         </div>
+        <span class="tx-badge ${conf ? 'conf' : 'pend'}">${conf ? '✓' : '⏳'}</span>
       </div>`;
     });
   }
-  html += `</div>`;
+  html += `</div></div>`;
   showResult(html);
 }
 
@@ -740,7 +714,10 @@ function renderAddress(addr, addrType, info, txs, price) {
 function showResult(html) {
   const r = document.getElementById('result');
   r.innerHTML = html;
+  r.classList.remove('fade-in');
   r.style.display = 'block';
+  void r.offsetWidth;
+  r.classList.add('fade-in');
 }
 function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
