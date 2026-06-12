@@ -135,9 +135,9 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
   align-items: center; gap: 0.5rem; transition: border-color 0.15s;
 }
 .wallet-item:hover { border-color: #f7931a44; }
-.wallet-addr { font-size: 0.78rem; color: #d0d0d0; word-break: break-all; display: flex; align-items: center; gap: 0.5rem; }
+.wallet-addr { font-size: 0.78rem; color: #d0d0d0; word-break: break-all; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .wallet-addr .idx { color: #555; font-size: 0.7rem; min-width: 1.5rem; }
-.addr-text { color: #64b5f6; cursor: pointer; }
+.addr-text { color: #64b5f6; cursor: pointer; flex: 1; min-width: 16ch; }
 .addr-text:hover { text-decoration: underline; }
 .addr-text.op-return { color: #666; font-style: italic; cursor: default; }
 .wallet-amount { text-align: right; white-space: nowrap; }
@@ -169,6 +169,30 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .price-bar .pl { color: #555; }
 .price-bar .pv { color: #f7931a; font-weight: bold; }
 .price-bar .src { color: #444; font-size: 0.68rem; margin-left: auto; }
+
+/* Resum del moviment */
+.summary-text { color: #bbb; font-size: 0.82rem; line-height: 1.6; }
+.summary-text p { margin-bottom: 0.5rem; }
+.summary-text strong { color: #f7931a; }
+.summary-note { color: #555; font-size: 0.7rem; font-style: italic; margin-top: 0.75rem; }
+.flow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 0.75rem; }
+.flow-col h3 { color: #888; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.flow-item {
+  background: #111; border: 1px solid #2a2a2a; border-radius: 6px;
+  padding: 0.5rem 0.7rem; margin-bottom: 0.4rem;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.5rem; font-size: 0.72rem;
+}
+.flow-addr { color: #64b5f6; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.flow-addr:hover { text-decoration: underline; }
+.flow-addr.nolink { color: #888; cursor: default; }
+.flow-addr.nolink:hover { text-decoration: none; }
+.flow-amt { color: #f7931a; white-space: nowrap; font-weight: bold; }
+.flow-cnt { color: #555; white-space: nowrap; }
+.tag { font-size: 0.62rem; padding: 0.12rem 0.45rem; border-radius: 8px; white-space: nowrap; }
+.tag.change { background: #1a2a3a; color: #64b5f6; }
+.tag.spent { background: #3a1a1a; color: #e08080; }
+.tag.unspent { background: #1a3a1a; color: #4caf50; }
 
 .spinner {
   display: inline-block; width: 16px; height: 16px;
@@ -244,7 +268,7 @@ async function apiFetch(path) {
   for (let i = 0; i < apis.length; i++) {
     if (i > 0) showLoading(`${apis[0].name} no disponible, provant ${apis[i].name}…`);
     try {
-      const r = await fetch(apis[i].base + path);
+      const r = await fetch(apis[i].base + path, { signal: AbortSignal.timeout(8000) });
       if (!r.ok) {
         if (r.status === 404) {
           const msg = path.startsWith('/tx/')
@@ -358,7 +382,7 @@ async function search() {
   const price = await fetchBtcPrice();
   try {
     if (det.type === 'txid') {
-      renderTx(await apiFetch('/tx/' + val), price);
+      await renderTx(await apiFetch('/tx/' + val), price);
     } else {
       const [info, txs] = await Promise.all([
         apiFetch('/address/' + val),
@@ -393,8 +417,171 @@ function mkPriceBar(price) {
   </div>`;
 }
 
+// ── Anàlisi de moviments ──────────────────────────────────────────────────────
+function shortAddr(a) { return a.length > 26 ? a.slice(0, 14) + '…' + a.slice(-8) : a; }
+
+function addFlow(map, key, sats) {
+  const e = map.get(key) || { sats: 0, n: 0 };
+  e.sats += sats; e.n++;
+  map.set(key, e);
+}
+
+function flowListHtml(map, price, max = 5) {
+  const items = [...map.entries()].sort((a, b) => b[1].sats - a[1].sats);
+  if (!items.length) return '<div class="flow-item"><span class="flow-addr nolink">— cap a la mostra analitzada —</span></div>';
+  let html = items.slice(0, max).map(([k, v]) => {
+    const isAddr = k !== 'coinbase' && k !== 'op_return' && k !== 'nostd';
+    const label = k === 'coinbase'  ? '⛏ Mineria (BTC de nova creació)'
+                : k === 'op_return' ? 'OP_RETURN (dades, sense valor)'
+                : k === 'nostd'     ? 'Script no estàndard'
+                : shortAddr(k);
+    const fiat = fmtFiat(v.sats, price);
+    return `<div class="flow-item">
+      <span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}</span>
+      ${v.n > 1 ? `<span class="flow-cnt">×${v.n}</span>` : ''}
+      <span class="flow-amt" ${fiat ? `title="${fiat}"` : ''}>${satsToBtc(v.sats)} BTC</span>
+    </div>`;
+  }).join('');
+  if (items.length > max) html += `<div class="flow-item"><span class="flow-addr nolink">… i ${items.length - max} adreces més</span></div>`;
+  return html;
+}
+
+function buildAddressSummary(addr, info, txs, price) {
+  const cs  = info.chain_stats || {};
+  const bal = (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0);
+  const origins = new Map(), dests = new Map();
+  let inTx = 0, outTx = 0, coinbase = false, firstTs = null, lastTs = null;
+
+  for (const tx of txs) {
+    const ts = tx.status && tx.status.block_time;
+    if (ts) {
+      if (!firstTs || ts < firstTs) firstTs = ts;
+      if (!lastTs  || ts > lastTs)  lastTs  = ts;
+    }
+    const recv = (tx.vout || []).filter(o => o.scriptpubkey_address === addr)
+                                .reduce((s, o) => s + (o.value || 0), 0);
+    const sent = (tx.vin || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr)
+                               .reduce((s, v) => s + (v.prevout.value || 0), 0);
+
+    if (recv > sent) {
+      inTx++;
+      if ((tx.vin || []).some(v => v.is_coinbase)) {
+        coinbase = true;
+        addFlow(origins, 'coinbase', recv);
+      } else {
+        (tx.vin || []).forEach(v => {
+          const a = v.prevout && v.prevout.scriptpubkey_address;
+          if (a && a !== addr) addFlow(origins, a, v.prevout.value || 0);
+        });
+      }
+    } else if (sent > 0) {
+      outTx++;
+      (tx.vout || []).forEach(o => {
+        const a = o.scriptpubkey_address;
+        if (a === addr) return; // canvi que torna a la mateixa adreça
+        if (o.scriptpubkey_type === 'op_return') { addFlow(dests, 'op_return', 0); return; }
+        addFlow(dests, a || 'nostd', o.value || 0);
+      });
+    }
+  }
+
+  const p = [];
+  if (coinbase)
+    p.push(`Una part dels fons prové <strong>directament de la mineria</strong> (recompensa de bloc): són BTC de nova creació, sense origen previ.`);
+  if (origins.size === 1 && !coinbase)
+    p.push(`Tots els fons rebuts a la mostra provenen d'<strong>una única font</strong>: pot ser el mateix propietari movent fons o un únic pagador.`);
+  else if (origins.size > 5)
+    p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: patró de cobraments múltiples (pagaments, donacions o retirades d'un servei).`);
+
+  if (bal > 0 && outTx === 0)
+    p.push(`Els fons <strong>encara no s'han mogut</strong>: tot el que ha rebut continua a l'adreça (acumulació).`);
+  else if (bal > 0)
+    p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong> a l'adreça; la resta ja s'ha reenviat als destins llistats.`);
+  else if (outTx > 0)
+    p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat cap als destins llistats.`);
+
+  const dEntries = [...dests.entries()].filter(([k]) => k !== 'op_return');
+  const totalOut = dEntries.reduce((s, [, v]) => s + v.sats, 0);
+  if (dEntries.length > 1 && totalOut > 0) {
+    const top = dEntries.sort((a, b) => b[1].sats - a[1].sats)[0];
+    if (top[1].sats / totalOut > 0.7)
+      p.push(`La major part dels fons enviats (${Math.round(top[1].sats / totalOut * 100)}%) van anar a <strong>${shortAddr(top[0])}</strong>: destí principal probable.`);
+  }
+  for (const [k] of origins) {
+    if (dests.has(k)) {
+      p.push(`L'adreça <strong>${shortAddr(k)}</strong> apareix com a origen i com a destí: relació recurrent o moviments interns del mateix propietari.`);
+      break;
+    }
+  }
+  if (firstTs)
+    p.push(`Activitat analitzada: del <strong>${new Date(firstTs * 1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs * 1000).toLocaleDateString('ca')}</strong>.`);
+
+  const partial = (cs.tx_count || 0) > txs.length;
+  return `<div class="card">
+    <h2>Resum del moviment</h2>
+    <div class="summary-text">${p.map(t => `<p>${t}</p>`).join('')}</div>
+    <div class="flow-grid">
+      <div class="flow-col"><h3>D'on han sortit els fons (orígens)</h3>${flowListHtml(origins, price)}</div>
+      <div class="flow-col"><h3>Cap a on han anat (destins)</h3>${flowListHtml(dests, price)}</div>
+    </div>
+    <p class="summary-note">${partial ? `Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count || 0).toLocaleString('ca')} en total). ` : ''}Heurística sobre dades públiques de la blockchain: identificar el propietari real (exchange, particular…) requereix informació externa.</p>
+  </div>`;
+}
+
+function buildTxSummary(tx, price, outspends, inAddrSet) {
+  const vins = tx.vin || [], outs = tx.vout || [];
+  const isCb = vins.some(v => v.is_coinbase);
+  const origins = new Map();
+  let totalIn = 0;
+  if (isCb) {
+    addFlow(origins, 'coinbase', outs.reduce((s, o) => s + (o.value || 0), 0));
+  } else {
+    vins.forEach(v => {
+      totalIn += (v.prevout && v.prevout.value) || 0;
+      const a = v.prevout && v.prevout.scriptpubkey_address;
+      if (a) addFlow(origins, a, v.prevout.value || 0);
+    });
+  }
+
+  const p = [];
+  if (isCb) {
+    p.push(`És una <strong>transacció coinbase</strong>: els BTC són de nova creació (recompensa de mineria més tarifes del bloc) i <strong>no tenen cap origen previ</strong>.`);
+  } else {
+    p.push(`Els fons surten ${origins.size === 1 ? `d'<strong>una única adreça d'origen</strong>` : `de <strong>${origins.size} adreces d'origen</strong>`} (${vins.length} entrad${vins.length === 1 ? 'a' : 'es'}) per un total de <strong>${satsToBtc(totalIn)} BTC</strong>.`);
+    if (vins.length >= 5 && outs.length <= 2)
+      p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en ${outs.length === 1 ? 'una única sortida' : 'poques sortides'} — típic quan un wallet o servei reordena els seus propis fons.`);
+    else if (vins.length <= 2 && outs.length >= 5)
+      p.push(`Patró de <strong>pagament múltiple (batching)</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
+    else if (outs.length === 2) {
+      const changeConfirmed = outs.some(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
+      p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament real i l'altra probablement el <strong>canvi</strong> que torna a l'emissor${changeConfirmed ? ' (confirmat: una sortida torna a una adreça d’origen)' : ''}.`);
+    }
+  }
+  if (outspends) {
+    const spendable = outs.filter(o => o.scriptpubkey_type !== 'op_return').length;
+    const spent = outspends.filter(o => o && o.spent).length;
+    if (spent === 0)
+      p.push(`<strong>Cap sortida s'ha gastat encara</strong>: els fons continuen a les adreces destinatàries.`);
+    else if (spent >= spendable)
+      p.push(`<strong>Totes les sortides ja s'han gastat</strong>: els fons han continuat movent-se. Fes clic a l'etiqueta «gastada →» de cada sortida per seguir-ne el rastre.`);
+    else
+      p.push(`<strong>${spent} de ${spendable} sortides ja s'han gastat</strong>: part dels fons ha continuat movent-se i part segueix a les adreces de destí.`);
+  }
+
+  return `<div class="card">
+    <h2>Resum del moviment</h2>
+    <div class="summary-text">${p.map(t => `<p>${t}</p>`).join('')}</div>
+    <div class="flow-grid">
+      <div class="flow-col"><h3>D'on venen els fons (orígens)</h3>${flowListHtml(origins, price)}</div>
+    </div>
+    <p class="summary-note">Heurística sobre dades públiques de la blockchain: l'origen o destí real (persona, exchange…) no es pot determinar només amb la cadena.</p>
+  </div>`;
+}
+
 // ── Renderitzadors ────────────────────────────────────────────────────────────
-function renderTx(tx, price) {
+async function renderTx(tx, price) {
+  let outspends = null;
+  try { outspends = await apiFetch('/tx/' + tx.txid + '/outspends'); } catch {}
   hideStatus();
   const outs    = tx.vout || [];
   const total   = outs.reduce((s, o) => s + (o.value || 0), 0);
@@ -402,6 +589,9 @@ function renderTx(tx, price) {
   const blk     = tx.status && tx.status.block_height;
   const feeFiat = fmtFiat(tx.fee, price);
   const totFiat = fmtFiat(total, price);
+  const inAddrSet = new Set((tx.vin || [])
+    .map(v => v.prevout && v.prevout.scriptpubkey_address)
+    .filter(Boolean));
 
   let html = mkPriceBar(price) + `
     <div class="card">
@@ -431,7 +621,7 @@ function renderTx(tx, price) {
         <div class="meta-item"><label>Entrades</label><span>${(tx.vin || []).length}</span></div>
         <div class="meta-item"><label>Sortides</label><span>${outs.length}</span></div>
       </div>
-    </div>
+    </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
     <div class="card">
       <h2>Adreces destinatàries</h2>
       <div class="total-bar">
@@ -448,11 +638,16 @@ function renderTx(tx, price) {
     const isOpRet = out.scriptpubkey_type === 'op_return';
     const display = addr || (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
     const oFiat   = fmtFiat(out.value || 0, price);
+    const osp     = outspends && outspends[i];
+    let tags = '';
+    if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="Torna a una adreça d'origen: probablement el canvi de l'emissor">canvi</span>`;
+    if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="Sortida ja gastada: clica per veure on han continuat els fons">gastada →</span>`;
+    else if (osp && !osp.spent && !isOpRet) tags += ` <span class="tag unspent" title="Els fons encara són en aquesta adreça">sense gastar</span>`;
     html += `<div class="wallet-item">
       <div class="wallet-addr">
         <span class="idx">#${i}</span>
         <span class="addr-text${!addr ? ' op-return' : ''}" ${addr ? `onclick="searchAddr('${addr}')" title="Cerca aquesta adreça"` : ''}>${display}</span>
-        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}
+        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}${tags}
       </div>
       <div class="wallet-amount">
         <div class="btc">${satsToBtc(out.value || 0)} BTC</div>
@@ -510,7 +705,7 @@ function renderAddress(addr, addrType, info, txs, price) {
           <div class="sub">${ms.tx_count ? ms.tx_count + ' pendents' : 'totes confirmades'}</div>
         </div>
       </div>
-    </div>
+    </div>` + buildAddressSummary(addr, info, txs, price) + `
     <div class="card">
       <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>`;
 
