@@ -76,6 +76,15 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .tx-flow-line .fc { color: #64b5f6; font-weight: bold; font-size: 0.88rem; }
 .tx-flow-line .arr { color: #f7931a; font-size: 1.1rem; }
 
+/* Dest banner — exchange/servei detectat */
+.dest-banner {
+  display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
+  background: #0c1a2e; border: 1px solid #1a3560; border-radius: 8px;
+  padding: 0.7rem 1rem; margin-top: 0.85rem; font-size: 0.85rem;
+}
+.dest-banner .dl { color: #555; white-space: nowrap; }
+.dest-banner .dn { color: #60a5fa; font-weight: bold; }
+
 /* Collapsible tech details */
 details { margin-top: 1rem; }
 details summary { color: #444; font-size: 0.75rem; cursor: pointer; padding: 0.3rem 0; list-style: none; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: color 0.15s; }
@@ -87,6 +96,14 @@ details[open] summary::before { transform: rotate(90deg); }
 .det-cell .lbl { color: #444; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
 .det-cell .val { color: #bbb; font-size: 0.8rem; word-break: break-all; }
 .txid-mono { font-size: 0.62rem; color: #666; word-break: break-all; line-height: 1.5; }
+
+/* ── Entity badge ──────────────────────────────────────────────────────────── */
+.entity-badge {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  background: #0f2040; color: #60a5fa; border: 1px solid #1e4070;
+  font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 8px;
+  white-space: nowrap; font-style: normal; font-weight: bold;
+}
 
 /* ── Address hero ──────────────────────────────────────────────────────────── */
 .addr-hero { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 1.75rem 1.5rem 0; margin-bottom: 1.75rem; overflow: hidden; }
@@ -114,7 +131,7 @@ details[open] summary::before { transform: rotate(90deg); }
 .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; }
 .card h2 { color: #f7931a; font-size: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #2a2a2a; padding-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
 
-/* ── Flow analysis (kept as-is) ────────────────────────────────────────────── */
+/* ── Flow analysis ─────────────────────────────────────────────────────────── */
 .summary-text { color: #bbb; font-size: 0.82rem; line-height: 1.65; }
 .summary-text p { margin-bottom: 0.5rem; }
 .summary-text strong { color: #f7931a; }
@@ -133,7 +150,7 @@ details[open] summary::before { transform: rotate(90deg); }
 .tag.spent   { background: #3a1a1a; color: #e08080; }
 .tag.unspent { background: #1a3a1a; color: #4caf50; }
 
-/* ── Outputs card (inside tx) ──────────────────────────────────────────────── */
+/* ── Outputs card ──────────────────────────────────────────────────────────── */
 .outputs-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .outputs-hd h2 { margin: 0; border: none; padding: 0; }
 .total-pill { background: #f7931a18; border: 1px solid #f7931a33; border-radius: 20px; padding: 0.3rem 0.85rem; font-size: 0.8rem; color: #f7931a; font-weight: bold; white-space: nowrap; }
@@ -214,6 +231,43 @@ const MAX_HIST  = 10;
 
 const apiCache = new Map();
 let   priceCache = null;
+
+// ── Adreces d'exchanges i serveis coneguts ────────────────────────────────────
+const KNOWN_ADDRS = {
+  // Binance
+  '34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo':         { name: 'Binance',   icon: '🏦' },
+  'bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h': { name: 'Binance',   icon: '🏦' },
+  '1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s':         { name: 'Binance',   icon: '🏦' },
+  '1HBN9m1MQ4CfvaFoGzm7Fsj5Kd3sMBvVQ5':         { name: 'Binance',   icon: '🏦' },
+  '3LYJfcfHPXYJreMsASk2jkn69LWEYKzexb':         { name: 'Binance',   icon: '🏦' },
+  // Coinbase
+  '1FzWLkAahHooV3kzTgyx6qsswXJ6sCXkSR':         { name: 'Coinbase',  icon: '🏦' },
+  '3Kzh9qAqVWQhEsfQz7zEQL1EuSx5tyNLNS':         { name: 'Coinbase',  icon: '🏦' },
+  '1GR9qNz7zgtaW5HwwVpEJWMnGWhsbsieCG':         { name: 'Coinbase',  icon: '🏦' },
+  'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh': { name: 'Coinbase',  icon: '🏦' },
+  // Kraken
+  'bc1qjasf9z3h7w3jspkhtgatgpyvvzgpa2wwd2lr0eh5tx44reyn2k7sfc27a4': { name: 'Kraken', icon: '🏦' },
+  '3H5JTt42K7RmZtromfTSefcMEFMMe18pMD':         { name: 'Kraken',    icon: '🏦' },
+  'bc1q2t2t9aauq8m80hzqlqdq8uh7ktkucumy0c35qa': { name: 'Kraken',    icon: '🏦' },
+  // Bitfinex
+  '1KYiKJEfdJtap9QX2v9BXJMpz2SfU4pgZw':         { name: 'Bitfinex',  icon: '🏦' },
+  '3JZq4atEAjqADLrCq7uln6nqAqKD4MKnMi':         { name: 'Bitfinex',  icon: '🏦' },
+  // Huobi
+  '1HckjUpRGcrrRAtFaaCAUaGjsPx9oYmLaZ':         { name: 'Huobi',     icon: '🏦' },
+  '1LdRcdxfbSnmCYYNdeYpUnztiYzVfBEQeC':         { name: 'Huobi',     icon: '🏦' },
+  // OKX
+  '1AA1GBFiG9Y8enrXVGM7FiGFTh6bSsPjj3':         { name: 'OKX',       icon: '🏦' },
+  // Bybit
+  '1Bybit1p14dioQW2BQnhPzFmhbCUWqBqEA':         { name: 'Bybit',     icon: '🏦' },
+  // Robinhood
+  'bc1qnsa7tnvemsnhqh7kyvhxj4hjnrlmrfpvlq0kda': { name: 'Robinhood', icon: '🏦' },
+  // MtGox (historial)
+  '1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF':         { name: 'MtGox',     icon: '🏛️' },
+  // Bittrex
+  '1N52wHoVR79PMDishab2XmRHsbekCdGquK': { name: 'Bittrex', icon: '🏦' },
+};
+
+const addrLabelCache = new Map(); // addr → { name, icon } | null
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.getElementById('txInput').addEventListener('keydown', e => {
@@ -314,6 +368,37 @@ function fmtFiat(sats, price) {
   return `€${n(btc * price.eur)} · $${n(btc * price.usd)}`;
 }
 
+// ── Etiquetes d'adreces — exchanges/serveis ───────────────────────────────────
+async function fetchEntityLabels(addrs) {
+  const toFetch = addrs.filter(a => a && !KNOWN_ADDRS[a] && !addrLabelCache.has(a));
+  if (!toFetch.length) return;
+  // Blockchair dashboards/address/:addr → data[addr].address.tag retorna l'exchange si és conegut
+  await Promise.allSettled(toFetch.slice(0, 6).map(async addr => {
+    try {
+      const r = await fetch(
+        `https://api.blockchair.com/bitcoin/dashboards/address/${addr}`,
+        { signal: AbortSignal.timeout(5000) }
+      );
+      if (!r.ok) { addrLabelCache.set(addr, null); return; }
+      const d = await r.json();
+      const tag = d.data && d.data[addr] && d.data[addr].address && d.data[addr].address.tag;
+      addrLabelCache.set(addr, tag ? { name: tag, icon: '🏦' } : null);
+    } catch {
+      addrLabelCache.set(addr, null);
+    }
+  }));
+  toFetch.forEach(a => { if (!addrLabelCache.has(a)) addrLabelCache.set(a, null); });
+}
+
+function getEntityLabel(addr) {
+  return addr ? (KNOWN_ADDRS[addr] || addrLabelCache.get(addr) || null) : null;
+}
+
+function entityBadgeHtml(addr) {
+  const lbl = getEntityLabel(addr);
+  return lbl ? `<span class="entity-badge">${lbl.icon} ${lbl.name}</span>` : '';
+}
+
 // ── Historial de cerques ──────────────────────────────────────────────────────
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem('findbtc_h') || '[]'); }
@@ -408,9 +493,10 @@ function flowListHtml(map, price, max = 5) {
                 : k === 'op_return' ? 'OP_RETURN (dades, sense valor)'
                 : k === 'nostd'     ? 'Script no estàndard'
                 : shortAddr(k);
+    const lbl  = isAddr ? getEntityLabel(k) : null;
     const fiat = fmtFiat(v.sats, price);
     return `<div class="flow-item">
-      <span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}</span>
+      <span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}${lbl ? ` <span class="entity-badge" style="font-size:0.58rem;padding:0.1rem 0.35rem">${lbl.icon} ${lbl.name}</span>` : ''}</span>
       ${v.n > 1 ? `<span class="flow-cnt">×${v.n}</span>` : ''}
       <span class="flow-amt" ${fiat ? `title="${fiat}"` : ''}>${satsToBtc(v.sats)} BTC</span>
     </div>`;
@@ -534,8 +620,14 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
 
 // ── Renderitzadors ────────────────────────────────────────────────────────────
 async function renderTx(tx, price) {
+  // Fetch outspends i etiquetes d'adreces en paral·lel
+  const outAddrs = (tx.vout || []).map(o => o.scriptpubkey_address).filter(Boolean);
   let outspends = null;
-  try { outspends = await apiFetch('/tx/' + tx.txid + '/outspends'); } catch {}
+  const [osp] = await Promise.allSettled([
+    apiFetch('/tx/' + tx.txid + '/outspends'),
+    fetchEntityLabels(outAddrs)
+  ]);
+  if (osp.status === 'fulfilled') outspends = osp.value;
   hideStatus();
 
   const outs     = tx.vout || [];
@@ -548,7 +640,14 @@ async function renderTx(tx, price) {
   const feeFiat  = fmtFiat(tx.fee, price);
   const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
 
-  // Status banner
+  // Exchanges/serveis detectats als outputs
+  const knownDests = [...new Set(
+    outAddrs.map(a => getEntityLabel(a)).filter(Boolean).map(l => `${l.icon} ${l.name}`)
+  )];
+  const destBanner = knownDests.length
+    ? `<div class="dest-banner"><span class="dl">💸 Fons enviats a:</span><span class="dn">${knownDests.join(' &nbsp;·&nbsp; ')}</span></div>`
+    : '';
+
   const bannerCls  = conf ? 'confirmed' : 'pending';
   const bannerIcon = conf ? '✓' : '⏳';
   const bannerText = conf
@@ -583,6 +682,7 @@ async function renderTx(tx, price) {
         <span class="arr">→</span>
         <span class="fc">${outs.length} ${outs.length === 1 ? 'sortida' : 'sortides'}</span>
       </div>
+      ${destBanner}
       <details>
         <summary>Detalls tècnics</summary>
         <div class="det-grid">
@@ -612,8 +712,9 @@ async function renderTx(tx, price) {
     const disp    = addr
       ? (addr.length > 32 ? addr.slice(0, 14) + '…' + addr.slice(-10) : addr)
       : (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
-    const oFiat   = fmtFiat(out.value || 0, price);
-    const osp     = outspends && outspends[i];
+    const oFiat    = fmtFiat(out.value || 0, price);
+    const osp      = outspends && outspends[i];
+    const entBadge = entityBadgeHtml(addr);
     let tags = '';
     if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="Torna a una adreça d'origen: probablement el canvi de l'emissor">canvi</span>`;
     if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="Sortida ja gastada: clica per veure on han continuat els fons">gastada →</span>`;
@@ -622,7 +723,8 @@ async function renderTx(tx, price) {
       <div class="wallet-addr">
         <span class="idx">#${i}</span>
         <span class="addr-text${!addr ? ' op-return' : ''}" title="${addr || ''}" ${addr ? `onclick="searchAddr('${addr}')"` : ''}>${disp}</span>
-        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}${tags}
+        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}
+        ${entBadge}${tags}
       </div>
       <div class="wallet-amount">
         <div class="btc">${satsToBtc(out.value || 0)} BTC</div>
@@ -647,6 +749,7 @@ function renderAddress(addr, addrType, info, txs, price) {
   const rcvFiat = fmtFiat(rcv, price);
   const sntFiat = fmtFiat(snt, price);
   const addrDisp = addr.length > 40 ? addr.slice(0, 20) + '…' + addr.slice(-12) : addr;
+  const selfLabel = getEntityLabel(addr);
 
   let html = mkPriceBar(price) + `
   <div class="addr-hero">
@@ -654,6 +757,7 @@ function renderAddress(addr, addrType, info, txs, price) {
       <div class="addr-hero-sublabel">
         Adreça Bitcoin
         ${addrType ? `<span class="addr-type-badge">${addrType}</span>` : ''}
+        ${selfLabel ? `<span class="entity-badge">${selfLabel.icon} ${selfLabel.name}</span>` : ''}
       </div>
       <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button></div>
     </div>
