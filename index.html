@@ -14,7 +14,17 @@ body {
 }
 .container { max-width: 860px; margin: 0 auto; }
 h1 { color: #f7931a; font-size: 1.6rem; margin-bottom: 0.3rem; }
-.subtitle { color: #888; font-size: 0.85rem; margin-bottom: 2rem; }
+.subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1rem; }
+
+/* ── Tabs ──────────────────────────────────────────────────────────────────── */
+.app-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #1a1a1a; padding-bottom: 0.75rem; }
+.tab-btn {
+  background: #1a1a1a; border: 1px solid #2a2a2a; color: #666;
+  padding: 0.55rem 1.2rem; border-radius: 8px; font-size: 0.82rem;
+  cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; white-space: nowrap;
+}
+.tab-btn:hover { background: #222; color: #ccc; border-color: #f7931a44; }
+.tab-btn.active { background: #f7931a18; color: #f7931a; border-color: #f7931a55; font-weight: bold; }
 
 /* ── Search ────────────────────────────────────────────────────────────────── */
 .search-box { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
@@ -36,6 +46,11 @@ button:hover { background: #e8821a; }
 button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .hint { color: #555; font-size: 0.75rem; margin-bottom: 0.75rem; }
 .hint span { color: #f7931a88; }
+.btn-sec {
+  background: #1a1a1a !important; color: #888 !important; border: 1px solid #333 !important;
+  font-weight: normal !important; font-size: 0.82rem !important;
+}
+.btn-sec:hover { background: #222 !important; color: #bbb !important; }
 
 /* ── History ───────────────────────────────────────────────────────────────── */
 .history-section { margin-bottom: 1.5rem; }
@@ -59,70 +74,41 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .price-bar .src { color: #444; font-size: 0.68rem; margin-left: auto; }
 
 /* ── Tracker ───────────────────────────────────────────────────────────────── */
-.tracker-card {
-  background: #091622; border: 1px solid #1a3a6a;
-  border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem;
-}
-.tracker-header {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 1.25rem;
-}
+.tracker-card { background: #091622; border: 1px solid #1a3a6a; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.5rem; }
+.tracker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
 .tracker-title { color: #60a5fa; font-size: 0.9rem; font-weight: bold; }
-.tracker-stop {
-  background: #1a1010; border: 1px solid #3a1a1a; color: #e08080;
-  padding: 0.28rem 0.7rem; border-radius: 6px; font-size: 0.7rem;
-  cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s;
-}
+.tracker-stop { background: #1a1010; border: 1px solid #3a1a1a; color: #e08080; padding: 0.28rem 0.7rem; border-radius: 6px; font-size: 0.7rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; }
 .tracker-stop:hover { background: #2a1010; color: #ff9090; }
-.tracker-phases {
-  display: flex; align-items: center; gap: 0.4rem;
-  flex-wrap: wrap; margin-bottom: 1.25rem;
-}
-.ph {
-  padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.73rem;
-  border: 1px solid transparent; transition: all 0.5s ease; white-space: nowrap;
-}
+.tracker-phases { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.ph { padding: 0.45rem 0.85rem; border-radius: 8px; font-size: 0.73rem; border: 1px solid transparent; transition: all 0.5s ease; white-space: nowrap; }
 .ph-inactive { color: #2a2a2a; background: #0a0a0a; border-color: #1a1a1a; }
 .ph-active   { color: #fbbf24; background: #1a1000; border-color: #3a2800; animation: blink 1.5s ease-in-out infinite; }
 .ph-partial  { color: #fb923c; background: #1a0c00; border-color: #3a1c00; animation: blink 1.5s ease-in-out infinite; }
 .ph-done     { color: #4ade80; background: #061510; border-color: #0e2e1c; }
 .ph-arrow    { color: #222; font-size: 0.85rem; }
-.tracker-bar-wrap {
-  background: #0a0a0a; border-radius: 20px; height: 10px;
-  overflow: hidden; margin-bottom: 1rem; border: 1px solid #1a1a1a;
-}
+.tracker-bar-wrap { background: #0a0a0a; border-radius: 20px; height: 10px; overflow: hidden; margin-bottom: 1rem; border: 1px solid #1a1a1a; }
 .tracker-bar-fill { height: 100%; border-radius: 20px; transition: width 0.9s ease, background-color 0.9s; }
-.tbf-mempool {
-  width: 20%; background: linear-gradient(90deg, #854d0e 0%, #fbbf24 50%, #854d0e 100%);
-  background-size: 200% 100%; animation: shimmer 2.5s linear infinite;
-}
-.tbf-partial { background: linear-gradient(90deg, #9a3412, #f97316); }
-.tbf-done    { background: linear-gradient(90deg, #166534, #4ade80); }
-@keyframes shimmer {
-  0%   { background-position: 100% center; }
-  100% { background-position: -100% center; }
-}
+.tbf-mempool { width: 20%; background: linear-gradient(90deg,#854d0e 0%,#fbbf24 50%,#854d0e 100%); background-size: 200% 100%; animation: shimmer 2.5s linear infinite; }
+.tbf-partial { background: linear-gradient(90deg,#9a3412,#f97316); }
+.tbf-done    { background: linear-gradient(90deg,#166534,#4ade80); }
+@keyframes shimmer { 0% { background-position: 100% center; } 100% { background-position: -100% center; } }
 .tracker-status { font-size: 0.83rem; color: #aaa; margin-bottom: 0.6rem; }
-.tracker-fee-row {
-  font-size: 0.74rem; color: #555; margin-bottom: 0.85rem;
-  display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem;
-}
+.tracker-fee-row { font-size: 0.74rem; color: #555; margin-bottom: 0.85rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem; }
 .tracker-fee-row strong { color: #888; }
 .tracker-eta { color: #fbbf24 !important; }
-.tracker-footer {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 0.67rem; color: #2a2a2a; border-top: 1px solid #0f1520;
-  padding-top: 0.55rem;
-}
+.tracker-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.67rem; color: #2a2a2a; border-top: 1px solid #0f1520; padding-top: 0.55rem; }
 .tracker-countdown { color: #3a5a8a; }
-.track-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  background: #091622; border: 1px solid #1a3a6a; color: #60a5fa;
-  padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.79rem;
-  cursor: pointer; font-family: 'Courier New', monospace;
-  transition: all 0.2s; margin-top: 1rem;
-}
+.track-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: #091622; border: 1px solid #1a3a6a; color: #60a5fa; padding: 0.55rem 1.1rem; border-radius: 8px; font-size: 0.79rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; margin-top: 1rem; }
 .track-btn:hover { background: #0f2040; border-color: #2a5a9a; color: #90c4f8; }
+
+/* ── Plain-language summary ────────────────────────────────────────────────── */
+.plain-summary {
+  padding: 0.85rem 1.5rem; background: #0b1520;
+  border-bottom: 1px solid #161616; font-size: 0.79rem;
+  color: #99a; line-height: 1.65;
+}
+.plain-summary strong { color: #f7931a; }
+.plain-summary .ps-icon { font-size: 0.72rem; color: #444; margin-right: 0.3rem; }
 
 /* ── Transaction hero ──────────────────────────────────────────────────────── */
 .tx-hero { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; margin-bottom: 1.75rem; overflow: hidden; }
@@ -141,17 +127,9 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .tx-flow-line { display: flex; align-items: center; gap: 0.6rem; color: #666; font-size: 0.82rem; padding-top: 1rem; margin-top: 0.5rem; border-top: 1px solid #1e1e1e; }
 .tx-flow-line .fc { color: #64b5f6; font-weight: bold; font-size: 0.88rem; }
 .tx-flow-line .arr { color: #f7931a; font-size: 1.1rem; }
-
-/* Dest banner */
-.dest-banner {
-  display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap;
-  background: #0c1a2e; border: 1px solid #1a3560; border-radius: 8px;
-  padding: 0.7rem 1rem; margin-top: 0.85rem; font-size: 0.85rem;
-}
+.dest-banner { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; background: #0c1a2e; border: 1px solid #1a3560; border-radius: 8px; padding: 0.7rem 1rem; margin-top: 0.85rem; font-size: 0.85rem; }
 .dest-banner .dl { color: #555; white-space: nowrap; }
 .dest-banner .dn { color: #60a5fa; font-weight: bold; }
-
-/* Collapsible tech details */
 details { margin-top: 1rem; }
 details summary { color: #444; font-size: 0.75rem; cursor: pointer; padding: 0.3rem 0; list-style: none; display: flex; align-items: center; gap: 0.4rem; user-select: none; transition: color 0.15s; }
 details summary:hover { color: #888; }
@@ -164,17 +142,12 @@ details[open] summary::before { transform: rotate(90deg); }
 .txid-mono { font-size: 0.62rem; color: #666; word-break: break-all; line-height: 1.5; }
 
 /* ── Entity badge ──────────────────────────────────────────────────────────── */
-.entity-badge {
-  display: inline-flex; align-items: center; gap: 0.2rem;
-  background: #0f2040; color: #60a5fa; border: 1px solid #1e4070;
-  font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 8px;
-  white-space: nowrap; font-style: normal; font-weight: bold;
-}
+.entity-badge { display: inline-flex; align-items: center; gap: 0.2rem; background: #0f2040; color: #60a5fa; border: 1px solid #1e4070; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 8px; white-space: nowrap; font-style: normal; font-weight: bold; }
 
 /* ── Address hero ──────────────────────────────────────────────────────────── */
 .addr-hero { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 1.75rem 1.5rem 0; margin-bottom: 1.75rem; overflow: hidden; }
 .addr-hero-top { margin-bottom: 1.5rem; }
-.addr-hero-sublabel { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+.addr-hero-sublabel { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .addr-type-badge { background: #1a2a3a; color: #64b5f6; font-size: 0.62rem; padding: 0.12rem 0.45rem; border-radius: 8px; border: 1px solid #2a4a6a; font-weight: normal; white-space: nowrap; text-transform: none; letter-spacing: 0; }
 .addr-str { color: #777; font-size: 0.7rem; word-break: break-all; margin-top: 0.1rem; }
 .addr-balance-hero { font-size: 2.6rem; font-weight: bold; color: #f7931a; line-height: 1; margin-bottom: 0.4rem; letter-spacing: -0.025em; }
@@ -192,6 +165,58 @@ details[open] summary::before { transform: rotate(90deg); }
 .addr-stat .v.red { color: #e05050; }
 .addr-stat .v.neu { color: #e0e0e0; }
 .addr-stat .sub { color: #555; font-size: 0.67rem; margin-top: 0.25rem; }
+
+/* ── Bell / Alert button ───────────────────────────────────────────────────── */
+.bell-btn {
+  background: #1a1a1a; border: 1px solid #2a2a2a; color: #666;
+  padding: 0.3rem 0.65rem; border-radius: 6px; font-size: 0.73rem;
+  cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; white-space: nowrap;
+}
+.bell-btn:hover { border-color: #f7931a44; color: #ccc; }
+.bell-btn.active { background: #0e1e10; border-color: #1e4a20; color: #4caf50; }
+.bell-btn.active:hover { background: #112314; }
+
+/* ── Wallet section ────────────────────────────────────────────────────────── */
+.wallet-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem; }
+.wallet-topbar-title { color: #888; font-size: 0.88rem; }
+.wallet-topbar-actions { display: flex; gap: 0.4rem; }
+.wallet-add-btn { background: #f7931a18; border: 1px solid #f7931a44; color: #f7931a; padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; }
+.wallet-add-btn:hover { background: #f7931a30; }
+.wallet-refresh-btn { background: #1a1a1a; border: 1px solid #2a2a2a; color: #888; padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; }
+.wallet-refresh-btn:hover { background: #222; color: #ccc; }
+.wallet-add-form { background: #111; border: 1px solid #2a2a2a; border-radius: 10px; padding: 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.wallet-add-form input { background: #1a1a1a; border: 1px solid #333; color: #e0e0e0; padding: 0.65rem 0.9rem; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.82rem; outline: none; transition: border-color 0.2s; }
+.wallet-add-form input:focus { border-color: #f7931a; }
+.wallet-add-form input::placeholder { color: #555; }
+.wallet-form-btns { display: flex; gap: 0.5rem; }
+.wallet-add-error { color: #e05050; font-size: 0.73rem; min-height: 1rem; }
+.wallet-empty-state { text-align: center; padding: 3rem 1rem; background: #111; border: 1px solid #1e1e1e; border-radius: 12px; }
+.wallet-summary-card { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 1.75rem 1.5rem 1.5rem; margin-bottom: 1.75rem; }
+.ws-label { color: #555; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.ws-btc { font-size: 2.8rem; font-weight: bold; color: #f7931a; line-height: 1; margin-bottom: 0.35rem; letter-spacing: -0.025em; }
+.ws-btc .unit { font-size: 1.2rem; color: #777; font-weight: normal; }
+.ws-fiat { font-size: 1.1rem; color: #888; margin-bottom: 1.5rem; }
+.ws-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.5rem; }
+.ws-stat { background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 8px; padding: 0.75rem 1rem; }
+.ws-stat-lbl { color: #555; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+.ws-stat-val { font-size: 0.88rem; font-weight: bold; }
+.ws-stat-val.grn { color: #4caf50; }
+.ws-stat-val.red { color: #e05050; }
+.ws-stat-val.neu { color: #e0e0e0; }
+.ws-fiat-sm { color: #555; font-size: 0.7rem; font-weight: normal; }
+.wallet-addr-item { background: #111; border: 1px solid #222; border-radius: 10px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; flex-wrap: wrap; transition: border-color 0.15s; }
+.wallet-addr-item:hover { border-color: #f7931a33; }
+.wai-info { flex: 1; min-width: 0; }
+.wai-name { color: #f7931a; font-size: 0.82rem; font-weight: bold; margin-bottom: 0.2rem; }
+.wai-addr { color: #555; font-size: 0.67rem; margin-bottom: 0.3rem; word-break: break-all; }
+.wai-bal { color: #e0e0e0; font-size: 0.88rem; font-weight: bold; }
+.wai-bal.err { color: #e05050; font-size: 0.75rem; font-weight: normal; }
+.wai-fiat { color: #666; font-size: 0.68rem; font-weight: normal; }
+.wai-actions { display: flex; gap: 0.4rem; align-items: center; flex-shrink: 0; }
+.wai-view-btn { background: #1a2a1a; border: 1px solid #2a4a2a; color: #4caf50; padding: 0.3rem 0.65rem; border-radius: 6px; font-size: 0.72rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; }
+.wai-view-btn:hover { background: #1e3a1e; color: #6cf0a0; }
+.wai-del-btn { background: #1a0d0d; border: 1px solid #3a1a1a; color: #e05050; padding: 0.3rem 0.5rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; }
+.wai-del-btn:hover { background: #2a1010; }
 
 /* ── Shared card ───────────────────────────────────────────────────────────── */
 .card { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 10px; padding: 1.25rem 1.5rem; margin-bottom: 1.75rem; }
@@ -258,8 +283,6 @@ details[open] summary::before { transform: rotate(90deg); }
 @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 #result.fade-in { animation: fadeSlide 0.35s ease-out; }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-/* ── Spinner ───────────────────────────────────────────────────────────────── */
 .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #f7931a; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 #result { display: none; }
@@ -268,106 +291,86 @@ details[open] summary::before { transform: rotate(90deg); }
 <body>
 <div class="container">
   <h1>₿ FindBtc</h1>
-  <p class="subtitle">Cerca per ID de transacció o per adreça Bitcoin</p>
+  <p class="subtitle">Explorador de blockchain Bitcoin</p>
 
-  <div class="search-box">
-    <input type="text" id="txInput"
-      placeholder="txid (64 hex) · bc1p… Taproot · bc1q… SegWit · 1… Legacy · 3… P2SH"
-      spellcheck="false" autocomplete="off">
-    <button id="searchBtn" onclick="search()">Cercar</button>
+  <div class="app-tabs">
+    <button class="tab-btn active" id="tab-search" onclick="switchTab('search')">🔍 Cerca</button>
+    <button class="tab-btn" id="tab-wallet" onclick="switchTab('wallet')">👛 La meva cartera</button>
   </div>
-  <p class="hint">Detecta automàticament <span>transaccions</span> i <span>adreces</span> · Suporta <span>Taproot</span>, <span>SegWit natiu</span> i <span>Legacy</span></p>
 
-  <div id="historySection" class="history-section" style="display:none">
-    <div class="history-header">
-      <span class="history-label">Cerques recents</span>
-      <button class="history-clear" onclick="clearHistory()">Esborrar</button>
+  <div id="search-section">
+    <div class="search-box">
+      <input type="text" id="txInput"
+        placeholder="txid (64 hex) · bc1p… Taproot · bc1q… SegWit · 1… Legacy · 3… P2SH"
+        spellcheck="false" autocomplete="off">
+      <button id="searchBtn" onclick="search()">Cercar</button>
     </div>
-    <div class="history-items" id="historyItems"></div>
+    <p class="hint">Detecta automàticament <span>transaccions</span> i <span>adreces</span> · Suporta <span>Taproot</span>, <span>SegWit</span> i <span>Legacy</span></p>
+    <div id="historySection" class="history-section" style="display:none">
+      <div class="history-header">
+        <span class="history-label">Cerques recents</span>
+        <button class="history-clear" onclick="clearHistory()">Esborrar</button>
+      </div>
+      <div class="history-items" id="historyItems"></div>
+    </div>
   </div>
 
+  <div id="wallet-section" style="display:none"></div>
   <div id="tracker" style="display:none"></div>
   <div id="status"></div>
   <div id="result"></div>
 </div>
 
 <script>
-const CACHE_TTL = 5 * 60 * 1000;
-const PRICE_TTL = 2 * 60 * 1000;
-const MAX_HIST  = 10;
+const CACHE_TTL  = 5 * 60 * 1000;
+const PRICE_TTL  = 2 * 60 * 1000;
+const MAX_HIST   = 10;
+const WALLET_KEY = 'findbtc_wallet';
+const ALERTS_KEY = 'findbtc_alerts';
 
 const apiCache = new Map();
-let   priceCache = null;
+let priceCache = null;
 
-// ── Adreces d'exchanges i serveis coneguts ────────────────────────────────────
+// ── Adreces d'exchanges coneguts ──────────────────────────────────────────────
 const KNOWN_ADDRS = {
-  // Binance
   '34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo':         { name: 'Binance',   icon: '🏦' },
   'bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h': { name: 'Binance',   icon: '🏦' },
   '1NDyJtNTjmwk5xPNhjgAMu4HDHigtobu1s':         { name: 'Binance',   icon: '🏦' },
   '1HBN9m1MQ4CfvaFoGzm7Fsj5Kd3sMBvVQ5':         { name: 'Binance',   icon: '🏦' },
   '3LYJfcfHPXYJreMsASk2jkn69LWEYKzexb':         { name: 'Binance',   icon: '🏦' },
-  // Coinbase
   '1FzWLkAahHooV3kzTgyx6qsswXJ6sCXkSR':         { name: 'Coinbase',  icon: '🏦' },
   '3Kzh9qAqVWQhEsfQz7zEQL1EuSx5tyNLNS':         { name: 'Coinbase',  icon: '🏦' },
   '1GR9qNz7zgtaW5HwwVpEJWMnGWhsbsieCG':         { name: 'Coinbase',  icon: '🏦' },
   'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh': { name: 'Coinbase',  icon: '🏦' },
-  // Kraken
   'bc1qjasf9z3h7w3jspkhtgatgpyvvzgpa2wwd2lr0eh5tx44reyn2k7sfc27a4': { name: 'Kraken', icon: '🏦' },
   '3H5JTt42K7RmZtromfTSefcMEFMMe18pMD':         { name: 'Kraken',    icon: '🏦' },
   'bc1q2t2t9aauq8m80hzqlqdq8uh7ktkucumy0c35qa': { name: 'Kraken',    icon: '🏦' },
-  // Bitfinex
   '1KYiKJEfdJtap9QX2v9BXJMpz2SfU4pgZw':         { name: 'Bitfinex',  icon: '🏦' },
   '3JZq4atEAjqADLrCq7uln6nqAqKD4MKnMi':         { name: 'Bitfinex',  icon: '🏦' },
-  // Huobi
   '1HckjUpRGcrrRAtFaaCAUaGjsPx9oYmLaZ':         { name: 'Huobi',     icon: '🏦' },
   '1LdRcdxfbSnmCYYNdeYpUnztiYzVfBEQeC':         { name: 'Huobi',     icon: '🏦' },
-  // OKX
   '1AA1GBFiG9Y8enrXVGM7FiGFTh6bSsPjj3':         { name: 'OKX',       icon: '🏦' },
-  // Bybit
   '1Bybit1p14dioQW2BQnhPzFmhbCUWqBqEA':         { name: 'Bybit',     icon: '🏦' },
-  // Robinhood
   'bc1qnsa7tnvemsnhqh7kyvhxj4hjnrlmrfpvlq0kda': { name: 'Robinhood', icon: '🏦' },
-  // MtGox (historial)
   '1FeexV6bAHb8ybZjqQMjJrcCrHGW9sb6uF':         { name: 'MtGox',     icon: '🏛️' },
-  // Bittrex
   '1N52wHoVR79PMDishab2XmRHsbekCdGquK':          { name: 'Bittrex',   icon: '🏦' },
 };
-
 const addrLabelCache = new Map();
 
 // ── Seguiment en temps real ───────────────────────────────────────────────────
-let trackState = null; // { txid, mainInterval, countInterval, countdown }
+let trackState = null;
 
 async function startTracking(txid) {
   stopTracking();
   trackState = { txid, mainInterval: null, countInterval: null, countdown: 30 };
-
   const el = document.getElementById('tracker');
   el.style.display = 'block';
-  el.innerHTML = `<div class="tracker-card">
-    <div class="tracker-header">
-      <span class="tracker-title">📡 Seguiment en temps real</span>
-      <button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button>
-    </div>
-    <div style="color:#555;text-align:center;padding:0.5rem;font-size:0.8rem">
-      <span class="spinner"></span>Carregant estat inicial…
-    </div>
-  </div>`;
+  el.innerHTML = `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div style="color:#555;text-align:center;padding:0.5rem;font-size:0.8rem"><span class="spinner"></span>Carregant…</div></div>`;
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-  if ('Notification' in window && Notification.permission === 'default') {
-    Notification.requestPermission();
-  }
-
+  if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
   await doTrackerTick();
-
-  if (trackState && !trackState.mainInterval) {
-    trackState.mainInterval = setInterval(doTrackerTick, 30000);
-    startCountdown();
-  }
+  if (trackState && !trackState.mainInterval) { trackState.mainInterval = setInterval(doTrackerTick, 30000); startCountdown(); }
 }
-
 function startCountdown() {
   if (!trackState) return;
   if (trackState.countInterval) clearInterval(trackState.countInterval);
@@ -379,17 +382,10 @@ function startCountdown() {
     if (el) el.textContent = `Actualitzant en ${trackState.countdown}s…`;
   }, 1000);
 }
-
 function stopTracking() {
-  if (trackState) {
-    if (trackState.mainInterval)  clearInterval(trackState.mainInterval);
-    if (trackState.countInterval) clearInterval(trackState.countInterval);
-    trackState = null;
-  }
-  const el = document.getElementById('tracker');
-  if (el) el.style.display = 'none';
+  if (trackState) { if (trackState.mainInterval) clearInterval(trackState.mainInterval); if (trackState.countInterval) clearInterval(trackState.countInterval); trackState = null; }
+  const el = document.getElementById('tracker'); if (el) el.style.display = 'none';
 }
-
 async function doTrackerTick() {
   if (!trackState) return;
   const { txid } = trackState;
@@ -399,42 +395,23 @@ async function doTrackerTick() {
       fetch('https://mempool.space/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : null),
       fetch('https://mempool.space/api/v1/fees/recommended', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.json() : null)
     ]);
-
     if (txRes.status !== 'fulfilled') return;
-    const tx        = txRes.value;
+    const tx = txRes.value;
     const tipHeight = tipRes.status === 'fulfilled' && tipRes.value ? parseInt(tipRes.value) : null;
     const fees      = feesRes.status === 'fulfilled' ? feesRes.value : null;
-
-    const conf      = tx.status && tx.status.confirmed;
-    const blockH    = tx.status && tx.status.block_height;
-    const confs     = conf && tipHeight && blockH ? tipHeight - blockH + 1 : 0;
-
-    // Invalida la caché de la tx per al proper refresh normal
+    const conf = tx.status && tx.status.confirmed;
+    const blockH = tx.status && tx.status.block_height;
+    const confs = conf && tipHeight && blockH ? tipHeight - blockH + 1 : 0;
     apiCache.delete('/tx/' + txid);
-
     const trackerEl = document.getElementById('tracker');
-    if (trackerEl) trackerEl.innerHTML = buildTrackerHtml(tx, confs, fees, tipHeight);
-
+    if (trackerEl) trackerEl.innerHTML = buildTrackerHtml(tx, confs, fees);
     updateStatusBanner(tx, confs);
-
     if (confs >= 6) {
-      if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification('FindBtc — ✅ Transacció confirmada', {
-          body: `Confirmada al bloc #${blockH} · ${confs} confirmacions`,
-        });
-      }
-      if (trackState) {
-        if (trackState.mainInterval)  clearInterval(trackState.mainInterval);
-        if (trackState.countInterval) clearInterval(trackState.countInterval);
-        trackState.mainInterval  = null;
-        trackState.countInterval = null;
-      }
-    } else if (trackState) {
-      startCountdown();
-    }
+      if ('Notification' in window && Notification.permission === 'granted') new Notification('FindBtc — ✅ Transacció confirmada', { body: `Confirmada al bloc #${blockH} · ${confs} confirmacions` });
+      if (trackState) { clearInterval(trackState.mainInterval); clearInterval(trackState.countInterval); trackState.mainInterval = null; trackState.countInterval = null; }
+    } else if (trackState) { startCountdown(); }
   } catch {}
 }
-
 function calcFeeRate(tx) {
   if (!tx || !tx.fee) return null;
   if (tx.weight) return (tx.fee * 4 / tx.weight).toFixed(1);
@@ -442,7 +419,6 @@ function calcFeeRate(tx) {
   if (tx.size)   return (tx.fee / tx.size).toFixed(1);
   return null;
 }
-
 function estimateEta(feeRate, fees) {
   if (!feeRate || !fees) return null;
   const r = parseFloat(feeRate);
@@ -452,79 +428,237 @@ function estimateEta(feeRate, fees) {
   if (r >= fees.economyFee)  return '1–4 hores';
   return 'incert (tarifa molt baixa)';
 }
-
-function buildTrackerHtml(tx, confs, fees, tipHeight) {
-  const conf    = tx.status && tx.status.confirmed;
-  const blockH  = tx.status && tx.status.block_height;
-  const feeRate = calcFeeRate(tx);
-  const eta     = !conf ? estimateEta(feeRate, fees) : null;
-  const done    = confs >= 6;
-
+function buildTrackerHtml(tx, confs, fees) {
+  const conf = tx.status && tx.status.confirmed; const blockH = tx.status && tx.status.block_height;
+  const feeRate = calcFeeRate(tx); const eta = !conf ? estimateEta(feeRate, fees) : null; const done = confs >= 6;
   let ph1, ph2, ph3, barCls, barStyle, statusMsg;
+  if (!conf) { ph1='ph-active'; ph2='ph-inactive'; ph3='ph-inactive'; barCls='tbf-mempool'; barStyle=''; statusMsg='La transacció és al mempool, esperant ser inclosa en un bloc.'; }
+  else if (!done) { ph1='ph-done'; ph2='ph-partial'; ph3='ph-inactive'; barCls='tbf-partial'; barStyle=`style="width:${Math.round(confs/6*100)}%"`; statusMsg=`Inclosa al bloc #${blockH} · <strong>${confs} de 6 confirmacions</strong>`; }
+  else { ph1='ph-done'; ph2='ph-done'; ph3='ph-done'; barCls='tbf-done'; barStyle='style="width:100%"'; statusMsg=`✅ Confirmada al bloc #${blockH} · <strong>${confs} confirmacions</strong>`; }
+  const feeRow = feeRate ? `<div class="tracker-fee-row">Fee pagada: <strong>${feeRate} sat/vB</strong>${fees&&fees.fastestFee?` &nbsp;·&nbsp; Recomanat ara: <strong>${fees.fastestFee} sat/vB</strong>`:''}${eta?` &nbsp;→&nbsp; <span class="tracker-eta">⏱ ${eta}</span>`:''}</div>` : '';
+  return `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div class="tracker-phases"><div class="ph ${ph1}">🟡 Mempool</div><div class="ph-arrow">→</div><div class="ph ${ph2}">🟠 ${conf&&!done?`${confs}/6 conf.`:'1a confirmació'}</div><div class="ph-arrow">→</div><div class="ph ${ph3}">🟢 Confirmada (6/6 ✓)</div></div><div class="tracker-bar-wrap"><div class="tracker-bar-fill ${barCls}" ${barStyle}></div></div><div class="tracker-status">${statusMsg}</div>${feeRow}<div class="tracker-footer"><span>Actualitzat: ${new Date().toLocaleTimeString('ca')}</span><span class="tracker-countdown" id="trk-countdown">${done?'Seguiment completat ✓':'Actualitzant en 30s…'}</span></div></div>`;
+}
+function updateStatusBanner(tx, confs) {
+  const el = document.getElementById('tx-status-banner'); if (!el) return;
+  if (tx.status && tx.status.confirmed) { const blk = tx.status.block_height; el.className = 'tx-status-banner confirmed'; el.innerHTML = `<span class="tx-status-icon">✓</span><span>CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}${confs>1?` &nbsp;·&nbsp; ${confs} confirmacions`:''}</span>`; }
+}
 
-  if (!conf) {
-    ph1 = 'ph-active'; ph2 = 'ph-inactive'; ph3 = 'ph-inactive';
-    barCls = 'tbf-mempool'; barStyle = '';
-    statusMsg = 'La transacció és al mempool, esperant ser inclosa en un bloc.';
-  } else if (!done) {
-    ph1 = 'ph-done'; ph2 = 'ph-partial'; ph3 = 'ph-inactive';
-    barCls = 'tbf-partial'; barStyle = `style="width:${Math.round(confs / 6 * 100)}%"`;
-    statusMsg = `Inclosa al bloc #${blockH} · <strong>${confs} de 6 confirmacions</strong>`;
+// ── La meva cartera ───────────────────────────────────────────────────────────
+let walletRefreshing = false;
+let walletAddFormVisible = false;
+
+function loadSavedWallet() { try { return JSON.parse(localStorage.getItem(WALLET_KEY) || '[]'); } catch { return []; } }
+function saveSavedWallet(w) { localStorage.setItem(WALLET_KEY, JSON.stringify(w)); }
+function addAddrToWallet(addr, name) {
+  const w = loadSavedWallet();
+  if (w.length >= 10) return { error: 'Màxim 10 adreces a la cartera.' };
+  if (w.some(e => e.addr === addr)) return { error: 'Adreça ja guardada.' };
+  w.push({ addr, name: (name || '').trim(), added: Date.now() }); saveSavedWallet(w); return { ok: true };
+}
+function removeAddrFromWallet(addr) { saveSavedWallet(loadSavedWallet().filter(e => e.addr !== addr)); showWalletSection(); }
+function removeAddrConfirm(addr) {
+  const entry = loadSavedWallet().find(e => e.addr === addr);
+  if (confirm(`Eliminar l'adreça${entry?.name ? ` "${entry.name}"` : ''}?`)) removeAddrFromWallet(addr);
+}
+
+// ── Alertes per a adreces ─────────────────────────────────────────────────────
+let alertPollInterval = null;
+function loadAlerts()   { try { return JSON.parse(localStorage.getItem(ALERTS_KEY) || '{}'); } catch { return {}; } }
+function saveAlerts(a)  { localStorage.setItem(ALERTS_KEY, JSON.stringify(a)); }
+function isAlertActive(addr) { const a = loadAlerts(); return !!(a[addr] && a[addr].enabled); }
+
+async function toggleAlert(addr, name) {
+  const a = loadAlerts();
+  if (a[addr] && a[addr].enabled) {
+    a[addr].enabled = false; saveAlerts(a);
   } else {
-    ph1 = 'ph-done'; ph2 = 'ph-done'; ph3 = 'ph-done';
-    barCls = 'tbf-done'; barStyle = 'style="width:100%"';
-    statusMsg = `✅ Confirmada al bloc #${blockH} · <strong>${confs} confirmacions</strong>`;
+    if ('Notification' in window && Notification.permission === 'default') {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { alert('Cal permís de notificació per activar les alertes.'); return; }
+    }
+    let lastTxid = null;
+    try { const r = await fetch(`https://mempool.space/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (r.ok) { const txs = await r.json(); if (txs && txs[0]) lastTxid = txs[0].txid; } } catch {}
+    a[addr] = { enabled: true, name: name || addr.slice(0, 14) + '…', lastTxid }; saveAlerts(a);
+    if (!alertPollInterval) startAlertPolling();
   }
+  const btn = document.getElementById('alert-btn-' + addr);
+  if (btn) { const active = isAlertActive(addr); btn.className = active ? 'bell-btn active' : 'bell-btn'; btn.textContent = active ? '🔔 Activa' : '🔔 Alertes'; }
+}
 
-  const feeRow = feeRate
-    ? `<div class="tracker-fee-row">
-        Fee pagada: <strong>${feeRate} sat/vB</strong>
-        ${fees && fees.fastestFee ? ` &nbsp;·&nbsp; Recomanat ara: <strong>${fees.fastestFee} sat/vB</strong>` : ''}
-        ${eta ? ` &nbsp;→&nbsp; <span class="tracker-eta">⏱ ${eta}</span>` : ''}
-       </div>`
-    : '';
+function startAlertPolling() { if (alertPollInterval) return; alertPollInterval = setInterval(doAlertCheck, 60000); }
 
-  return `<div class="tracker-card">
-    <div class="tracker-header">
-      <span class="tracker-title">📡 Seguiment en temps real</span>
-      <button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button>
-    </div>
-    <div class="tracker-phases">
-      <div class="ph ${ph1}">🟡 Mempool</div>
-      <div class="ph-arrow">→</div>
-      <div class="ph ${ph2}">🟠 ${conf && !done ? `${confs}/6 conf.` : '1a confirmació'}</div>
-      <div class="ph-arrow">→</div>
-      <div class="ph ${ph3}">🟢 Confirmada (6/6 ✓)</div>
-    </div>
-    <div class="tracker-bar-wrap">
-      <div class="tracker-bar-fill ${barCls}" ${barStyle}></div>
-    </div>
-    <div class="tracker-status">${statusMsg}</div>
-    ${feeRow}
-    <div class="tracker-footer">
-      <span>Actualitzat: ${new Date().toLocaleTimeString('ca')}</span>
-      <span class="tracker-countdown" id="trk-countdown">${done ? 'Seguiment completat ✓' : 'Actualitzant en 30s…'}</span>
-    </div>
+async function doAlertCheck() {
+  const a = loadAlerts();
+  const active = Object.entries(a).filter(([, v]) => v.enabled);
+  if (!active.length) { clearInterval(alertPollInterval); alertPollInterval = null; return; }
+  for (const [addr, data] of active) {
+    try {
+      const r = await fetch(`https://mempool.space/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (!r.ok) continue;
+      const txs = await r.json(); const latest = txs && txs[0]; if (!latest) continue;
+      if (data.lastTxid && latest.txid !== data.lastTxid) {
+        const rcv = (latest.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
+        const snt = (latest.vin  || []).filter(v => v.prevout?.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
+        const net = rcv - snt;
+        const amtStr = net >= 0 ? `+${satsToBtc(net)} BTC` : `${satsToBtc(Math.abs(net))} BTC enviats`;
+        if ('Notification' in window && Notification.permission === 'granted') new Notification('FindBtc — 🔔 Nova transacció', { body: `${data.name}: ${amtStr}` });
+        a[addr] = { ...data, lastTxid: latest.txid }; saveAlerts(a);
+      } else if (!data.lastTxid && latest) { a[addr] = { ...data, lastTxid: latest.txid }; saveAlerts(a); }
+    } catch {}
+  }
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('tab-search').classList.toggle('active', tab === 'search');
+  document.getElementById('tab-wallet').classList.toggle('active', tab === 'wallet');
+  document.getElementById('search-section').style.display = tab === 'search' ? '' : 'none';
+  document.getElementById('wallet-section').style.display = tab === 'wallet' ? 'block' : 'none';
+  if (tab === 'search') {
+    document.getElementById('tracker').style.display = trackState ? 'block' : 'none';
+    document.getElementById('result').style.display = document.getElementById('result').innerHTML ? 'block' : 'none';
+  } else {
+    stopTracking();
+    document.getElementById('status').style.display = 'none';
+    document.getElementById('result').style.display = 'none';
+    showWalletSection();
+  }
+}
+
+// ── Wallet add form ───────────────────────────────────────────────────────────
+function toggleAddForm() {
+  walletAddFormVisible = !walletAddFormVisible;
+  const f = document.getElementById('wallet-add-form');
+  if (f) { f.style.display = walletAddFormVisible ? 'block' : 'none'; if (walletAddFormVisible) document.getElementById('wai').focus(); }
+}
+function cancelAddAddr() { walletAddFormVisible = false; const f = document.getElementById('wallet-add-form'); if (f) f.style.display = 'none'; }
+async function confirmAddAddr() {
+  const addrInput = document.getElementById('wai'), nameInput = document.getElementById('wan'), errEl = document.getElementById('wallet-add-error');
+  const addr = (addrInput.value || '').trim(), name = (nameInput.value || '').trim();
+  if (!addr) { if (errEl) errEl.textContent = 'Introdueix una adreça.'; return; }
+  const det = detectInput(addr);
+  if (!det || det.type !== 'address') { if (errEl) errEl.textContent = 'Adreça Bitcoin no vàlida.'; return; }
+  const res = addAddrToWallet(addr, name);
+  if (res.error) { if (errEl) errEl.textContent = res.error; return; }
+  addrInput.value = ''; nameInput.value = ''; if (errEl) errEl.textContent = ''; cancelAddAddr();
+  await showWalletSection();
+}
+
+// ── Wallet render ─────────────────────────────────────────────────────────────
+function walletTopbarHtml() {
+  return `<div class="wallet-topbar"><span class="wallet-topbar-title">Fins a 10 adreces Bitcoin</span><div class="wallet-topbar-actions"><button class="wallet-add-btn" onclick="toggleAddForm()">➕ Afegir adreça</button><button class="wallet-refresh-btn" onclick="refreshWallet()">🔄 Actualitzar</button></div></div>
+  <div id="wallet-add-form" class="wallet-add-form" style="display:none">
+    <input id="wai" type="text" placeholder="Adreça Bitcoin (bc1q…, 1…, 3…)" spellcheck="false" autocomplete="off">
+    <input id="wan" type="text" placeholder="Nom opcional (ex: Cartera freda)" maxlength="30">
+    <div class="wallet-form-btns"><button onclick="confirmAddAddr()">Afegir</button><button class="btn-sec" onclick="cancelAddAddr()">Cancel·lar</button></div>
+    <div id="wallet-add-error" class="wallet-add-error"></div>
   </div>`;
 }
 
-function updateStatusBanner(tx, confs) {
-  const el = document.getElementById('tx-status-banner');
-  if (!el) return;
-  const conf  = tx.status && tx.status.confirmed;
-  const blockH = tx.status && tx.status.block_height;
-  if (conf) {
-    el.className = 'tx-status-banner confirmed';
-    el.innerHTML = `<span class="tx-status-icon">✓</span><span>CONFIRMADA &nbsp;·&nbsp; Bloc #${blockH}${confs > 1 ? ` &nbsp;·&nbsp; ${confs} confirmacions` : ''}</span>`;
+async function showWalletSection() {
+  const section = document.getElementById('wallet-section'); if (!section) return;
+  const wallet = loadSavedWallet();
+  if (!wallet.length) { section.innerHTML = walletTopbarHtml() + `<div class="wallet-empty-state"><div style="font-size:2.5rem;margin-bottom:0.75rem">👛</div><div style="color:#555;font-size:0.88rem;margin-bottom:0.4rem">Cap adreça guardada</div><div style="color:#333;font-size:0.75rem">Afegeix fins a 10 adreces per veure el teu saldo total consolidat</div></div>`; return; }
+  section.innerHTML = walletTopbarHtml() + `<div style="text-align:center;padding:2rem;color:#555;font-size:0.85rem"><span class="spinner"></span>Carregant ${wallet.length} adreces en paral·lel…</div>`;
+  if (walletRefreshing) return;
+  walletRefreshing = true;
+  try {
+    const price = await fetchBtcPrice();
+    const [infoResults, txsResults] = await Promise.all([
+      Promise.allSettled(wallet.map(e => apiFetch('/address/' + e.addr))),
+      Promise.allSettled(wallet.map(e => apiFetch('/address/' + e.addr + '/txs')))
+    ]);
+    section.innerHTML = walletTopbarHtml() + renderWalletData(wallet, infoResults, txsResults, price);
+  } catch {}
+  finally { walletRefreshing = false; }
+}
+
+async function refreshWallet() { walletRefreshing = false; await showWalletSection(); }
+
+function renderWalletData(wallet, infoResults, txsResults, price) {
+  const walletAddrSet = new Set(wallet.map(e => e.addr));
+  let totalBal = 0, totalRcv = 0, totalSnt = 0, failCount = 0;
+  wallet.forEach((e, i) => {
+    const res = infoResults[i]; if (res.status !== 'fulfilled') { failCount++; return; }
+    const cs = res.value.chain_stats || {};
+    totalBal += (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0);
+    totalRcv += cs.funded_txo_sum || 0; totalSnt += cs.spent_txo_sum || 0;
+  });
+
+  // Combined TX list (dedup, net from wallet perspective)
+  const txMap = new Map();
+  wallet.forEach((e, i) => {
+    const res = txsResults[i]; if (res.status !== 'fulfilled') return;
+    (res.value || []).forEach(tx => { if (!txMap.has(tx.txid)) txMap.set(tx.txid, { tx, addrs: new Set() }); txMap.get(tx.txid).addrs.add(e.addr); });
+  });
+  const combined = [...txMap.values()].map(({ tx, addrs }) => {
+    const rcv = (tx.vout || []).filter(o => walletAddrSet.has(o.scriptpubkey_address)).reduce((s, o) => s + (o.value || 0), 0);
+    const snt = (tx.vin  || []).filter(v => v.prevout && walletAddrSet.has(v.prevout.scriptpubkey_address)).reduce((s, v) => s + (v.prevout.value || 0), 0);
+    return { tx, net: rcv - snt, addrs: [...addrs] };
+  }).sort((a, b) => ((b.tx.status?.block_time || 9e9) - (a.tx.status?.block_time || 9e9))).slice(0, 10);
+
+  let html = `<div class="wallet-summary-card">
+    <div class="ws-label">Saldo total · ${wallet.length} adreça${wallet.length > 1 ? 'ces' : ''}</div>
+    <div class="ws-btc">${satsToBtc(totalBal)}<span class="unit"> BTC</span></div>
+    ${fmtFiat(totalBal, price) ? `<div class="ws-fiat">${fmtFiat(totalBal, price)}</div>` : ''}
+    <div class="ws-stats">
+      <div class="ws-stat"><div class="ws-stat-lbl"><span style="color:#4caf50">↓</span> Total rebut</div><div class="ws-stat-val grn">${satsToBtc(totalRcv)} BTC${fmtFiat(totalRcv,price)?` <span class="ws-fiat-sm">(${fmtFiat(totalRcv,price)})</span>`:''}</div></div>
+      <div class="ws-stat"><div class="ws-stat-lbl"><span style="color:#e05050">↑</span> Total enviat</div><div class="ws-stat-val red">${satsToBtc(totalSnt)} BTC${fmtFiat(totalSnt,price)?` <span class="ws-fiat-sm">(${fmtFiat(totalSnt,price)})</span>`:''}</div></div>
+      ${failCount ? `<div class="ws-stat"><div class="ws-stat-lbl" style="color:#e05050">⚠ Errors</div><div class="ws-stat-val" style="color:#e05050">${failCount} no carregades</div></div>` : ''}
+    </div>
+  </div>`;
+
+  // Address list
+  html += `<div class="card"><h2>Adreces guardades</h2>`;
+  wallet.forEach((entry, i) => {
+    const res = infoResults[i]; const ok = res.status === 'fulfilled';
+    const cs  = ok ? (res.value.chain_stats || {}) : null;
+    const bal = cs ? (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0) : null;
+    const addrDisp = entry.addr.length > 28 ? entry.addr.slice(0, 14) + '…' + entry.addr.slice(-8) : entry.addr;
+    const alertActive = isAlertActive(entry.addr);
+    const safeName = (entry.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    html += `<div class="wallet-addr-item">
+      <div class="wai-info">
+        ${entry.name ? `<div class="wai-name">${entry.name}</div>` : ''}
+        <div class="wai-addr">${addrDisp} <button class="copy-btn" onclick="copyText('${entry.addr}',this)">copiar</button></div>
+        <div class="wai-bal${!ok ? ' err' : ''}">${!ok ? 'Error en carregar' : satsToBtc(bal) + ' BTC'}${ok && fmtFiat(bal, price) ? ` <span class="wai-fiat">${fmtFiat(bal, price)}</span>` : ''}</div>
+      </div>
+      <div class="wai-actions">
+        <button class="wai-view-btn" onclick="searchAddr('${entry.addr}')">Veure →</button>
+        <button class="bell-btn${alertActive ? ' active' : ''}" id="alert-btn-${entry.addr}" onclick="toggleAlert('${entry.addr}','${safeName}')">${alertActive ? '🔔 Activa' : '🔔 Alertes'}</button>
+        <button class="wai-del-btn" onclick="removeAddrConfirm('${entry.addr}')">🗑️</button>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Recent combined transactions
+  html += `<div class="card"><h2>Últimes transaccions <span style="color:#555;font-size:0.8rem">(${combined.length} de totes les adreces)</span></h2>`;
+  if (!combined.length) { html += `<div style="color:#555;text-align:center;padding:1rem;font-size:0.82rem">Cap transacció trobada.</div>`; }
+  else {
+    html += `<div class="tx-list">`;
+    combined.forEach(({ tx, net, addrs }) => {
+      const conf = tx.status && tx.status.confirmed; const isRcv = net >= 0;
+      const absNet = Math.abs(net); const txFiat = fmtFiat(absNet, price);
+      const txidS = tx.txid.slice(0, 8) + '…' + tx.txid.slice(-8);
+      const addrLabel = addrs.length === 1 ? (wallet.find(e => e.addr === addrs[0])?.name || addrs[0].slice(0,10)+'…') : `${addrs.length} adreces`;
+      html += `<div class="tx-list-item" onclick="searchTx('${tx.txid}')">
+        <span class="tx-dir" style="color:${isRcv?'#4caf50':'#e05050'}">${isRcv?'↓':'↑'}</span>
+        <div class="tx-li-info"><div class="tx-li-id">${txidS}</div><div class="tx-li-date">${fmtDate(tx.status?.block_time)} · ${addrLabel}</div></div>
+        <div class="tx-li-amt"><div class="tx-li-btc ${isRcv?'rcv':'snt'}">${isRcv?'+':'−'}${satsToBtc(absNet)} BTC</div>${txFiat?`<div class="tx-li-fiat">${txFiat}</div>`:''}</div>
+        <span class="tx-badge ${conf?'conf':'pend'}">${conf?'✓':'⏳'}</span>
+      </div>`;
+    });
+    html += `</div>`;
   }
+  html += `</div>`;
+  return html;
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-document.getElementById('txInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') search();
-});
+document.getElementById('txInput').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
 renderHistory();
 fetchBtcPrice();
+if (Object.values(loadAlerts()).some(v => v.enabled)) startAlertPolling();
 
 // ── Input detection ───────────────────────────────────────────────────────────
 function detectInput(val) {
@@ -537,11 +671,10 @@ function detectInput(val) {
   return null;
 }
 
-// ── API fetch amb caché i fallback ────────────────────────────────────────────
+// ── API fetch ─────────────────────────────────────────────────────────────────
 async function apiFetch(path) {
   const hit = apiCache.get(path);
   if (hit && Date.now() - hit.ts < CACHE_TTL) return hit.data;
-
   const apis = [
     { name: 'mempool.space',    base: 'https://mempool.space/api' },
     { name: 'blockstream.info', base: 'https://blockstream.info/api' }
@@ -551,369 +684,219 @@ async function apiFetch(path) {
     try {
       const r = await fetch(apis[i].base + path, { signal: AbortSignal.timeout(8000) });
       if (!r.ok) {
-        if (r.status === 404) {
-          const msg = path.startsWith('/tx/')
-            ? 'Transacció no trobada a la xarxa Bitcoin. Comprova el txid.'
-            : 'Adreça no reconeguda o sense activitat a la blockchain.';
-          throw Object.assign(new Error(msg), { fatal: true });
-        }
-        throw new Error(`Error HTTP ${r.status}`);
+        if (r.status === 404) { const msg = path.startsWith('/tx/') ? 'Transacció no trobada.' : 'Adreça no reconeguda o sense activitat.'; throw Object.assign(new Error(msg), { fatal: true }); }
+        throw new Error(`HTTP ${r.status}`);
       }
-      const data = await r.json();
-      apiCache.set(path, { data, ts: Date.now() });
-      return data;
-    } catch (e) {
-      if (e.fatal) throw e;
-    }
+      const data = await r.json(); apiCache.set(path, { data, ts: Date.now() }); return data;
+    } catch (e) { if (e.fatal) throw e; }
   }
-  throw new Error('Cap API disponible. Comprova la connexió a Internet i torna-ho a intentar.');
+  throw new Error('Cap API disponible. Comprova la connexió.');
 }
 
-// ── Preu BTC (fallback: CoinGecko → blockchain.info → Binance) ───────────────
+// ── Preu BTC ──────────────────────────────────────────────────────────────────
 async function fetchBtcPrice() {
   if (priceCache && Date.now() - priceCache.ts < PRICE_TTL) return priceCache.price;
   const sources = [
-    async () => {
-      const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur');
-      if (!r.ok) throw new Error();
-      const d = await r.json();
-      return { usd: +d.bitcoin.usd, eur: +d.bitcoin.eur, src: 'CoinGecko' };
-    },
-    async () => {
-      const r = await fetch('https://blockchain.info/ticker');
-      if (!r.ok) throw new Error();
-      const d = await r.json();
-      return { usd: +d.USD.last, eur: +d.EUR.last, src: 'Blockchain.info' };
-    },
-    async () => {
-      const [ru, re] = await Promise.all([
-        fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),
-        fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR')
-      ]);
-      if (!ru.ok || !re.ok) throw new Error();
-      const [du, de] = await Promise.all([ru.json(), re.json()]);
-      return { usd: parseFloat(du.price), eur: parseFloat(de.price), src: 'Binance' };
-    }
+    async () => { const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur'); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.bitcoin.usd, eur:+d.bitcoin.eur, src:'CoinGecko' }; },
+    async () => { const r = await fetch('https://blockchain.info/ticker'); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.USD.last, eur:+d.EUR.last, src:'Blockchain.info' }; },
+    async () => { const [ru,re] = await Promise.all([fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR')]); if (!ru.ok||!re.ok) throw 0; const [du,de]=await Promise.all([ru.json(),re.json()]); return { usd:parseFloat(du.price), eur:parseFloat(de.price), src:'Binance' }; }
   ];
-  for (const fn of sources) {
-    try {
-      const price = await fn();
-      if (price && price.usd > 0 && price.eur > 0) {
-        priceCache = { price, ts: Date.now() };
-        return price;
-      }
-    } catch {}
-  }
+  for (const fn of sources) { try { const p = await fn(); if (p && p.usd > 0 && p.eur > 0) { priceCache = { price: p, ts: Date.now() }; return p; } } catch {} }
   return null;
 }
-
 function fmtFiat(sats, price) {
   if (!sats || !price) return '';
-  const btc = sats / 1e8;
-  const n = v => v.toLocaleString('ca', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const btc = sats / 1e8; const n = v => v.toLocaleString('ca', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `€${n(btc * price.eur)} · $${n(btc * price.usd)}`;
 }
 
-// ── Etiquetes d'adreces — exchanges/serveis ───────────────────────────────────
+// ── Etiquetes d'adreces ───────────────────────────────────────────────────────
 async function fetchEntityLabels(addrs) {
   const toFetch = addrs.filter(a => a && !KNOWN_ADDRS[a] && !addrLabelCache.has(a));
   if (!toFetch.length) return;
   await Promise.allSettled(toFetch.slice(0, 6).map(async addr => {
     try {
-      const r = await fetch(
-        `https://api.blockchair.com/bitcoin/dashboards/address/${addr}`,
-        { signal: AbortSignal.timeout(5000) }
-      );
+      const r = await fetch(`https://api.blockchair.com/bitcoin/dashboards/address/${addr}`, { signal: AbortSignal.timeout(5000) });
       if (!r.ok) { addrLabelCache.set(addr, null); return; }
-      const d = await r.json();
-      const tag = d.data && d.data[addr] && d.data[addr].address && d.data[addr].address.tag;
+      const d = await r.json(); const tag = d.data && d.data[addr] && d.data[addr].address && d.data[addr].address.tag;
       addrLabelCache.set(addr, tag ? { name: tag, icon: '🏦' } : null);
-    } catch {
-      addrLabelCache.set(addr, null);
-    }
+    } catch { addrLabelCache.set(addr, null); }
   }));
   toFetch.forEach(a => { if (!addrLabelCache.has(a)) addrLabelCache.set(a, null); });
 }
+function getEntityLabel(addr) { return addr ? (KNOWN_ADDRS[addr] || addrLabelCache.get(addr) || null) : null; }
+function entityBadgeHtml(addr) { const lbl = getEntityLabel(addr); return lbl ? `<span class="entity-badge">${lbl.icon} ${lbl.name}</span>` : ''; }
 
-function getEntityLabel(addr) {
-  return addr ? (KNOWN_ADDRS[addr] || addrLabelCache.get(addr) || null) : null;
-}
-
-function entityBadgeHtml(addr) {
-  const lbl = getEntityLabel(addr);
-  return lbl ? `<span class="entity-badge">${lbl.icon} ${lbl.name}</span>` : '';
-}
-
-// ── Historial de cerques ──────────────────────────────────────────────────────
-function loadHistory() {
-  try { return JSON.parse(localStorage.getItem('findbtc_h') || '[]'); } catch { return []; }
-}
-function saveHistory(q) {
-  const h = [q, ...loadHistory().filter(x => x !== q)].slice(0, MAX_HIST);
-  localStorage.setItem('findbtc_h', JSON.stringify(h));
-  renderHistory();
-}
-function clearHistory() { localStorage.removeItem('findbtc_h'); renderHistory(); }
+// ── Historial ─────────────────────────────────────────────────────────────────
+function loadHistory()   { try { return JSON.parse(localStorage.getItem('findbtc_h') || '[]'); } catch { return []; } }
+function saveHistory(q)  { const h = [q, ...loadHistory().filter(x => x !== q)].slice(0, MAX_HIST); localStorage.setItem('findbtc_h', JSON.stringify(h)); renderHistory(); }
+function clearHistory()  { localStorage.removeItem('findbtc_h'); renderHistory(); }
 function renderHistory() {
-  const h = loadHistory();
-  const sec = document.getElementById('historySection');
+  const h = loadHistory(); const sec = document.getElementById('historySection');
   if (!h.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
-  document.getElementById('historyItems').innerHTML = h.map(q => {
-    const label = q.length > 32 ? q.slice(0, 12) + '…' + q.slice(-8) : q;
-    return `<span class="hist-item" data-q="${q}" onclick="searchFromHist(this)" title="${q}">${label}</span>`;
-  }).join('');
+  document.getElementById('historyItems').innerHTML = h.map(q => { const label = q.length > 32 ? q.slice(0,12)+'…'+q.slice(-8) : q; return `<span class="hist-item" data-q="${q}" onclick="searchFromHist(this)" title="${q}">${label}</span>`; }).join('');
 }
 function searchFromHist(el) { document.getElementById('txInput').value = el.dataset.q; search(); }
 
 // ── Cerca principal ───────────────────────────────────────────────────────────
 async function search() {
-  const val = document.getElementById('txInput').value.trim();
-  if (!val) return;
+  const val = document.getElementById('txInput').value.trim(); if (!val) return;
   const det = detectInput(val);
-  if (!det) {
-    showError('Format no reconegut. Introdueix un txid (64 hex) o una adreça Bitcoin vàlida (bc1p…, bc1q…, 1…, 3…).');
-    return;
-  }
+  if (!det) { showError('Format no reconegut. Introdueix un txid (64 hex) o adreça Bitcoin vàlida.'); return; }
   stopTracking();
-  const btn = document.getElementById('searchBtn');
-  btn.disabled = true;
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('result').innerHTML = '';
+  const btn = document.getElementById('searchBtn'); btn.disabled = true;
+  document.getElementById('result').style.display = 'none'; document.getElementById('result').innerHTML = '';
   showLoading(det.type === 'txid' ? 'Cercant la transacció…' : "Cercant transaccions de l'adreça…");
   const price = await fetchBtcPrice();
   try {
-    if (det.type === 'txid') {
-      await renderTx(await apiFetch('/tx/' + val), price);
-    } else {
-      const [info, txs] = await Promise.all([
-        apiFetch('/address/' + val),
-        apiFetch('/address/' + val + '/txs')
-      ]);
-      renderAddress(val, det.addrType, info, txs, price);
-    }
+    if (det.type === 'txid') { await renderTx(await apiFetch('/tx/' + val), price); }
+    else { const [info, txs] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs')]); renderAddress(val, det.addrType, info, txs, price); }
     saveHistory(val);
-  } catch (e) {
-    showError(e.message || 'Error en la consulta.');
-  } finally {
-    btn.disabled = false;
-  }
+  } catch (e) { showError(e.message || 'Error en la consulta.'); }
+  finally { btn.disabled = false; }
 }
-
-function searchAddr(addr) { document.getElementById('txInput').value = addr; search(); }
-function searchTx(txid)   { document.getElementById('txInput').value = txid;   search(); }
+function searchAddr(addr) { switchTab('search'); document.getElementById('txInput').value = addr; search(); }
+function searchTx(txid)   { switchTab('search'); document.getElementById('txInput').value = txid;  search(); }
 
 // ── Formatadors ───────────────────────────────────────────────────────────────
 function satsToBtc(s) { return s == null ? '—' : (s / 1e8).toFixed(8); }
 function fmtSats(s)   { return (s || 0).toLocaleString('ca') + ' sat'; }
 function fmtDate(ts)  { return ts ? new Date(ts * 1000).toLocaleString('ca') : 'Pendent'; }
 function shortAddr(a) { return a.length > 26 ? a.slice(0, 14) + '…' + a.slice(-8) : a; }
-
 function mkPriceBar(price) {
   if (!price) return `<div class="price-bar"><span class="pl">Preu BTC:</span><span style="color:#555;font-style:italic">no disponible</span></div>`;
-  const usd = price.usd.toLocaleString('ca');
-  const eur = price.eur.toLocaleString('ca');
-  return `<div class="price-bar"><span class="pl">Preu BTC:</span><span class="pv">$${usd} · €${eur}</span><span class="src">${price.src}</span></div>`;
+  return `<div class="price-bar"><span class="pl">Preu BTC:</span><span class="pv">$${price.usd.toLocaleString('ca')} · €${price.eur.toLocaleString('ca')}</span><span class="src">${price.src}</span></div>`;
+}
+
+// ── Resum en llenguatge planer ────────────────────────────────────────────────
+function buildPlainSummary(tx, price, knownDests) {
+  const vins = tx.vin || [], outs = tx.vout || [];
+  const isCb = vins.some(v => v.is_coinbase);
+  const conf = tx.status && tx.status.confirmed;
+  const total = outs.reduce((s, o) => s + (o.value || 0), 0);
+  const feeRate = calcFeeRate(tx);
+  const fiatStr = price ? `≈ ${fmtFiat(total, price)}` : '';
+  const fiatFeeStr = tx.fee && price ? `≈ ${fmtFiat(tx.fee, price)}` : '';
+  const dateStr = conf && tx.status.block_time ? `el ${new Date(tx.status.block_time * 1000).toLocaleDateString('ca')}` : '';
+  const status = conf ? `confirmada${dateStr ? ' ' + dateStr : ''}` : '<strong style="color:#fdba74">pendent de confirmació</strong>';
+
+  let text = '';
+  if (isCb) {
+    text = `Un miner ha generat <strong>${satsToBtc(total)} BTC</strong> nous (recompensa del bloc #${tx.status?.block_height || '?'} + comissions), ${status}.`;
+  } else if (vins.length === 1 && outs.length <= 3) {
+    const fromAddr = vins[0].prevout?.scriptpubkey_address;
+    const fromLbl  = getEntityLabel(fromAddr);
+    const from = fromLbl ? `${fromLbl.icon} <strong>${fromLbl.name}</strong>` : (fromAddr ? `<strong>${fromAddr.slice(0,10)}…</strong>` : 'Una adreça');
+    const destOuts = outs.filter(o => o.scriptpubkey_type !== 'op_return');
+    text = `${from} ha enviat <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''} a ${destOuts.length > 1 ? `<strong>${destOuts.length} adreces</strong>` : 'una adreça'}${feeRate ? `, pagant <strong>${feeRate} sat/vB</strong>${fiatFeeStr ? ` (${fiatFeeStr})` : ''} de comissió` : ''}, ${status}.`;
+  } else if (vins.length >= 5 && outs.length <= 2) {
+    text = `Consolidació de fons: <strong>${vins.length} entrades</strong> fusionades en ${outs.length} sortida${outs.length > 1 ? 's' : ''} per un total de <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''}, ${status}.`;
+  } else if (outs.length >= 8) {
+    text = `Distribució massiva: <strong>${vins.length} entrada${vins.length > 1 ? 'des' : ''}</strong> repartida${vins.length > 1 ? 'des' : ''} a <strong>${outs.length} destinataris</strong> per <strong>${satsToBtc(total)} BTC</strong> — típic d'un exchange processant retirades, ${status}.`;
+  } else {
+    text = `<strong>${vins.length} entrada${vins.length > 1 ? 'des' : ''}</strong> han mogut <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''} a <strong>${outs.length} sortida${outs.length > 1 ? 'des' : ''}</strong>${feeRate ? `, comissió ${feeRate} sat/vB` : ''}, ${status}.`;
+  }
+  if (knownDests && knownDests.length > 0) text += ` Els fons han anat a <strong>${knownDests.join(' i ')}</strong>.`;
+  return `<div class="plain-summary"><span class="ps-icon">📖</span>${text}</div>`;
 }
 
 // ── Anàlisi de moviments ──────────────────────────────────────────────────────
-function addFlow(map, key, sats) {
-  const e = map.get(key) || { sats: 0, n: 0 };
-  e.sats += sats; e.n++;
-  map.set(key, e);
-}
-
+function addFlow(map, key, sats) { const e = map.get(key) || { sats: 0, n: 0 }; e.sats += sats; e.n++; map.set(key, e); }
 function flowListHtml(map, price, max = 5) {
   const items = [...map.entries()].sort((a, b) => b[1].sats - a[1].sats);
   if (!items.length) return '<div class="flow-item"><span class="flow-addr nolink">— cap a la mostra analitzada —</span></div>';
   let html = items.slice(0, max).map(([k, v]) => {
     const isAddr = k !== 'coinbase' && k !== 'op_return' && k !== 'nostd';
-    const label = k === 'coinbase'  ? '⛏ Mineria (BTC de nova creació)'
-                : k === 'op_return' ? 'OP_RETURN (dades, sense valor)'
-                : k === 'nostd'     ? 'Script no estàndard'
-                : shortAddr(k);
-    const lbl  = isAddr ? getEntityLabel(k) : null;
+    const label = k === 'coinbase' ? '⛏ Mineria (BTC de nova creació)' : k === 'op_return' ? 'OP_RETURN (dades, sense valor)' : k === 'nostd' ? 'Script no estàndard' : shortAddr(k);
+    const lbl = isAddr ? getEntityLabel(k) : null;
     const fiat = fmtFiat(v.sats, price);
-    return `<div class="flow-item">
-      <span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}${lbl ? ` <span class="entity-badge" style="font-size:0.58rem;padding:0.1rem 0.35rem">${lbl.icon} ${lbl.name}</span>` : ''}</span>
-      ${v.n > 1 ? `<span class="flow-cnt">×${v.n}</span>` : ''}
-      <span class="flow-amt" ${fiat ? `title="${fiat}"` : ''}>${satsToBtc(v.sats)} BTC</span>
-    </div>`;
+    return `<div class="flow-item"><span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}${lbl ? ` <span class="entity-badge" style="font-size:0.58rem;padding:0.1rem 0.35rem">${lbl.icon} ${lbl.name}</span>` : ''}</span>${v.n > 1 ? `<span class="flow-cnt">×${v.n}</span>` : ''}<span class="flow-amt" ${fiat ? `title="${fiat}"` : ''}>${satsToBtc(v.sats)} BTC</span></div>`;
   }).join('');
   if (items.length > max) html += `<div class="flow-item"><span class="flow-addr nolink">… i ${items.length - max} adreces més</span></div>`;
   return html;
 }
 
 function buildAddressSummary(addr, info, txs, price) {
-  const cs  = info.chain_stats || {};
-  const bal = (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0);
+  const cs = info.chain_stats || {}, bal = (cs.funded_txo_sum||0)-(cs.spent_txo_sum||0);
   const origins = new Map(), dests = new Map();
   let inTx = 0, outTx = 0, coinbase = false, firstTs = null, lastTs = null;
-
   for (const tx of txs) {
     const ts = tx.status && tx.status.block_time;
-    if (ts) {
-      if (!firstTs || ts < firstTs) firstTs = ts;
-      if (!lastTs  || ts > lastTs)  lastTs  = ts;
-    }
-    const recv = (tx.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
-    const sent = (tx.vin  || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
-
-    if (recv > sent) {
-      inTx++;
-      if ((tx.vin || []).some(v => v.is_coinbase)) {
-        coinbase = true; addFlow(origins, 'coinbase', recv);
-      } else {
-        (tx.vin || []).forEach(v => {
-          const a = v.prevout && v.prevout.scriptpubkey_address;
-          if (a && a !== addr) addFlow(origins, a, v.prevout.value || 0);
-        });
-      }
-    } else if (sent > 0) {
-      outTx++;
-      (tx.vout || []).forEach(o => {
-        const a = o.scriptpubkey_address;
-        if (a === addr) return;
-        if (o.scriptpubkey_type === 'op_return') { addFlow(dests, 'op_return', 0); return; }
-        addFlow(dests, a || 'nostd', o.value || 0);
-      });
-    }
+    if (ts) { if (!firstTs||ts<firstTs) firstTs=ts; if (!lastTs||ts>lastTs) lastTs=ts; }
+    const recv = (tx.vout||[]).filter(o => o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
+    const sent = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address===addr).reduce((s,v)=>s+(v.prevout.value||0),0);
+    if (recv > sent) { inTx++; if ((tx.vin||[]).some(v=>v.is_coinbase)) { coinbase=true; addFlow(origins,'coinbase',recv); } else { (tx.vin||[]).forEach(v=>{ const a=v.prevout&&v.prevout.scriptpubkey_address; if(a&&a!==addr) addFlow(origins,a,v.prevout.value||0); }); } }
+    else if (sent > 0) { outTx++; (tx.vout||[]).forEach(o=>{ const a=o.scriptpubkey_address; if(a===addr) return; if(o.scriptpubkey_type==='op_return'){addFlow(dests,'op_return',0);return;} addFlow(dests,a||'nostd',o.value||0); }); }
   }
-
   const p = [];
-  if (coinbase) p.push(`Una part dels fons prové <strong>directament de la mineria</strong> (recompensa de bloc): són BTC de nova creació, sense origen previ.`);
-  if (origins.size === 1 && !coinbase) p.push(`Tots els fons rebuts a la mostra provenen d'<strong>una única font</strong>: pot ser el mateix propietari movent fons o un únic pagador.`);
-  else if (origins.size > 5) p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: patró de cobraments múltiples (pagaments, donacions o retirades d'un servei).`);
-  if (bal > 0 && outTx === 0) p.push(`Els fons <strong>encara no s'han mogut</strong>: tot el que ha rebut continua a l'adreça (acumulació).`);
-  else if (bal > 0) p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong> a l'adreça; la resta ja s'ha reenviat als destins llistats.`);
-  else if (outTx > 0) p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat cap als destins llistats.`);
-
-  const dEntries = [...dests.entries()].filter(([k]) => k !== 'op_return');
-  const totalOut = dEntries.reduce((s, [, v]) => s + v.sats, 0);
-  if (dEntries.length > 1 && totalOut > 0) {
-    const top = [...dEntries].sort((a, b) => b[1].sats - a[1].sats)[0];
-    if (top[1].sats / totalOut > 0.7) p.push(`La major part dels fons enviats (${Math.round(top[1].sats / totalOut * 100)}%) van anar a <strong>${shortAddr(top[0])}</strong>: destí principal probable.`);
-  }
-  for (const [k] of origins) {
-    if (dests.has(k)) { p.push(`L'adreça <strong>${shortAddr(k)}</strong> apareix com a origen i com a destí: relació recurrent o moviments interns del mateix propietari.`); break; }
-  }
-  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs * 1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs * 1000).toLocaleDateString('ca')}</strong>.`);
-
-  const partial = (cs.tx_count || 0) > txs.length;
-  return `<div class="card">
-    <h2>Resum del moviment</h2>
-    <div class="summary-text">${p.map(t => `<p>${t}</p>`).join('')}</div>
-    <div class="flow-grid">
-      <div class="flow-col"><h3>D'on han sortit els fons (orígens)</h3>${flowListHtml(origins, price)}</div>
-      <div class="flow-col"><h3>Cap a on han anat (destins)</h3>${flowListHtml(dests, price)}</div>
-    </div>
-    <p class="summary-note">${partial ? `Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count || 0).toLocaleString('ca')} en total). ` : ''}Heurística sobre dades públiques de la blockchain: identificar el propietari real (exchange, particular…) requereix informació externa.</p>
-  </div>`;
+  if (coinbase) p.push(`Una part dels fons prové <strong>directament de la mineria</strong>: BTC de nova creació.`);
+  if (origins.size===1&&!coinbase) p.push(`Tots els fons rebuts provenen d'<strong>una única font</strong>.`);
+  else if (origins.size>5) p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: cobraments múltiples.`);
+  if (bal>0&&outTx===0) p.push(`Els fons <strong>encara no s'han mogut</strong>: tot continua a l'adreça.`);
+  else if (bal>0) p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong>; la resta ja s'ha reenviat.`);
+  else if (outTx>0) p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat.`);
+  const dEntries=[...dests.entries()].filter(([k])=>k!=='op_return'); const totalOut=dEntries.reduce((s,[,v])=>s+v.sats,0);
+  if (dEntries.length>1&&totalOut>0) { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; if(top[1].sats/totalOut>0.7) p.push(`La major part dels fons enviats (${Math.round(top[1].sats/totalOut*100)}%) van anar a <strong>${shortAddr(top[0])}</strong>.`); }
+  for (const [k] of origins) { if (dests.has(k)) { p.push(`<strong>${shortAddr(k)}</strong> apareix com a origen i destí: possibles moviments interns.`); break; } }
+  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs*1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs*1000).toLocaleDateString('ca')}</strong>.`);
+  const partial = (cs.tx_count||0) > txs.length;
+  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on han sortit els fons</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>Cap a on han anat</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?`Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count||0).toLocaleString('ca')} en total). `:''}Heurística sobre dades públiques.</p></div>`;
 }
 
 function buildTxSummary(tx, price, outspends, inAddrSet) {
-  const vins = tx.vin || [], outs = tx.vout || [];
-  const isCb = vins.some(v => v.is_coinbase);
-  const origins = new Map();
-  let totalIn = 0;
-  if (isCb) {
-    addFlow(origins, 'coinbase', outs.reduce((s, o) => s + (o.value || 0), 0));
-  } else {
-    vins.forEach(v => {
-      totalIn += (v.prevout && v.prevout.value) || 0;
-      const a = v.prevout && v.prevout.scriptpubkey_address;
-      if (a) addFlow(origins, a, v.prevout.value || 0);
-    });
-  }
-
+  const vins=tx.vin||[], outs=tx.vout||[], isCb=vins.some(v=>v.is_coinbase);
+  const origins=new Map(); let totalIn=0;
+  if (isCb) { addFlow(origins,'coinbase',outs.reduce((s,o)=>s+(o.value||0),0)); }
+  else { vins.forEach(v=>{ totalIn+=(v.prevout&&v.prevout.value)||0; const a=v.prevout&&v.prevout.scriptpubkey_address; if(a) addFlow(origins,a,v.prevout.value||0); }); }
   const p = [];
-  if (isCb) {
-    p.push(`És una <strong>transacció coinbase</strong>: els BTC són de nova creació (recompensa de mineria més tarifes del bloc) i <strong>no tenen cap origen previ</strong>.`);
-  } else {
-    p.push(`Els fons surten ${origins.size === 1 ? `d'<strong>una única adreça d'origen</strong>` : `de <strong>${origins.size} adreces d'origen</strong>`} (${vins.length} entrad${vins.length === 1 ? 'a' : 'es'}) per un total de <strong>${satsToBtc(totalIn)} BTC</strong>.`);
-    if (vins.length >= 5 && outs.length <= 2) p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en ${outs.length === 1 ? 'una única sortida' : 'poques sortides'} — típic quan un wallet o servei reordena els seus propis fons.`);
-    else if (vins.length <= 2 && outs.length >= 5) p.push(`Patró de <strong>pagament múltiple (batching)</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
-    else if (outs.length === 2) {
-      const changeConfirmed = outs.some(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
-      p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament real i l'altra probablement el <strong>canvi</strong> que torna a l'emissor${changeConfirmed ? ' (confirmat: una sortida torna a una adreça d\'origen)' : ''}.`);
-    }
+  if (isCb) p.push(`Transacció <strong>coinbase</strong>: BTC de nova creació (recompensa de mineria + tarifes del bloc), sense origen previ.`);
+  else {
+    p.push(`Els fons surten ${origins.size===1?`d'<strong>una única adreça d'origen</strong>`:`de <strong>${origins.size} adreces d'origen</strong>`} (${vins.length} entrad${vins.length===1?'a':'es'}) per un total de <strong>${satsToBtc(totalIn)} BTC</strong>.`);
+    if (vins.length>=5&&outs.length<=2) p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en poques sortides.`);
+    else if (vins.length<=2&&outs.length>=5) p.push(`Patró de <strong>batching</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
+    else if (outs.length===2) { const chg=outs.some(o=>o.scriptpubkey_address&&inAddrSet.has(o.scriptpubkey_address)); p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament i l'altra probablement el <strong>canvi</strong>${chg?' (confirmat)':''}.`); }
   }
-  if (outspends) {
-    const spendable = outs.filter(o => o.scriptpubkey_type !== 'op_return').length;
-    const spent = outspends.filter(o => o && o.spent).length;
-    if (spent === 0) p.push(`<strong>Cap sortida s'ha gastat encara</strong>: els fons continuen a les adreces destinatàries.`);
-    else if (spent >= spendable) p.push(`<strong>Totes les sortides ja s'han gastat</strong>: els fons han continuat movent-se. Fes clic a l'etiqueta «gastada →» de cada sortida per seguir-ne el rastre.`);
-    else p.push(`<strong>${spent} de ${spendable} sortides ja s'han gastat</strong>: part dels fons ha continuat movent-se i part segueix a les adreces de destí.`);
-  }
-
-  return `<div class="card">
-    <h2>Resum del moviment</h2>
-    <div class="summary-text">${p.map(t => `<p>${t}</p>`).join('')}</div>
-    <div class="flow-grid">
-      <div class="flow-col"><h3>D'on venen els fons (orígens)</h3>${flowListHtml(origins, price)}</div>
-    </div>
-    <p class="summary-note">Heurística sobre dades públiques de la blockchain: l'origen o destí real (persona, exchange…) no es pot determinar només amb la cadena.</p>
-  </div>`;
+  if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(`<strong>Cap sortida gastada</strong>: els fons continuen a les adreces destinatàries.`); else if(spnt>=sp) p.push(`<strong>Totes les sortides gastades</strong>: els fons han continuat movent-se.`); else p.push(`<strong>${spnt} de ${sp} sortides gastades</strong>: part dels fons ha continuat movent-se.`); }
+  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on venen els fons</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">Heurística sobre dades públiques de la blockchain.</p></div>`;
 }
 
 // ── Renderitzadors ────────────────────────────────────────────────────────────
 async function renderTx(tx, price) {
   const outAddrs = (tx.vout || []).map(o => o.scriptpubkey_address).filter(Boolean);
   let outspends = null;
-  const [osp] = await Promise.allSettled([
-    apiFetch('/tx/' + tx.txid + '/outspends'),
-    fetchEntityLabels(outAddrs)
-  ]);
+  const [osp] = await Promise.allSettled([apiFetch('/tx/' + tx.txid + '/outspends'), fetchEntityLabels(outAddrs)]);
   if (osp.status === 'fulfilled') outspends = osp.value;
   hideStatus();
 
-  const outs      = tx.vout || [];
-  const vins      = tx.vin  || [];
-  const total     = outs.reduce((s, o) => s + (o.value || 0), 0);
-  const conf      = tx.status && tx.status.confirmed;
-  const blk       = tx.status && tx.status.block_height;
-  const isCb      = vins.some(v => v.is_coinbase);
-  const totFiat   = fmtFiat(total, price);
-  const feeFiat   = fmtFiat(tx.fee, price);
+  const outs = tx.vout||[], vins = tx.vin||[];
+  const total = outs.reduce((s,o)=>s+(o.value||0),0);
+  const conf = tx.status && tx.status.confirmed, blk = tx.status && tx.status.block_height;
+  const isCb = vins.some(v => v.is_coinbase);
+  const totFiat = fmtFiat(total, price), feeFiat = fmtFiat(tx.fee, price);
   const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
-
-  const knownDests = [...new Set(
-    outAddrs.map(a => getEntityLabel(a)).filter(Boolean).map(l => `${l.icon} ${l.name}`)
-  )];
-  const destBanner = knownDests.length
-    ? `<div class="dest-banner"><span class="dl">💸 Fons enviats a:</span><span class="dn">${knownDests.join(' &nbsp;·&nbsp; ')}</span></div>`
-    : '';
-
-  const bannerCls  = conf ? 'confirmed' : 'pending';
-  const bannerIcon = conf ? '✓' : '⏳';
-  const bannerText = conf
-    ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}`
-    : `PENDENT — SENSE CONFIRMAR (mempool)`;
-
   const feeRate = calcFeeRate(tx);
+
+  const knownDests = [...new Set(outAddrs.map(a => getEntityLabel(a)).filter(Boolean).map(l => `${l.icon} ${l.name}`))];
+  const destBanner = knownDests.length ? `<div class="dest-banner"><span class="dl">💸 Fons enviats a:</span><span class="dn">${knownDests.join(' &nbsp;·&nbsp; ')}</span></div>` : '';
+
+  const bannerCls = conf ? 'confirmed' : 'pending';
+  const plainSummary = buildPlainSummary(tx, price, knownDests);
 
   let html = mkPriceBar(price) + `
   <div class="tx-hero">
     <div class="tx-status-banner ${bannerCls}" id="tx-status-banner">
-      <span class="tx-status-icon">${bannerIcon}</span>
-      <span>${bannerText}</span>
+      <span class="tx-status-icon">${conf ? '✓' : '⏳'}</span>
+      <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>
     </div>
+    ${plainSummary}
     <div class="tx-hero-body">
       <div class="tx-amount-hero">${satsToBtc(total)}<span class="unit">BTC</span></div>
       ${totFiat ? `<div class="tx-fiat-hero">${totFiat}</div>` : ''}
       <div class="tx-meta-row">
-        <div class="tx-meta-cell">
-          <span class="lbl">Data</span>
-          <span class="val">${fmtDate(tx.status && tx.status.block_time)}</span>
-        </div>
-        ${tx.fee != null ? `<div class="tx-meta-cell">
-          <span class="lbl">Tarifa</span>
-          <span class="val">${fmtSats(tx.fee)}${feeRate ? ` · ${feeRate} sat/vB` : ''}${feeFiat ? ` &nbsp;·&nbsp; ${feeFiat}` : ''}</span>
-        </div>` : ''}
-        <div class="tx-meta-cell">
-          <span class="lbl">Mida</span>
-          <span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span>
-        </div>
+        <div class="tx-meta-cell"><span class="lbl">Data</span><span class="val">${fmtDate(tx.status && tx.status.block_time)}</span></div>
+        ${tx.fee != null ? `<div class="tx-meta-cell"><span class="lbl">Tarifa</span><span class="val">${fmtSats(tx.fee)}${feeRate ? ` · ${feeRate} sat/vB` : ''}${feeFiat ? ` · ${feeFiat}` : ''}</span></div>` : ''}
+        <div class="tx-meta-cell"><span class="lbl">Mida</span><span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span></div>
       </div>
       <div class="tx-flow-line">
         <span class="fc">${isCb ? '⛏ Mineria' : vins.length + (vins.length === 1 ? ' entrada' : ' entrades')}</span>
@@ -925,10 +908,7 @@ async function renderTx(tx, price) {
       <details>
         <summary>Detalls tècnics</summary>
         <div class="det-grid">
-          <div class="det-cell" style="grid-column:1/-1">
-            <div class="lbl">TXID</div>
-            <div class="val txid-mono">${tx.txid} <button class="copy-btn" onclick="copyText('${tx.txid}',this)">copiar</button></div>
-          </div>
+          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">TXID</div><div class="val txid-mono">${tx.txid} <button class="copy-btn" onclick="copyText('${tx.txid}',this)">copiar</button></div></div>
           <div class="det-cell"><div class="lbl">Entrades</div><div class="val">${vins.length}</div></div>
           <div class="det-cell"><div class="lbl">Sortides</div><div class="val">${outs.length}</div></div>
           <div class="det-cell"><div class="lbl">Mida</div><div class="val">${tx.size ? tx.size + ' bytes' : '—'}</div></div>
@@ -939,38 +919,18 @@ async function renderTx(tx, price) {
     </div>
   </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
   <div class="card">
-    <div class="outputs-hd">
-      <h2>Adreces destinatàries</h2>
-      <div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> &nbsp;·&nbsp; ${totFiat}</span>` : ''}</div>
-    </div>
+    <div class="outputs-hd"><h2>Adreces destinatàries</h2><div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> · ${totFiat}</span>` : ''}</div></div>
     <div class="wallet-list">`;
 
   outs.forEach((out, i) => {
-    const addr    = out.scriptpubkey_address || null;
-    const isOpRet = out.scriptpubkey_type === 'op_return';
-    const disp    = addr
-      ? (addr.length > 32 ? addr.slice(0, 14) + '…' + addr.slice(-10) : addr)
-      : (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
-    const oFiat    = fmtFiat(out.value || 0, price);
-    const osp      = outspends && outspends[i];
-    const entBadge = entityBadgeHtml(addr);
+    const addr = out.scriptpubkey_address || null, isOpRet = out.scriptpubkey_type === 'op_return';
+    const disp = addr ? (addr.length > 32 ? addr.slice(0,14)+'…'+addr.slice(-10) : addr) : (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
+    const oFiat = fmtFiat(out.value || 0, price), osp = outspends && outspends[i], entBadge = entityBadgeHtml(addr);
     let tags = '';
-    if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="Torna a una adreça d'origen: probablement el canvi de l'emissor">canvi</span>`;
-    if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="Sortida ja gastada: clica per veure on han continuat els fons">gastada →</span>`;
+    if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="Torna a una adreça d'origen: canvi de l'emissor">canvi</span>`;
+    if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="Sortida gastada: clica per seguir els fons">gastada →</span>`;
     else if (osp && !osp.spent && !isOpRet) tags += ` <span class="tag unspent" title="Els fons encara són en aquesta adreça">sense gastar</span>`;
-    html += `<div class="wallet-item">
-      <div class="wallet-addr">
-        <span class="idx">#${i}</span>
-        <span class="addr-text${!addr ? ' op-return' : ''}" title="${addr || ''}" ${addr ? `onclick="searchAddr('${addr}')"` : ''}>${disp}</span>
-        ${addr ? `<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>` : ''}
-        ${entBadge}${tags}
-      </div>
-      <div class="wallet-amount">
-        <div class="btc">${satsToBtc(out.value || 0)} BTC</div>
-        <div class="sat">${fmtSats(out.value || 0)}</div>
-        ${oFiat ? `<div class="fiat">${oFiat}</div>` : ''}
-      </div>
-    </div>`;
+    html += `<div class="wallet-item"><div class="wallet-addr"><span class="idx">#${i}</span><span class="addr-text${!addr?' op-return':''}" title="${addr||''}" ${addr?`onclick="searchAddr('${addr}')"`:''}>${disp}</span>${addr?`<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>`:''} ${entBadge}${tags}</div><div class="wallet-amount"><div class="btc">${satsToBtc(out.value||0)} BTC</div><div class="sat">${fmtSats(out.value||0)}</div>${oFiat?`<div class="fiat">${oFiat}</div>`:''}</div></div>`;
   });
   html += `</div></div>`;
   showResult(html);
@@ -978,17 +938,14 @@ async function renderTx(tx, price) {
 
 function renderAddress(addr, addrType, info, txs, price) {
   hideStatus();
-  const cs  = info.chain_stats   || {};
-  const ms  = info.mempool_stats || {};
-  const bal = (cs.funded_txo_sum || 0) - (cs.spent_txo_sum || 0);
-  const rcv = cs.funded_txo_sum || 0;
-  const snt = cs.spent_txo_sum  || 0;
-  const cnt = (cs.tx_count || 0) + (ms.tx_count || 0);
-  const balFiat  = fmtFiat(bal, price);
-  const rcvFiat  = fmtFiat(rcv, price);
-  const sntFiat  = fmtFiat(snt, price);
-  const addrDisp = addr.length > 40 ? addr.slice(0, 20) + '…' + addr.slice(-12) : addr;
+  const cs = info.chain_stats||{}, ms = info.mempool_stats||{};
+  const bal = (cs.funded_txo_sum||0)-(cs.spent_txo_sum||0), rcv = cs.funded_txo_sum||0, snt = cs.spent_txo_sum||0;
+  const cnt = (cs.tx_count||0)+(ms.tx_count||0);
+  const addrDisp = addr.length > 40 ? addr.slice(0,20)+'…'+addr.slice(-12) : addr;
   const selfLabel = getEntityLabel(addr);
+  const alertActive = isAlertActive(addr);
+  const walletEntry = loadSavedWallet().find(e => e.addr === addr);
+  const safeName = walletEntry?.name ? walletEntry.name.replace(/'/g,"\\'") : (addrDisp.replace(/'/g,"\\'"));
 
   let html = mkPriceBar(price) + `
   <div class="addr-hero">
@@ -997,92 +954,59 @@ function renderAddress(addr, addrType, info, txs, price) {
         Adreça Bitcoin
         ${addrType ? `<span class="addr-type-badge">${addrType}</span>` : ''}
         ${selfLabel ? `<span class="entity-badge">${selfLabel.icon} ${selfLabel.name}</span>` : ''}
+        <button class="bell-btn${alertActive ? ' active' : ''}" id="alert-btn-${addr}" onclick="toggleAlert('${addr}','${safeName}')" style="margin-left:auto">${alertActive ? '🔔 Alertes actives' : '🔔 Activar alertes'}</button>
+        ${walletEntry
+          ? `<button class="wai-del-btn" onclick="removeAddrConfirm('${addr}')">🗑️ Treure de la cartera</button>`
+          : `<button class="wallet-add-btn" onclick="addToWalletFromCard('${addr}')">👛 Guardar a la cartera</button>`}
       </div>
       <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button></div>
     </div>
     <div class="addr-balance-hero">${satsToBtc(bal)}<span class="unit"> BTC</span></div>
-    ${balFiat ? `<div class="addr-fiat-hero">${balFiat}</div>` : ''}
+    ${fmtFiat(bal,price) ? `<div class="addr-fiat-hero">${fmtFiat(bal,price)}</div>` : ''}
     <div class="addr-stats-row">
-      <div class="addr-stat">
-        <div class="lbl"><span class="arrow dn">↓</span> Rebut</div>
-        <div class="v grn">${satsToBtc(rcv)} BTC</div>
-        ${rcvFiat ? `<div class="sub">${rcvFiat}</div>` : ''}
-      </div>
-      <div class="addr-stat">
-        <div class="lbl"><span class="arrow up">↑</span> Enviat</div>
-        <div class="v red">${satsToBtc(snt)} BTC</div>
-        ${sntFiat ? `<div class="sub">${sntFiat}</div>` : ''}
-      </div>
-      <div class="addr-stat">
-        <div class="lbl">Transaccions</div>
-        <div class="v neu">${cnt.toLocaleString('ca')}</div>
-        <div class="sub">${ms.tx_count ? ms.tx_count + ' pendents' : 'totes confirmades'}</div>
-      </div>
+      <div class="addr-stat"><div class="lbl"><span class="arrow dn">↓</span> Rebut</div><div class="v grn">${satsToBtc(rcv)} BTC</div>${fmtFiat(rcv,price)?`<div class="sub">${fmtFiat(rcv,price)}</div>`:''}</div>
+      <div class="addr-stat"><div class="lbl"><span class="arrow up">↑</span> Enviat</div><div class="v red">${satsToBtc(snt)} BTC</div>${fmtFiat(snt,price)?`<div class="sub">${fmtFiat(snt,price)}</div>`:''}</div>
+      <div class="addr-stat"><div class="lbl">Transaccions</div><div class="v neu">${cnt.toLocaleString('ca')}</div><div class="sub">${ms.tx_count ? ms.tx_count+' pendents' : 'totes confirmades'}</div></div>
     </div>
   </div>` + buildAddressSummary(addr, info, txs, price) + `
   <div class="card">
     <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>
     <div class="tx-list">`;
 
-  if (!txs.length) {
-    html += `<p style="color:#555;text-align:center;padding:1.25rem">Sense transaccions.</p>`;
-  } else {
-    txs.forEach(tx => {
-      const conf   = tx.status && tx.status.confirmed;
-      const rcvAmt = (tx.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
-      const sntAmt = (tx.vin  || []).filter(v => v.prevout && v.prevout.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
-      const isRcv  = rcvAmt >= sntAmt;
-      const net    = isRcv ? rcvAmt - sntAmt : sntAmt - rcvAmt;
-      const txFiat = fmtFiat(net, price);
-      const txidS  = tx.txid.slice(0, 8) + '…' + tx.txid.slice(-8);
-      html += `<div class="tx-list-item" onclick="searchTx('${tx.txid}')">
-        <span class="tx-dir" style="color:${isRcv ? '#4caf50' : '#e05050'}">${isRcv ? '↓' : '↑'}</span>
-        <div class="tx-li-info">
-          <div class="tx-li-id">${txidS}</div>
-          <div class="tx-li-date">${fmtDate(tx.status && tx.status.block_time)}</div>
-        </div>
-        <div class="tx-li-amt">
-          <div class="tx-li-btc ${isRcv ? 'rcv' : 'snt'}">${isRcv ? '+' : '−'}${satsToBtc(net)} BTC</div>
-          ${txFiat ? `<div class="tx-li-fiat">${txFiat}</div>` : ''}
-        </div>
-        <span class="tx-badge ${conf ? 'conf' : 'pend'}">${conf ? '✓' : '⏳'}</span>
-      </div>`;
-    });
-  }
+  if (!txs.length) { html += `<p style="color:#555;text-align:center;padding:1.25rem">Sense transaccions.</p>`; }
+  else { txs.forEach(tx => {
+    const conf = tx.status && tx.status.confirmed;
+    const rcvAmt = (tx.vout||[]).filter(o=>o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
+    const sntAmt = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address===addr).reduce((s,v)=>s+(v.prevout.value||0),0);
+    const isRcv = rcvAmt >= sntAmt, net = isRcv ? rcvAmt-sntAmt : sntAmt-rcvAmt;
+    const txFiat = fmtFiat(net, price), txidS = tx.txid.slice(0,8)+'…'+tx.txid.slice(-8);
+    html += `<div class="tx-list-item" onclick="searchTx('${tx.txid}')"><span class="tx-dir" style="color:${isRcv?'#4caf50':'#e05050'}">${isRcv?'↓':'↑'}</span><div class="tx-li-info"><div class="tx-li-id">${txidS}</div><div class="tx-li-date">${fmtDate(tx.status&&tx.status.block_time)}</div></div><div class="tx-li-amt"><div class="tx-li-btc ${isRcv?'rcv':'snt'}">${isRcv?'+':'−'}${satsToBtc(net)} BTC</div>${txFiat?`<div class="tx-li-fiat">${txFiat}</div>`:''}</div><span class="tx-badge ${conf?'conf':'pend'}">${conf?'✓':'⏳'}</span></div>`;
+  }); }
   html += `</div></div>`;
   showResult(html);
+}
+
+function addToWalletFromCard(addr) {
+  const name = prompt('Nom per a aquesta adreça (opcional):') || '';
+  const res = addAddrToWallet(addr, name);
+  if (res.error) { alert(res.error); return; }
+  // Refresh button state
+  const btn = document.querySelector(`[onclick="addToWalletFromCard('${addr}')"]`);
+  if (btn) { btn.textContent = '👛 Guardada ✓'; btn.disabled = true; }
 }
 
 // ── Utilitats UI ──────────────────────────────────────────────────────────────
 function showResult(html) {
   const r = document.getElementById('result');
-  r.innerHTML = html;
-  r.classList.remove('fade-in');
-  r.style.display = 'block';
-  void r.offsetWidth;
-  r.classList.add('fade-in');
+  r.innerHTML = html; r.classList.remove('fade-in'); r.style.display = 'block';
+  void r.offsetWidth; r.classList.add('fade-in');
 }
 function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'copiat!';
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500);
-  });
+  navigator.clipboard.writeText(text).then(() => { btn.textContent = 'copiat!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500); });
 }
-function showLoading(msg) {
-  const s = document.getElementById('status');
-  s.className = 'loading'; s.style.display = 'block';
-  s.innerHTML = '<span class="spinner"></span>' + msg;
-}
-function showError(msg) {
-  const s = document.getElementById('status');
-  s.className = 'error'; s.style.display = 'block';
-  s.textContent = '⚠ ' + msg;
-}
-function hideStatus() {
-  const s = document.getElementById('status');
-  s.className = ''; s.style.display = 'none';
-}
+function showLoading(msg) { const s = document.getElementById('status'); s.className = 'loading'; s.style.display = 'block'; s.innerHTML = '<span class="spinner"></span>' + msg; }
+function showError(msg)   { const s = document.getElementById('status'); s.className = 'error'; s.style.display = 'block'; s.textContent = '⚠ ' + msg; }
+function hideStatus()     { const s = document.getElementById('status'); s.className = ''; s.style.display = 'none'; }
 </script>
 </body>
 </html>
