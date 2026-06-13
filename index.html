@@ -305,6 +305,15 @@ details[open] summary::before { transform: rotate(90deg); }
 .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #333; border-top-color: #f7931a; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 0.4rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
 #result { display: none; }
+
+/* ── Modal ─────────────────────────────────────────────────────────────────── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); display: flex; align-items: center; justify-content: center; z-index: 9999; animation: fadeSlide 0.2s ease-out; }
+.modal-box { background: #111; border: 1px solid #f7931a55; border-radius: 14px; padding: 1.75rem; max-width: 420px; width: 90%; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+.modal-title { color: #f7931a; font-size: 1rem; font-weight: bold; margin-bottom: 0.85rem; }
+.modal-msg { color: #ccc; font-size: 0.85rem; line-height: 1.65; margin-bottom: 1rem; white-space: pre-line; }
+.modal-inp { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #e0e0e0; padding: 0.7rem 1rem; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.85rem; outline: none; margin-bottom: 1rem; transition: border-color 0.2s; box-sizing: border-box; }
+.modal-inp:focus { border-color: #f7931a; }
+.modal-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
 </style>
 </head>
 <body>
@@ -350,6 +359,8 @@ const PRICE_HIST_PRE = 'findbtc_prices_';
 
 const apiCache = new Map();
 let priceCache = null;
+let searchGen = 0;
+let _lastAddrExportData = null;
 
 // ── Adreces d'exchanges coneguts ──────────────────────────────────────────────
 const KNOWN_ADDRS = {
@@ -376,6 +387,38 @@ const KNOWN_ADDRS = {
   '1N52wHoVR79PMDishab2XmRHsbekCdGquK':          { name: 'Bittrex',   icon: '🏦' },
 };
 const addrLabelCache = new Map();
+
+// ── Utilitats generals ────────────────────────────────────────────────────────
+function escapeHtml(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function showModal({ title='', message='', input=false, confirmText='Acceptar', cancelText=null } = {}) {
+  return new Promise(resolve => {
+    const ov = document.createElement('div');
+    ov.className = 'modal-overlay';
+    ov.innerHTML = `<div class="modal-box">
+      ${title ? `<div class="modal-title">${title}</div>` : ''}
+      ${message ? `<div class="modal-msg">${message}</div>` : ''}
+      ${input ? `<input type="text" class="modal-inp" id="_minp" autocomplete="off">` : ''}
+      <div class="modal-btns">
+        ${cancelText !== null ? `<button class="btn-sec" id="_mcanc" style="padding:0.6rem 1.2rem">${cancelText}</button>` : ''}
+        <button id="_mok" style="padding:0.6rem 1.2rem">${confirmText}</button>
+      </div>
+    </div>`;
+    document.body.appendChild(ov);
+    const inp = ov.querySelector('#_minp');
+    if (inp) setTimeout(() => inp.focus(), 30);
+    const done = v => { ov.remove(); kh && document.removeEventListener('keydown', kh); resolve(v); };
+    ov.querySelector('#_mok').onclick = () => done(input ? (inp?.value ?? '') : true);
+    const cc = ov.querySelector('#_mcanc');
+    if (cc) cc.onclick = () => done(input ? null : false);
+    ov.onclick = e => { if (e.target === ov) done(input ? null : (cancelText !== null ? false : true)); };
+    if (inp) { inp.onkeydown = e => { if (e.key === 'Enter') done(inp.value ?? ''); else if (e.key === 'Escape') done(null); }; }
+    let kh = null;
+    if (!input) { kh = e => { if (e.key === 'Enter' || e.key === 'Escape') done(e.key === 'Enter' || cancelText === null ? true : false); }; document.addEventListener('keydown', kh); }
+  });
+}
 
 // ── Seguiment en temps real ───────────────────────────────────────────────────
 let trackState = null;
@@ -410,15 +453,27 @@ async function doTrackerTick() {
   if (!trackState) return;
   const { txid } = trackState;
   try {
+    let tx = null, tipHeight = null, fees = null;
+    // Try mempool.space
     const [txRes, tipRes, feesRes] = await Promise.allSettled([
       fetch('https://mempool.space/api/tx/' + txid, { signal: AbortSignal.timeout(8000) }).then(r => r.ok ? r.json() : Promise.reject()),
       fetch('https://mempool.space/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : null),
       fetch('https://mempool.space/api/v1/fees/recommended', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.json() : null)
     ]);
-    if (txRes.status !== 'fulfilled') return;
-    const tx = txRes.value;
-    const tipHeight = tipRes.status === 'fulfilled' && tipRes.value ? parseInt(tipRes.value) : null;
-    const fees      = feesRes.status === 'fulfilled' ? feesRes.value : null;
+    if (txRes.status === 'fulfilled') {
+      tx = txRes.value;
+      tipHeight = tipRes.status === 'fulfilled' && tipRes.value ? parseInt(tipRes.value) : null;
+      fees = feesRes.status === 'fulfilled' ? feesRes.value : null;
+    } else {
+      // Fallback: blockstream.info
+      const [txR2, tipR2] = await Promise.allSettled([
+        fetch('https://blockstream.info/api/tx/' + txid, { signal: AbortSignal.timeout(8000) }).then(r => r.ok ? r.json() : Promise.reject()),
+        fetch('https://blockstream.info/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : null)
+      ]);
+      if (txR2.status !== 'fulfilled') return;
+      tx = txR2.value;
+      tipHeight = tipR2.status === 'fulfilled' && tipR2.value ? parseInt(tipR2.value) : null;
+    }
     const conf = tx.status && tx.status.confirmed;
     const blockH = tx.status && tx.status.block_height;
     const confs = conf && tipHeight && blockH ? tipHeight - blockH + 1 : 0;
@@ -476,9 +531,10 @@ function addAddrToWallet(addr, name) {
   w.push({ addr, name: (name || '').trim(), added: Date.now() }); saveSavedWallet(w); return { ok: true };
 }
 function removeAddrFromWallet(addr) { saveSavedWallet(loadSavedWallet().filter(e => e.addr !== addr)); showWalletSection(); }
-function removeAddrConfirm(addr) {
+async function removeAddrConfirm(addr) {
   const entry = loadSavedWallet().find(e => e.addr === addr);
-  if (confirm(`Eliminar l'adreça${entry?.name ? ` "${entry.name}"` : ''}?`)) removeAddrFromWallet(addr);
+  const ok = await showModal({ title: 'Eliminar adreça', message: `Eliminar l'adreça${entry?.name ? ` "${escapeHtml(entry.name)}"` : ''}?`, confirmText: 'Eliminar', cancelText: 'Cancel·lar' });
+  if (ok) removeAddrFromWallet(addr);
 }
 
 // ── Alertes per a adreces ─────────────────────────────────────────────────────
@@ -494,12 +550,13 @@ async function toggleAlert(addr, name) {
   } else {
     if ('Notification' in window && Notification.permission === 'default') {
       const perm = await Notification.requestPermission();
-      if (perm !== 'granted') { alert('Cal permís de notificació per activar les alertes.'); return; }
+      if (perm !== 'granted') { await showModal({ title: '🔔 Sense permís', message: 'Cal permís de notificació per activar les alertes.', confirmText: 'Entès' }); return; }
     }
     let lastTxid = null;
     try { const r = await fetch(`https://mempool.space/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (r.ok) { const txs = await r.json(); if (txs && txs[0]) lastTxid = txs[0].txid; } } catch {}
     a[addr] = { enabled: true, name: name || addr.slice(0, 14) + '…', lastTxid }; saveAlerts(a);
     if (!alertPollInterval) startAlertPolling();
+    showModal({ title: '🔔 Alerta activada', message: '⚠️ Les alertes només funcionen mentre aquesta pestanya estigui oberta al navegador.', confirmText: 'Entès' });
   }
   const btn = document.getElementById('alert-btn-' + addr);
   if (btn) { const active = isAlertActive(addr); btn.className = active ? 'bell-btn active' : 'bell-btn'; btn.textContent = active ? '🔔 Activa' : '🔔 Alertes'; }
@@ -513,8 +570,11 @@ async function doAlertCheck() {
   if (!active.length) { clearInterval(alertPollInterval); alertPollInterval = null; return; }
   for (const [addr, data] of active) {
     try {
-      const r = await fetch(`https://mempool.space/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (!r.ok) continue;
-      const txs = await r.json(); const latest = txs && txs[0]; if (!latest) continue;
+      let txs = null;
+      try { const r = await fetch(`https://mempool.space/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (r.ok) txs = await r.json(); } catch {}
+      if (!txs) { try { const r = await fetch(`https://blockstream.info/api/address/${addr}/txs`, { signal: AbortSignal.timeout(8000) }); if (r.ok) txs = await r.json(); } catch {} }
+      if (!txs) continue;
+      const latest = txs[0]; if (!latest) continue;
       if (data.lastTxid && latest.txid !== data.lastTxid) {
         const rcv = (latest.vout || []).filter(o => o.scriptpubkey_address === addr).reduce((s, o) => s + (o.value || 0), 0);
         const snt = (latest.vin  || []).filter(v => v.prevout?.scriptpubkey_address === addr).reduce((s, v) => s + (v.prevout.value || 0), 0);
@@ -638,7 +698,7 @@ function renderWalletData(wallet, infoResults, txsResults, price) {
     const safeName = (entry.name || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
     html += `<div class="wallet-addr-item">
       <div class="wai-info">
-        ${entry.name ? `<div class="wai-name">${entry.name}</div>` : ''}
+        ${entry.name ? `<div class="wai-name">${escapeHtml(entry.name)}</div>` : ''}
         <div class="wai-addr">${addrDisp} <button class="copy-btn" onclick="copyText('${entry.addr}',this)">copiar</button></div>
         <div class="wai-bal${!ok ? ' err' : ''}">${!ok ? 'Error en carregar' : satsToBtc(bal) + ' BTC'}${ok && fmtFiat(bal, price) ? ` <span class="wai-fiat">${fmtFiat(bal, price)}</span>` : ''}</div>
       </div>
@@ -717,9 +777,9 @@ async function apiFetch(path) {
 async function fetchBtcPrice() {
   if (priceCache && Date.now() - priceCache.ts < PRICE_TTL) return priceCache.price;
   const sources = [
-    async () => { const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur'); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.bitcoin.usd, eur:+d.bitcoin.eur, src:'CoinGecko' }; },
-    async () => { const r = await fetch('https://blockchain.info/ticker'); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.USD.last, eur:+d.EUR.last, src:'Blockchain.info' }; },
-    async () => { const [ru,re] = await Promise.all([fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'),fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR')]); if (!ru.ok||!re.ok) throw 0; const [du,de]=await Promise.all([ru.json(),re.json()]); return { usd:parseFloat(du.price), eur:parseFloat(de.price), src:'Binance' }; }
+    async () => { const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd,eur', {signal:AbortSignal.timeout(4000)}); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.bitcoin.usd, eur:+d.bitcoin.eur, src:'CoinGecko' }; },
+    async () => { const r = await fetch('https://blockchain.info/ticker', {signal:AbortSignal.timeout(4000)}); if (!r.ok) throw 0; const d = await r.json(); return { usd:+d.USD.last, eur:+d.EUR.last, src:'Blockchain.info' }; },
+    async () => { const [ru,re] = await Promise.all([fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT',{signal:AbortSignal.timeout(4000)}),fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR',{signal:AbortSignal.timeout(4000)})]); if (!ru.ok||!re.ok) throw 0; const [du,de]=await Promise.all([ru.json(),re.json()]); return { usd:parseFloat(du.price), eur:parseFloat(de.price), src:'Binance' }; }
   ];
   for (const fn of sources) { try { const p = await fn(); if (p && p.usd > 0 && p.eur > 0) { priceCache = { price: p, ts: Date.now() }; return p; } } catch {} }
   return null;
@@ -739,7 +799,7 @@ async function fetchEntityLabels(addrs) {
       const r = await fetch(`https://api.blockchair.com/bitcoin/dashboards/address/${addr}`, { signal: AbortSignal.timeout(5000) });
       if (!r.ok) { addrLabelCache.set(addr, null); return; }
       const d = await r.json(); const tag = d.data && d.data[addr] && d.data[addr].address && d.data[addr].address.tag;
-      addrLabelCache.set(addr, tag ? { name: tag, icon: '🏦' } : null);
+      addrLabelCache.set(addr, tag ? { name: escapeHtml(tag), icon: '🏦' } : null);
     } catch { addrLabelCache.set(addr, null); }
   }));
   toFetch.forEach(a => { if (!addrLabelCache.has(a)) addrLabelCache.set(a, null); });
@@ -765,16 +825,29 @@ async function search() {
   const det = detectInput(val);
   if (!det) { showError('Format no reconegut. Introdueix un txid (64 hex) o adreça Bitcoin vàlida.'); return; }
   stopTracking();
+  const gen = ++searchGen;
   const btn = document.getElementById('searchBtn'); btn.disabled = true;
   document.getElementById('result').style.display = 'none'; document.getElementById('result').innerHTML = '';
   showLoading(det.type === 'txid' ? 'Cercant la transacció…' : "Cercant transaccions de l'adreça…");
-  const price = await fetchBtcPrice();
+  // Fire price fetch independently — does NOT block rendering
+  const priceP = fetchBtcPrice();
   try {
-    if (det.type === 'txid') { await renderTx(await apiFetch('/tx/' + val), price); }
-    else { const [info, txs, utxos] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs'), fetchUtxos(val)]); renderAddress(val, det.addrType, info, txs, price, utxos); }
+    if (det.type === 'txid') {
+      const tx = await apiFetch('/tx/' + val);
+      if (gen !== searchGen) return;
+      const price = priceCache && Date.now() - priceCache.ts < PRICE_TTL ? priceCache.price : null;
+      await renderTx(tx, price);
+      if (!price) priceP.then(async p => { if (p && gen === searchGen) await renderTx(tx, p); }).catch(() => {});
+    } else {
+      const [info, txs, utxos] = await Promise.all([apiFetch('/address/' + val), apiFetch('/address/' + val + '/txs'), fetchUtxos(val)]);
+      if (gen !== searchGen) return;
+      const price = priceCache && Date.now() - priceCache.ts < PRICE_TTL ? priceCache.price : null;
+      renderAddress(val, det.addrType, info, txs, price, utxos);
+      if (!price) priceP.then(p => { if (p && gen === searchGen) renderAddress(val, det.addrType, info, txs, p, utxos); }).catch(() => {});
+    }
     saveHistory(val);
-  } catch (e) { showError(e.message || 'Error en la consulta.'); }
-  finally { btn.disabled = false; }
+  } catch (e) { if (gen === searchGen) showError(e.message || 'Error en la consulta.'); }
+  finally { if (gen === searchGen) btn.disabled = false; }
 }
 function searchAddr(addr) { switchTab('search'); document.getElementById('txInput').value = addr; search(); }
 function searchTx(txid)   { switchTab('search'); document.getElementById('txInput').value = txid;  search(); }
@@ -874,9 +947,13 @@ async function fetchHistoricalPrice(blockTime) {
 async function fetchUtxos(addr) {
   try {
     const r = await fetch(`https://mempool.space/api/address/${addr}/utxo`, { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) return null;
-    return await r.json();
-  } catch { return null; }
+    if (r.ok) return await r.json();
+  } catch {}
+  try {
+    const r = await fetch(`https://blockstream.info/api/address/${addr}/utxo`, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) return await r.json();
+  } catch {}
+  return null;
 }
 
 function utxoAgeStr(ts) {
@@ -1008,18 +1085,26 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
 async function renderTx(tx, price) {
   const outAddrs = (tx.vout || []).map(o => o.scriptpubkey_address).filter(Boolean);
   let outspends = null;
-  const [osp,, histRes] = await Promise.allSettled([
+  const [osp,, histRes, tipRes] = await Promise.allSettled([
     apiFetch('/tx/' + tx.txid + '/outspends'),
     fetchEntityLabels(outAddrs),
-    fetchHistoricalPrice(tx.status?.block_time)
+    fetchHistoricalPrice(tx.status?.block_time),
+    tx.status?.confirmed
+      ? fetch('https://mempool.space/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : null)
+      : Promise.resolve(null)
   ]);
   if (osp.status === 'fulfilled') outspends = osp.value;
   const histPrice = histRes?.status === 'fulfilled' ? histRes.value : null;
+  const tipHeightTx = tipRes?.status === 'fulfilled' && tipRes.value ? parseInt(tipRes.value) : null;
   hideStatus();
 
   const outs = tx.vout||[], vins = tx.vin||[];
   const total = outs.reduce((s,o)=>s+(o.value||0),0);
   const conf = tx.status && tx.status.confirmed, blk = tx.status && tx.status.block_height;
+  const confsCount = conf && tipHeightTx && blk ? tipHeightTx - blk + 1 : null;
+  const confBadge = conf
+    ? (confsCount !== null ? `<span style="background:#1a3a2a;color:#4ade80;border:1px solid #2a5a3a;padding:0.15rem 0.65rem;border-radius:10px;font-size:0.75rem;font-weight:bold;margin-left:0.5rem;white-space:nowrap">${confsCount} confirmaci${confsCount === 1 ? 'ó' : 'ons'}</span>` : '')
+    : `<span style="background:#3a1a00;color:#ffb300;border:1px solid #5a3a00;padding:0.15rem 0.65rem;border-radius:10px;font-size:0.75rem;font-weight:bold;margin-left:0.5rem;white-space:nowrap">No confirmada</span>`;
   const isCb = vins.some(v => v.is_coinbase);
   const totFiat = fmtFiat(total, price), feeFiat = fmtFiat(tx.fee, price);
   const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
@@ -1043,7 +1128,7 @@ async function renderTx(tx, price) {
   <div class="tx-hero">
     <div class="tx-status-banner ${bannerCls}" id="tx-status-banner">
       <span class="tx-status-icon">${conf ? '✓' : '⏳'}</span>
-      <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>
+      <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>${confBadge}
     </div>
     ${plainSummary}${privacyBadge}
     <div class="tx-hero-body">
@@ -1094,6 +1179,7 @@ async function renderTx(tx, price) {
 }
 
 function renderAddress(addr, addrType, info, txs, price, utxos = null) {
+  _lastAddrExportData = { addr, txs, price };
   hideStatus();
   const cs = info.chain_stats||{}, ms = info.mempool_stats||{};
   const bal = (cs.funded_txo_sum||0)-(cs.spent_txo_sum||0), rcv = cs.funded_txo_sum||0, snt = cs.spent_txo_sum||0;
@@ -1128,7 +1214,7 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
     ${buildUtxoSection(utxos, price)}
   </div>` + buildAddressSummary(addr, info, txs, price) + `
   <div class="card">
-    <h2>Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span></h2>
+    <h2 style="justify-content:space-between">Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span><button class="btn-sec" onclick="exportAddrCsv()" style="font-size:0.73rem;padding:0.28rem 0.65rem;margin-left:auto">⬇️ Exportar CSV</button></h2>
     <div class="tx-list">`;
 
   if (!txs.length) { html += `<p style="color:#555;text-align:center;padding:1.25rem">Sense transaccions.</p>`; }
@@ -1144,11 +1230,32 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
   showResult(html);
 }
 
-function addToWalletFromCard(addr) {
-  const name = prompt('Nom per a aquesta adreça (opcional):') || '';
+function exportAddrCsv() {
+  if (!_lastAddrExportData) return;
+  const { addr, txs, price } = _lastAddrExportData;
+  const rows = [['Data (ISO)', 'TXID', 'Tipus', 'BTC', 'EUR', 'USD']];
+  for (const tx of txs) {
+    const rcvAmt = (tx.vout||[]).filter(o=>o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
+    const sntAmt = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address===addr).reduce((s,v)=>s+(v.prevout.value||0),0);
+    const isRcv = rcvAmt >= sntAmt, net = isRcv ? rcvAmt-sntAmt : sntAmt-rcvAmt;
+    const btcAmt = (net/1e8).toFixed(8);
+    const dateISO = tx.status?.block_time ? new Date(tx.status.block_time*1000).toISOString() : '';
+    const eur = price ? (net/1e8*price.eur).toFixed(2) : '';
+    const usd = price ? (net/1e8*price.usd).toFixed(2) : '';
+    rows.push([dateISO, tx.txid, isRcv ? 'entrada' : 'sortida', btcAmt, eur, usd]);
+  }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = `findbtc_${addr.slice(0,12)}.csv`; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+async function addToWalletFromCard(addr) {
+  const name = await showModal({ title: '👛 Guardar adreça', message: 'Nom per a aquesta adreça (opcional):', input: true, confirmText: 'Guardar', cancelText: 'Cancel·lar' });
+  if (name === null) return;
   const res = addAddrToWallet(addr, name);
-  if (res.error) { alert(res.error); return; }
-  // Refresh button state
+  if (res.error) { await showModal({ title: '⚠️ Error', message: res.error, confirmText: 'Acceptar' }); return; }
   const btn = document.querySelector(`[onclick="addToWalletFromCard('${addr}')"]`);
   if (btn) { btn.textContent = '👛 Guardada ✓'; btn.disabled = true; }
 }
