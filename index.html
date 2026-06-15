@@ -339,6 +339,11 @@ details[open] summary::before { transform: rotate(90deg); }
 .modal-msg { color: var(--text-primary); font-size: 0.85rem; line-height: 1.65; margin-bottom: 1rem; white-space: pre-line; }
 .modal-inp { width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: var(--text-primary); padding: 0.7rem 1rem; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 0.85rem; outline: none; margin-bottom: 1rem; transition: border-color 0.2s; box-sizing: border-box; }
 .modal-inp:focus { border-color: var(--accent); }
+
+/* ── Badge de confirmacions ─────────────────────────────────────────────────── */
+.conf-badge, .unconf-badge { padding: 0.15rem 0.65rem; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-left: 0.5rem; white-space: nowrap; }
+.conf-badge   { background: rgba(74,222,128,0.16); color: #4ade80; border: 1px solid rgba(74,222,128,0.4); }
+.unconf-badge { background: rgba(255,179,0,0.16);  color: #ffb300; border: 1px solid rgba(255,179,0,0.4); animation: blink 1.8s ease-in-out infinite; }
 .modal-btns { display: flex; gap: 0.5rem; justify-content: flex-end; }
 </style>
 </head>
@@ -388,6 +393,7 @@ const apiCache = new Map();
 let priceCache = null;
 let searchGen = 0;
 let _lastAddrExportData = null;
+let _suppressHashRoute = false;
 
 // ── Adreces d'exchanges coneguts ──────────────────────────────────────────────
 const KNOWN_ADDRS = {
@@ -766,6 +772,7 @@ document.getElementById('txInput').addEventListener('keydown', e => { if (e.key 
 renderHistory();
 fetchBtcPrice();
 if (Object.values(loadAlerts()).some(v => v.enabled)) startAlertPolling();
+routeFromHash();
 
 // ── Input detection ───────────────────────────────────────────────────────────
 function detectInput(val) {
@@ -852,6 +859,7 @@ async function search() {
   const det = detectInput(val);
   if (!det) { showError('Format no reconegut. Introdueix un txid (64 hex) o adreça Bitcoin vàlida.'); return; }
   stopTracking();
+  setHashForQuery(val, det.type);
   const gen = ++searchGen;
   const btn = document.getElementById('searchBtn'); btn.disabled = true;
   document.getElementById('result').style.display = 'none'; document.getElementById('result').innerHTML = '';
@@ -878,6 +886,27 @@ async function search() {
 }
 function searchAddr(addr) { switchTab('search'); document.getElementById('txInput').value = addr; search(); }
 function searchTx(txid)   { switchTab('search'); document.getElementById('txInput').value = txid;  search(); }
+
+// ── Deep-linking (#tx/… · #addr/…) ────────────────────────────────────────────
+function setHashForQuery(val, type) {
+  const newHash = '#' + (type === 'txid' ? 'tx/' : 'addr/') + val;
+  if (location.hash !== newHash) { _suppressHashRoute = true; location.hash = newHash; }
+}
+function routeFromHash() {
+  let raw = decodeURIComponent(location.hash.replace(/^#/, '')).trim();
+  raw = raw.replace(/^(tx|addr)\//i, '');
+  if (!raw) return;
+  if (!detectInput(raw)) return;
+  const input = document.getElementById('txInput');
+  if (input.value.trim() === raw && document.getElementById('result').innerHTML) return;
+  switchTab('search');
+  input.value = raw;
+  search();
+}
+window.addEventListener('hashchange', () => {
+  if (_suppressHashRoute) { _suppressHashRoute = false; return; }
+  routeFromHash();
+});
 
 // ── Formatadors ───────────────────────────────────────────────────────────────
 function satsToBtc(s) { return s == null ? '—' : (s / 1e8).toFixed(8); }
@@ -971,6 +1000,12 @@ async function fetchHistoricalPrice(blockTime) {
 }
 
 // ── UTXO tracker ─────────────────────────────────────────────────────────────
+async function fetchTipHeight() {
+  try { const r = await fetch('https://mempool.space/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }); if (r.ok) return parseInt(await r.text()); } catch {}
+  try { const r = await fetch('https://blockstream.info/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }); if (r.ok) return parseInt(await r.text()); } catch {}
+  return null;
+}
+
 async function fetchUtxos(addr) {
   try {
     const r = await fetch(`https://mempool.space/api/address/${addr}/utxo`, { signal: AbortSignal.timeout(8000) });
@@ -1116,13 +1151,11 @@ async function renderTx(tx, price) {
     apiFetch('/tx/' + tx.txid + '/outspends'),
     fetchEntityLabels(outAddrs),
     fetchHistoricalPrice(tx.status?.block_time),
-    tx.status?.confirmed
-      ? fetch('https://mempool.space/api/blocks/tip/height', { signal: AbortSignal.timeout(5000) }).then(r => r.ok ? r.text() : null)
-      : Promise.resolve(null)
+    tx.status?.confirmed ? fetchTipHeight() : Promise.resolve(null)
   ]);
   if (osp.status === 'fulfilled') outspends = osp.value;
   const histPrice = histRes?.status === 'fulfilled' ? histRes.value : null;
-  const tipHeightTx = tipRes?.status === 'fulfilled' && tipRes.value ? parseInt(tipRes.value) : null;
+  const tipHeightTx = tipRes?.status === 'fulfilled' && tipRes.value ? tipRes.value : null;
   hideStatus();
 
   const outs = tx.vout||[], vins = tx.vin||[];
@@ -1130,8 +1163,8 @@ async function renderTx(tx, price) {
   const conf = tx.status && tx.status.confirmed, blk = tx.status && tx.status.block_height;
   const confsCount = conf && tipHeightTx && blk ? tipHeightTx - blk + 1 : null;
   const confBadge = conf
-    ? (confsCount !== null ? `<span style="background:#1a3a2a;color:#4ade80;border:1px solid #2a5a3a;padding:0.15rem 0.65rem;border-radius:10px;font-size:0.75rem;font-weight:bold;margin-left:0.5rem;white-space:nowrap">${confsCount} confirmaci${confsCount === 1 ? 'ó' : 'ons'}</span>` : '')
-    : `<span style="background:#3a1a00;color:#ffb300;border:1px solid #5a3a00;padding:0.15rem 0.65rem;border-radius:10px;font-size:0.75rem;font-weight:bold;margin-left:0.5rem;white-space:nowrap">No confirmada</span>`;
+    ? (confsCount !== null ? `<span class="conf-badge">${confsCount} confirmaci${confsCount === 1 ? 'ó' : 'ons'}</span>` : '')
+    : `<span class="unconf-badge">No confirmada</span>`;
   const isCb = vins.some(v => v.is_coinbase);
   const totFiat = fmtFiat(total, price), feeFiat = fmtFiat(tx.fee, price);
   const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
@@ -1229,7 +1262,7 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
           ? `<button class="wai-del-btn" onclick="removeAddrConfirm('${addr}')">🗑️ Treure de la cartera</button>`
           : `<button class="wallet-add-btn" onclick="addToWalletFromCard('${addr}')">👛 Guardar a la cartera</button>`}
       </div>
-      <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button></div>
+      <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button> <button class="copy-btn" onclick="showAddrQr('${addr}')">📱 QR</button></div>
     </div>
     <div class="addr-balance-hero">${satsToBtc(bal)}<span class="unit"> BTC</span></div>
     ${fmtFiat(bal,price) ? `<div class="addr-fiat-hero">${fmtFiat(bal,price)}</div>` : ''}
@@ -1285,6 +1318,134 @@ async function addToWalletFromCard(addr) {
   if (res.error) { await showModal({ title: '⚠️ Error', message: res.error, confirmText: 'Acceptar' }); return; }
   const btn = document.querySelector(`[onclick="addToWalletFromCard('${addr}')"]`);
   if (btn) { btn.textContent = '👛 Guardada ✓'; btn.disabled = true; }
+}
+
+// ── Generador de codis QR (mode byte · nivell M · algorisme de K. Arase, MIT) ──
+const QRGen = (() => {
+  const PAD0 = 0xEC, PAD1 = 0x11;
+  const G15 = 0b10100110111, G18 = 0b1111100100101, G15_MASK = 0b101010000010010;
+  const EXP = new Array(256), LOG = new Array(256);
+  for (let i = 0; i < 8; i++) EXP[i] = 1 << i;
+  for (let i = 8; i < 256; i++) EXP[i] = EXP[i-4] ^ EXP[i-5] ^ EXP[i-6] ^ EXP[i-8];
+  for (let i = 0; i < 255; i++) LOG[EXP[i]] = i;
+  const gexp = n => { while (n < 0) n += 255; while (n >= 256) n -= 255; return EXP[n]; };
+  // EC nivell M, versions 1..10 → grups de [numBlocs, codewordsTotals, codewordsDades]
+  const RS = { 1:[[1,26,16]], 2:[[1,44,28]], 3:[[1,70,44]], 4:[[2,50,32]], 5:[[2,67,43]],
+    6:[[4,43,27]], 7:[[4,49,31]], 8:[[2,60,38],[2,61,39]], 9:[[3,58,36],[2,59,37]], 10:[[4,69,43],[1,70,44]] };
+  const ALIGN = { 1:[],2:[6,18],3:[6,22],4:[6,26],5:[6,30],6:[6,34],7:[6,22,38],8:[6,24,42],9:[6,26,46],10:[6,28,50] };
+
+  const bchDigit = n => { let d = 0; while (n !== 0) { d++; n >>>= 1; } return d; };
+  function bch(data, g, shift) { let d = data << shift; while (bchDigit(d) - bchDigit(g) >= 0) d ^= g << (bchDigit(d) - bchDigit(g)); return d; }
+  const bchTypeInfo   = data => ((data << 10) | bch(data, G15, 10)) ^ G15_MASK;
+  const bchTypeNumber = data => (data << 12) | bch(data, G18, 12);
+
+  function polyMul(a, b) {
+    const r = new Array(a.length + b.length - 1).fill(0);
+    for (let i = 0; i < a.length; i++) for (let j = 0; j < b.length; j++)
+      if (a[i] && b[j]) r[i+j] ^= gexp(LOG[a[i]] + LOG[b[j]]);
+    return r;
+  }
+  function genPoly(ec) { let g = [1]; for (let i = 0; i < ec; i++) g = polyMul(g, [1, gexp(i)]); return g; }
+  function rsEncode(data, ecLen) {
+    const gen = genPoly(ecLen), res = data.concat(new Array(ecLen).fill(0));
+    for (let i = 0; i < data.length; i++) { const c = res[i]; if (c) { const lc = LOG[c]; for (let j = 0; j < gen.length; j++) res[i+j] ^= gexp(LOG[gen[j]] + lc); } }
+    return res.slice(data.length);
+  }
+  function rsBlocks(type) { const out = []; for (const [n, tot, dat] of RS[type]) for (let i = 0; i < n; i++) out.push({ tot, dat }); return out; }
+  const maskFn = (p, i, j) => { switch (p) {
+    case 0: return (i+j)%2===0; case 1: return i%2===0; case 2: return j%3===0; case 3: return (i+j)%3===0;
+    case 4: return (Math.floor(i/2)+Math.floor(j/3))%2===0; case 5: return (i*j)%2+(i*j)%3===0;
+    case 6: return ((i*j)%2+(i*j)%3)%2===0; case 7: return ((i*j)%3+(i+j)%2)%2===0; } };
+
+  function make(text) {
+    const bytes = Array.from(new TextEncoder().encode(text));
+    let type = 1;
+    for (; type <= 10; type++) {
+      const dataCap = rsBlocks(type).reduce((s, b) => s + b.dat, 0);
+      const countBits = type <= 9 ? 8 : 16;
+      if (4 + countBits + bytes.length * 8 <= dataCap * 8) break;
+    }
+    if (type > 10) throw new Error('massa llarg per QR');
+    const size = type * 4 + 17;
+    const blocks = rsBlocks(type), totalDc = blocks.reduce((s, b) => s + b.dat, 0);
+    // Buffer de bits → bytes de dades
+    const bits = [], put = (v, len) => { for (let k = len - 1; k >= 0; k--) bits.push((v >>> k) & 1); };
+    put(4, 4); put(bytes.length, type <= 9 ? 8 : 16); for (const b of bytes) put(b, 8);
+    for (let k = 0, t = Math.min(4, totalDc * 8 - bits.length); k < t; k++) bits.push(0);
+    while (bits.length % 8) bits.push(0);
+    const dataBytes = [];
+    for (let k = 0; k < bits.length; k += 8) { let v = 0; for (let m = 0; m < 8; m++) v = (v << 1) | bits[k+m]; dataBytes.push(v); }
+    for (let pad = true; dataBytes.length < totalDc; pad = !pad) dataBytes.push(pad ? PAD0 : PAD1);
+    // Blocs de dades + EC, intercalats
+    const dc = [], ec = []; let off = 0, maxDc = 0, maxEc = 0;
+    for (const blk of blocks) {
+      const d = dataBytes.slice(off, off + blk.dat); off += blk.dat;
+      const e = rsEncode(d, blk.tot - blk.dat);
+      dc.push(d); ec.push(e); maxDc = Math.max(maxDc, d.length); maxEc = Math.max(maxEc, e.length);
+    }
+    const data = [];
+    for (let i = 0; i < maxDc; i++) for (const d of dc) if (i < d.length) data.push(d[i]);
+    for (let i = 0; i < maxEc; i++) for (const e of ec) if (i < e.length) data.push(e[i]);
+
+    // Construcció de la matriu per a un patró de màscara donat
+    function build(mask) {
+      const m = Array.from({ length: size }, () => new Array(size).fill(null));
+      const probe = (r, c) => { for (let dr = -1; dr <= 7; dr++) for (let dcc = -1; dcc <= 7; dcc++) {
+        const rr = r + dr, cc = c + dcc; if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+        m[rr][cc] = (0 <= dr && dr <= 6 && (dcc === 0 || dcc === 6)) || (0 <= dcc && dcc <= 6 && (dr === 0 || dr === 6)) || (2 <= dr && dr <= 4 && 2 <= dcc && dcc <= 4);
+      } };
+      probe(0, 0); probe(size - 7, 0); probe(0, size - 7);
+      for (let i = 8; i < size - 8; i++) { if (m[6][i] === null) m[6][i] = i % 2 === 0; if (m[i][6] === null) m[i][6] = i % 2 === 0; }
+      const pos = ALIGN[type], last = size - 7; // exclou les 3 combinacions que coincideixen amb els finders
+      for (const r of pos) for (const c of pos) { if ((r === 6 && c === 6) || (r === 6 && c === last) || (r === last && c === 6)) continue;
+        for (let dr = -2; dr <= 2; dr++) for (let dcc = -2; dcc <= 2; dcc++) m[r+dr][c+dcc] = dr === -2 || dr === 2 || dcc === -2 || dcc === 2 || (dr === 0 && dcc === 0); }
+      // Info de tipus (format) — màscara aplicada
+      const ti = bchTypeInfo((0 << 3) | mask); // EC nivell M = 0 a la taula d'Arase
+      for (let i = 0; i < 15; i++) { const mod = ((ti >> i) & 1) === 1;
+        if (i < 6) m[i][8] = mod; else if (i < 8) m[i+1][8] = mod; else m[size-15+i][8] = mod;
+        if (i < 8) m[8][size-i-1] = mod; else if (i < 9) m[8][15-i-1+1] = mod; else m[8][15-i-1] = mod; }
+      m[size-8][8] = true; // mòdul fosc
+      if (type >= 7) { const tn = bchTypeNumber(type); for (let i = 0; i < 18; i++) { const mod = ((tn >> i) & 1) === 1;
+        m[Math.floor(i/3)][i%3 + size-8-3] = mod; m[i%3 + size-8-3][Math.floor(i/3)] = mod; } }
+      // Mapatge de dades en zig-zag
+      let bi = 0, dir = -1, row = size - 1;
+      for (let col = size - 1; col > 0; col -= 2) { if (col === 6) col--;
+        for (;;) { for (let c = 0; c < 2; c++) { const cc = col - c;
+          if (m[row][cc] === null) { let dark = bi < data.length * 8 ? ((data[bi >> 3] >> (7 - (bi & 7))) & 1) === 1 : false; bi++;
+            if (maskFn(mask, row, cc)) dark = !dark; m[row][cc] = dark; } }
+          row += dir; if (row < 0 || row >= size) { row -= dir; dir = -dir; break; } } }
+      return m;
+    }
+    // Tria de la millor màscara per penalització
+    let best = null, bestScore = Infinity;
+    for (let mask = 0; mask < 8; mask++) { const m = build(mask), s = penalty(m); if (s < bestScore) { bestScore = s; best = m; } }
+    return best;
+  }
+
+  function penalty(m) {
+    const n = m.length; let lost = 0;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) { let same = 0; const d = m[r][c];
+      for (let dr = -1; dr <= 1; dr++) for (let dcc = -1; dcc <= 1; dcc++) { if (dr === 0 && dcc === 0) continue;
+        const rr = r+dr, cc = c+dcc; if (rr < 0 || rr >= n || cc < 0 || cc >= n) continue; if (m[rr][cc] === d) same++; }
+      if (same > 5) lost += 3 + same - 5; }
+    for (let r = 0; r < n-1; r++) for (let c = 0; c < n-1; c++) { const cnt = (m[r][c]?1:0)+(m[r][c+1]?1:0)+(m[r+1][c]?1:0)+(m[r+1][c+1]?1:0); if (cnt === 0 || cnt === 4) lost += 3; }
+    let dark = 0; for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (m[r][c]) dark++;
+    lost += Math.floor(Math.abs(dark * 100 / (n*n) - 50) / 5) * 10;
+    return lost;
+  }
+  return { make };
+})();
+
+function qrSvg(text, scale = 5) {
+  const m = QRGen.make(text), n = m.length, quiet = 4, size = n + quiet * 2;
+  let rects = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (m[r][c]) rects += `<rect x="${c+quiet}" y="${r+quiet}" width="1" height="1"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size*scale}" height="${size*scale}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><g fill="#000">${rects}</g></svg>`;
+}
+function showAddrQr(addr) {
+  let svg;
+  try { svg = qrSvg(addr, 6); } catch { showModal({ title: '📱 Codi QR', message: 'No s\'ha pogut generar el codi QR per a aquesta adreça.', confirmText: 'Tancar' }); return; }
+  showModal({ title: '📱 Codi QR de l\'adreça', message: `<div style="display:flex;justify-content:center;margin:0.25rem 0 0.85rem">${svg}</div><div style="text-align:center;color:var(--text-secondary);font-size:0.7rem;word-break:break-all">${escapeHtml(addr)}</div>`, confirmText: 'Tancar' });
 }
 
 // ── Utilitats UI ──────────────────────────────────────────────────────────────
