@@ -364,6 +364,7 @@ details[open] summary::before { transform: rotate(90deg); }
         placeholder="txid (64 hex) · bc1p… Taproot · bc1q… SegWit · 1… Legacy · 3… P2SH"
         spellcheck="false" autocomplete="off">
       <button id="searchBtn" onclick="search()">Cercar</button>
+      <button id="clearBtn" class="btn-sec" onclick="clearInput()" title="Esborrar el text">🗑️ Esborrar</button>
     </div>
     <p class="hint">Detecta automàticament <span>transaccions</span> i <span>adreces</span> · Suporta <span>Taproot</span>, <span>SegWit</span> i <span>Legacy</span></p>
     <div id="historySection" class="history-section" style="display:none">
@@ -886,6 +887,7 @@ async function search() {
 }
 function searchAddr(addr) { switchTab('search'); document.getElementById('txInput').value = addr; search(); }
 function searchTx(txid)   { switchTab('search'); document.getElementById('txInput').value = txid;  search(); }
+function clearInput() { const i = document.getElementById('txInput'); i.value = ''; i.focus(); }
 
 // ── Deep-linking (#tx/… · #addr/…) ────────────────────────────────────────────
 function setHashForQuery(val, type) {
