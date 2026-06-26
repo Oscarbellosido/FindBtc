@@ -357,6 +357,14 @@ details[open] summary::before { transform: rotate(90deg); }
 .ln-hop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 0.4rem 0.9rem; }
 .ln-hop-grid .k { color: var(--text-secondary); font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.1rem; }
 .ln-hop-grid .vv { color: var(--text-primary); word-break: break-all; }
+.ln-channel { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.8rem 1.5rem; font-size: 0.78rem; background: #1a1405; border-bottom: 1px solid #3a2e0a; }
+.ln-channel .lc-title { color: #fcd34d; font-weight: bold; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; font-size: 0.85rem; }
+.ln-channel .lc-sub { color: var(--text-secondary); line-height: 1.55; }
+.ln-channel .lc-link { color: #64b5f6; cursor: pointer; }
+.ln-channel .lc-link:hover { text-decoration: underline; }
+.ln-channel .lc-force { background: rgba(248,113,113,0.16); color: #f87171; border: 1px solid rgba(248,113,113,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
+.ln-channel .lc-coop { background: rgba(74,222,128,0.16); color: #4ade80; border: 1px solid rgba(74,222,128,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
+.ln-channel .lc-open { background: rgba(167,139,250,0.16); color: #a78bfa; border: 1px solid rgba(167,139,250,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
 </style>
 </head>
 <body>
@@ -1201,6 +1209,8 @@ async function renderTx(tx, price) {
   const bannerCls = conf ? 'confirmed' : 'pending';
   const plainSummary = buildPlainSummary(tx, price, knownDests);
   const privacyBadge = buildPrivacyBadge(tx);
+  const lnChannel = detectLightningChannel(tx);
+  const lnChannelBanner = lnChannel ? lnCloseBannerHtml(lnChannel) : '';
   const histPriceRow = (() => {
     if (!conf || !tx.status?.block_time) return '';
     const n = v => Math.round(v).toLocaleString('ca');
@@ -1210,11 +1220,12 @@ async function renderTx(tx, price) {
   })();
 
   let html = mkPriceBar(price) + `
-  <div class="tx-hero">
+  <div class="tx-hero" data-txid="${tx.txid}">
     <div class="tx-status-banner ${bannerCls}" id="tx-status-banner">
       <span class="tx-status-icon">${conf ? '✓' : '⏳'}</span>
       <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>${confBadge}
     </div>
+    <div id="ln-channel-banner">${lnChannelBanner}</div>
     ${plainSummary}${privacyBadge}
     <div class="tx-hero-body">
       <div class="tx-amount-hero">${satsToBtc(total)}<span class="unit">BTC</span></div>
@@ -1261,6 +1272,16 @@ async function renderTx(tx, price) {
   });
   html += `</div></div>`;
   showResult(html);
+
+  // Detecció d'obertura de canal en segon pla (no bloqueja el render)
+  if (!lnChannel && outspends) {
+    detectChannelOpen(tx, outspends).then(open => {
+      if (!open) return;
+      const hero = document.querySelector('.tx-hero');
+      const c = document.getElementById('ln-channel-banner');
+      if (c && hero && hero.dataset.txid === tx.txid) c.innerHTML = lnOpenBannerHtml(open);
+    }).catch(() => {});
+  }
 }
 
 function renderAddress(addr, addrType, info, txs, price, utxos = null) {
@@ -1654,6 +1675,79 @@ function renderLnInvoice(d, price) {
   html += `<p class="summary-note">⚠️ Lightning enruta amb <em>onion routing</em>: la ruta real que segueix un pagament és privada i no queda registrada enlloc públic. Aquests <em>route hints</em> són l'única informació d'enrutament que viatja dins la factura.</p></div>`;
 
   showResult(html);
+}
+
+// ── Detecció de canals Lightning on-chain ─────────────────────────────────────
+// Una sortida de finançament d'un canal és un multisig 2-de-2 en P2WSH. El seu
+// witness script (5221…52ae) només es revela quan es gasta (al tancament).
+function isMultisig2of2Script(hex) {
+  return typeof hex === 'string' && /^5221[0-9a-f]{66}21[0-9a-f]{66}52ae$/i.test(hex);
+}
+function detectLightningChannel(tx) {
+  const vins = tx.vin || [];
+  for (let i = 0; i < vins.length; i++) {
+    const v = vins[i];
+    if (v.is_coinbase || !v.prevout) continue;
+    if (v.prevout.scriptpubkey_type !== 'v0_p2wsh') continue;
+    const w = v.witness;
+    if (!Array.isArray(w) || !w.length) continue;
+    const script = w[w.length - 1];
+    if (!isMultisig2of2Script(script)) continue;
+    const pk1 = script.slice(4, 70), pk2 = script.slice(72, 138);
+    // commitment tx (force close): nSequence comença per 0x80 i nLockTime per 0x20
+    const seq = (v.sequence >>> 0), lt = ((tx.locktime || 0) >>> 0);
+    const isForce = (seq >>> 24) === 0x80 && (lt >>> 24) === 0x20;
+    return { closeType: isForce ? 'force' : 'coop', inputIndex: i, fundingTxid: v.txid, fundingVout: v.vout, pubkeys: [pk1, pk2] };
+  }
+  return null;
+}
+function lnNodesHtml(pubkeys) {
+  return pubkeys.map(pk => `<span class="lc-link" onclick="window.open('https://mempool.space/lightning/node/${pk}','_blank','noopener')" title="${pk}">${pk.slice(0, 18)}…</span>`).join(' &nbsp;·&nbsp; ');
+}
+function lnCloseBannerHtml(info) {
+  const isForce = info.closeType === 'force';
+  const badge = isForce ? `<span class="lc-force">forçat</span>` : `<span class="lc-coop">cooperatiu</span>`;
+  const desc = isForce
+    ? 'Un dels dos participants ha tancat el canal unilateralment (commitment transaction).'
+    : 'Els dos participants han tancat el canal de mutu acord.';
+  return `<div class="ln-channel">
+    <div class="lc-title">⚡ Tancament de canal Lightning ${badge}</div>
+    <div class="lc-sub">${desc} Gasta la sortida multisig 2-de-2 del finançament.</div>
+    <div class="lc-sub">📌 Canal obert a: <span class="lc-link" onclick="searchTx('${info.fundingTxid}')" title="${info.fundingTxid}">${info.fundingTxid.slice(0, 18)}…:${info.fundingVout}</span></div>
+    <div class="lc-sub">🔗 Nodes del canal: ${lnNodesHtml(info.pubkeys)}</div>
+  </div>`;
+}
+function lnOpenBannerHtml(info) {
+  return `<div class="ln-channel">
+    <div class="lc-title">⚡ Obertura de canal Lightning <span class="lc-open">finançament</span></div>
+    <div class="lc-sub">La sortida #${info.vout} és el multisig 2-de-2 que finança un canal Lightning.</div>
+    <div class="lc-sub">📌 Canal tancat per: <span class="lc-link" onclick="searchTx('${info.closeTxid}')" title="${info.closeTxid}">${info.closeTxid.slice(0, 18)}…</span> (${info.closeType === 'force' ? 'forçat' : 'cooperatiu'})</div>
+    <div class="lc-sub">🔗 Nodes del canal: ${lnNodesHtml(info.pubkeys)}</div>
+  </div>`;
+}
+async function fetchTxQuiet(txid) {
+  const hit = apiCache.get('/tx/' + txid);
+  if (hit && Date.now() - hit.ts < CACHE_TTL) return hit.data;
+  for (const base of ['https://mempool.space/api', 'https://blockstream.info/api']) {
+    try { const r = await fetch(base + '/tx/' + txid, { signal: AbortSignal.timeout(8000) }); if (r.ok) { const d = await r.json(); apiCache.set('/tx/' + txid, { data: d, ts: Date.now() }); return d; } } catch {}
+  }
+  return null;
+}
+async function detectChannelOpen(tx, outspends) {
+  if (!outspends) return null;
+  const outs = tx.vout || [], candidates = [];
+  for (let i = 0; i < outs.length; i++) {
+    if (outs[i].scriptpubkey_type === 'v0_p2wsh' && outspends[i] && outspends[i].spent && outspends[i].txid)
+      candidates.push({ vout: i, spendTxid: outspends[i].txid });
+  }
+  for (const c of candidates.slice(0, 2)) {
+    const spendTx = await fetchTxQuiet(c.spendTxid);
+    if (!spendTx) continue;
+    const det = detectLightningChannel(spendTx);
+    if (det && det.fundingTxid === tx.txid && det.fundingVout === c.vout)
+      return { vout: c.vout, closeTxid: c.spendTxid, closeType: det.closeType, pubkeys: det.pubkeys };
+  }
+  return null;
 }
 
 // ── Utilitats UI ──────────────────────────────────────────────────────────────
