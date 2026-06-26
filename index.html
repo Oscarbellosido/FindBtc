@@ -507,7 +507,12 @@ const I18N = {
     sum_all_spent: '<strong>Totes les sortides gastades</strong>: els fons han continuat movent-se.',
     sum_some_spent: '<strong>{spent} de {total} sortides gastades</strong>: part dels fons ha continuat movent-se.',
     sum_from_label: "D'on venen els fons", sum_heuristic: 'Heurística sobre dades públiques de la blockchain.',
-    flow_none: '— cap a la mostra analitzada —', flow_mining: '⛏ Mineria (BTC de nova creació)', flow_opreturn: 'OP_RETURN (dades, sense valor)', flow_more: '… i {addrs} més'
+    flow_none: '— cap a la mostra analitzada —', flow_mining: '⛏ Mineria (BTC de nova creació)', flow_opreturn: 'OP_RETURN (dades, sense valor)', flow_more: '… i {addrs} més',
+    track_title: '📡 Seguiment en temps real', track_stop: '✕ Aturar', loading: 'Carregant…', track_updating: 'Actualitzant en {n}s…',
+    eta_next_block: '~10 min (proper bloc)', eta_30: '~30 min', eta_1h: '~1 hora', eta_1_4h: '1–4 hores', eta_uncertain: 'incert (tarifa molt baixa)',
+    track_mempool_status: 'La transacció és al mempool, esperant ser inclosa en un bloc.', track_in_block: 'Inclosa al bloc #{h} · <strong>{c} de 6 confirmacions</strong>', track_confirmed: '✅ Confirmada al bloc #{h} · <strong>{conf}</strong>',
+    track_fee_paid: 'Comissió pagada:', track_fee_recommended: 'Recomanat ara:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1a confirmació', ph_confirmed: '🟢 Confirmada (6/6 ✓)',
+    track_updated: 'Actualitzat: {time}', track_done: 'Seguiment completat ✓', notif_confirmed_title: 'FindBtc — ✅ Transacció confirmada', notif_confirmed_body: 'Confirmada al bloc #{h} · {conf}'
   },
   es: {
     subtitle: 'Explorador de blockchain Bitcoin',
@@ -555,7 +560,12 @@ const I18N = {
     sum_all_spent: '<strong>Todas las salidas gastadas</strong>: los fondos han seguido moviéndose.',
     sum_some_spent: '<strong>{spent} de {total} salidas gastadas</strong>: parte de los fondos ha seguido moviéndose.',
     sum_from_label: 'De dónde vienen los fondos', sum_heuristic: 'Heurística sobre datos públicos de la blockchain.',
-    flow_none: '— ninguno en la muestra analizada —', flow_mining: '⛏ Minería (BTC de nueva creación)', flow_opreturn: 'OP_RETURN (datos, sin valor)', flow_more: '… y {addrs} más'
+    flow_none: '— ninguno en la muestra analizada —', flow_mining: '⛏ Minería (BTC de nueva creación)', flow_opreturn: 'OP_RETURN (datos, sin valor)', flow_more: '… y {addrs} más',
+    track_title: '📡 Seguimiento en tiempo real', track_stop: '✕ Detener', loading: 'Cargando…', track_updating: 'Actualizando en {n}s…',
+    eta_next_block: '~10 min (próximo bloque)', eta_30: '~30 min', eta_1h: '~1 hora', eta_1_4h: '1–4 horas', eta_uncertain: 'incierto (tarifa muy baja)',
+    track_mempool_status: 'La transacción está en el mempool, esperando ser incluida en un bloque.', track_in_block: 'Incluida en el bloque #{h} · <strong>{c} de 6 confirmaciones</strong>', track_confirmed: '✅ Confirmada en el bloque #{h} · <strong>{conf}</strong>',
+    track_fee_paid: 'Comisión pagada:', track_fee_recommended: 'Recomendado ahora:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1ª confirmación', ph_confirmed: '🟢 Confirmada (6/6 ✓)',
+    track_updated: 'Actualizado: {time}', track_done: 'Seguimiento completado ✓', notif_confirmed_title: 'FindBtc — ✅ Transacción confirmada', notif_confirmed_body: 'Confirmada en el bloque #{h} · {conf}'
   },
   en: {
     subtitle: 'Bitcoin blockchain explorer',
@@ -603,7 +613,12 @@ const I18N = {
     sum_all_spent: '<strong>All outputs spent</strong>: the funds have kept moving.',
     sum_some_spent: '<strong>{spent} of {total} outputs spent</strong>: part of the funds has kept moving.',
     sum_from_label: 'Where the funds come from', sum_heuristic: 'Heuristic over public blockchain data.',
-    flow_none: '— none in the analyzed sample —', flow_mining: '⛏ Mining (newly created BTC)', flow_opreturn: 'OP_RETURN (data, no value)', flow_more: '… and {addrs} more'
+    flow_none: '— none in the analyzed sample —', flow_mining: '⛏ Mining (newly created BTC)', flow_opreturn: 'OP_RETURN (data, no value)', flow_more: '… and {addrs} more',
+    track_title: '📡 Real-time tracking', track_stop: '✕ Stop', loading: 'Loading…', track_updating: 'Updating in {n}s…',
+    eta_next_block: '~10 min (next block)', eta_30: '~30 min', eta_1h: '~1 hour', eta_1_4h: '1–4 hours', eta_uncertain: 'uncertain (very low fee)',
+    track_mempool_status: 'The transaction is in the mempool, waiting to be included in a block.', track_in_block: 'Included in block #{h} · <strong>{c} of 6 confirmations</strong>', track_confirmed: '✅ Confirmed in block #{h} · <strong>{conf}</strong>',
+    track_fee_paid: 'Fee paid:', track_fee_recommended: 'Recommended now:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1st confirmation', ph_confirmed: '🟢 Confirmed (6/6 ✓)',
+    track_updated: 'Updated: {time}', track_done: 'Tracking completed ✓', notif_confirmed_title: 'FindBtc — ✅ Transaction confirmed', notif_confirmed_body: 'Confirmed in block #{h} · {conf}'
   }
 };
 function t(key, params) {
@@ -698,7 +713,7 @@ async function startTracking(txid) {
   trackState = { txid, mainInterval: null, countInterval: null, countdown: 30 };
   const el = document.getElementById('tracker');
   el.style.display = 'block';
-  el.innerHTML = `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div style="color:#555;text-align:center;padding:0.5rem;font-size:0.8rem"><span class="spinner"></span>Carregant…</div></div>`;
+  el.innerHTML = `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">${t('track_title')}</span><button class="tracker-stop" onclick="stopTracking()">${t('track_stop')}</button></div><div style="color:#555;text-align:center;padding:0.5rem;font-size:0.8rem"><span class="spinner"></span>${t('loading')}</div></div>`;
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
   await doTrackerTick();
@@ -712,7 +727,7 @@ function startCountdown() {
     if (!trackState) return;
     trackState.countdown = Math.max(0, trackState.countdown - 1);
     const el = document.getElementById('trk-countdown');
-    if (el) el.textContent = `Actualitzant en ${trackState.countdown}s…`;
+    if (el) el.textContent = t('track_updating', { n: trackState.countdown });
   }, 1000);
 }
 function stopTracking() {
@@ -752,7 +767,7 @@ async function doTrackerTick() {
     if (trackerEl) trackerEl.innerHTML = buildTrackerHtml(tx, confs, fees);
     updateStatusBanner(tx, confs);
     if (confs >= 6) {
-      if ('Notification' in window && Notification.permission === 'granted') new Notification('FindBtc — ✅ Transacció confirmada', { body: `Confirmada al bloc #${blockH} · ${confs} confirmacions` });
+      if ('Notification' in window && Notification.permission === 'granted') new Notification(t('notif_confirmed_title'), { body: t('notif_confirmed_body', { h: blockH, conf: pl(confs, 'conf') }) });
       if (trackState) { clearInterval(trackState.mainInterval); clearInterval(trackState.countInterval); trackState.mainInterval = null; trackState.countInterval = null; }
     } else if (trackState) { startCountdown(); }
   } catch {}
@@ -767,25 +782,25 @@ function calcFeeRate(tx) {
 function estimateEta(feeRate, fees) {
   if (!feeRate || !fees) return null;
   const r = parseFloat(feeRate);
-  if (r >= fees.fastestFee)  return '~10 min (proper bloc)';
-  if (r >= fees.halfHourFee) return '~30 min';
-  if (r >= fees.hourFee)     return '~1 hora';
-  if (r >= fees.economyFee)  return '1–4 hores';
-  return 'incert (tarifa molt baixa)';
+  if (r >= fees.fastestFee)  return t('eta_next_block');
+  if (r >= fees.halfHourFee) return t('eta_30');
+  if (r >= fees.hourFee)     return t('eta_1h');
+  if (r >= fees.economyFee)  return t('eta_1_4h');
+  return t('eta_uncertain');
 }
 function buildTrackerHtml(tx, confs, fees) {
   const conf = tx.status && tx.status.confirmed; const blockH = tx.status && tx.status.block_height;
   const feeRate = calcFeeRate(tx); const eta = !conf ? estimateEta(feeRate, fees) : null; const done = confs >= 6;
   let ph1, ph2, ph3, barCls, barStyle, statusMsg;
-  if (!conf) { ph1='ph-active'; ph2='ph-inactive'; ph3='ph-inactive'; barCls='tbf-mempool'; barStyle=''; statusMsg='La transacció és al mempool, esperant ser inclosa en un bloc.'; }
-  else if (!done) { ph1='ph-done'; ph2='ph-partial'; ph3='ph-inactive'; barCls='tbf-partial'; barStyle=`style="width:${Math.round(confs/6*100)}%"`; statusMsg=`Inclosa al bloc #${blockH} · <strong>${confs} de 6 confirmacions</strong>`; }
-  else { ph1='ph-done'; ph2='ph-done'; ph3='ph-done'; barCls='tbf-done'; barStyle='style="width:100%"'; statusMsg=`✅ Confirmada al bloc #${blockH} · <strong>${confs} confirmacions</strong>`; }
-  const feeRow = feeRate ? `<div class="tracker-fee-row">Fee pagada: <strong>${feeRate} sat/vB</strong>${fees&&fees.fastestFee?` &nbsp;·&nbsp; Recomanat ara: <strong>${fees.fastestFee} sat/vB</strong>`:''}${eta?` &nbsp;→&nbsp; <span class="tracker-eta">⏱ ${eta}</span>`:''}</div>` : '';
-  return `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div class="tracker-phases"><div class="ph ${ph1}">🟡 Mempool</div><div class="ph-arrow">→</div><div class="ph ${ph2}">🟠 ${conf&&!done?`${confs}/6 conf.`:'1a confirmació'}</div><div class="ph-arrow">→</div><div class="ph ${ph3}">🟢 Confirmada (6/6 ✓)</div></div><div class="tracker-bar-wrap"><div class="tracker-bar-fill ${barCls}" ${barStyle}></div></div><div class="tracker-status">${statusMsg}</div>${feeRow}<div class="tracker-footer"><span>Actualitzat: ${new Date().toLocaleTimeString(loc())}</span><span class="tracker-countdown" id="trk-countdown">${done?'Seguiment completat ✓':'Actualitzant en 30s…'}</span></div></div>`;
+  if (!conf) { ph1='ph-active'; ph2='ph-inactive'; ph3='ph-inactive'; barCls='tbf-mempool'; barStyle=''; statusMsg=t('track_mempool_status'); }
+  else if (!done) { ph1='ph-done'; ph2='ph-partial'; ph3='ph-inactive'; barCls='tbf-partial'; barStyle=`style="width:${Math.round(confs/6*100)}%"`; statusMsg=t('track_in_block', { h: blockH, c: confs }); }
+  else { ph1='ph-done'; ph2='ph-done'; ph3='ph-done'; barCls='tbf-done'; barStyle='style="width:100%"'; statusMsg=t('track_confirmed', { h: blockH, conf: pl(confs, 'conf') }); }
+  const feeRow = feeRate ? `<div class="tracker-fee-row">${t('track_fee_paid')} <strong>${feeRate} sat/vB</strong>${fees&&fees.fastestFee?` &nbsp;·&nbsp; ${t('track_fee_recommended')} <strong>${fees.fastestFee} sat/vB</strong>`:''}${eta?` &nbsp;→&nbsp; <span class="tracker-eta">⏱ ${eta}</span>`:''}</div>` : '';
+  return `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">${t('track_title')}</span><button class="tracker-stop" onclick="stopTracking()">${t('track_stop')}</button></div><div class="tracker-phases"><div class="ph ${ph1}">${t('ph_mempool')}</div><div class="ph-arrow">→</div><div class="ph ${ph2}">${conf&&!done?t('ph_conf_progress', { c: confs }):t('ph_first_conf')}</div><div class="ph-arrow">→</div><div class="ph ${ph3}">${t('ph_confirmed')}</div></div><div class="tracker-bar-wrap"><div class="tracker-bar-fill ${barCls}" ${barStyle}></div></div><div class="tracker-status">${statusMsg}</div>${feeRow}<div class="tracker-footer"><span>${t('track_updated', { time: new Date().toLocaleTimeString(loc()) })}</span><span class="tracker-countdown" id="trk-countdown">${done?t('track_done'):t('track_updating', { n: 30 })}</span></div></div>`;
 }
 function updateStatusBanner(tx, confs) {
   const el = document.getElementById('tx-status-banner'); if (!el) return;
-  if (tx.status && tx.status.confirmed) { const blk = tx.status.block_height; el.className = 'tx-status-banner confirmed'; el.innerHTML = `<span class="tx-status-icon">✓</span><span>CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}${confs>1?` &nbsp;·&nbsp; ${confs} confirmacions`:''}</span>`; }
+  if (tx.status && tx.status.confirmed) { const blk = tx.status.block_height; el.className = 'tx-status-banner confirmed'; el.innerHTML = `<span class="tx-status-icon">✓</span><span>${t('banner_confirmed_block', { blk })}${confs>1?` &nbsp;·&nbsp; ${pl(confs, 'conf')}`:''}</span>`; }
 }
 
 // ── La meva cartera ───────────────────────────────────────────────────────────
