@@ -512,7 +512,20 @@ const I18N = {
     eta_next_block: '~10 min (proper bloc)', eta_30: '~30 min', eta_1h: '~1 hora', eta_1_4h: '1–4 hores', eta_uncertain: 'incert (tarifa molt baixa)',
     track_mempool_status: 'La transacció és al mempool, esperant ser inclosa en un bloc.', track_in_block: 'Inclosa al bloc #{h} · <strong>{c} de 6 confirmacions</strong>', track_confirmed: '✅ Confirmada al bloc #{h} · <strong>{conf}</strong>',
     track_fee_paid: 'Comissió pagada:', track_fee_recommended: 'Recomanat ara:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1a confirmació', ph_confirmed: '🟢 Confirmada (6/6 ✓)',
-    track_updated: 'Actualitzat: {time}', track_done: 'Seguiment completat ✓', notif_confirmed_title: 'FindBtc — ✅ Transacció confirmada', notif_confirmed_body: 'Confirmada al bloc #{h} · {conf}'
+    track_updated: 'Actualitzat: {time}', track_done: 'Seguiment completat ✓', notif_confirmed_title: 'FindBtc — ✅ Transacció confirmada', notif_confirmed_body: 'Confirmada al bloc #{h} · {conf}',
+    age_today: 'avui', age_yesterday: 'ahir', age_ago: 'fa {x}',
+    utxo_none: '💰 Sense UTXOs (saldo zero o no carregat)', utxo_pending: '⏳ pendent', utxo_more: '… i {n} UTXOs més', utxo_available_label: '💰 UTXOs disponibles',
+    as_coinbase: 'Una part dels fons prové <strong>directament de la mineria</strong>: BTC de nova creació.',
+    as_single_source: "Tots els fons rebuts provenen d'<strong>una única font</strong>.", as_multi_source: 'Els fons arriben de <strong>{n} orígens diferents</strong>: cobraments múltiples.',
+    as_unmoved: "Els fons <strong>encara no s'han mogut</strong>: tot continua a l'adreça.", as_remaining: "Queden <strong>{btc} BTC sense gastar</strong>; la resta ja s'ha reenviat.", as_empty: "L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat.",
+    as_top_dest: 'La major part dels fons enviats ({pct}%) van anar a <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> apareix com a origen i destí: possibles moviments interns.',
+    as_period: 'Activitat analitzada: del <strong>{from}</strong> al <strong>{to}</strong>.', as_partial: 'Anàlisi basada en les {n} transaccions més recents (de {total} en total). ', as_heuristic: 'Heurística sobre dades públiques.',
+    as_from_label: "D'on han sortit els fons", as_to_label: 'Cap a on han anat',
+    addr_bitcoin: 'Adreça Bitcoin', alerts_active: '🔔 Alertes actives', alerts_enable: '🔔 Activar alertes', wallet_remove: '🗑️ Treure de la cartera', wallet_save: '👛 Guardar a la cartera',
+    stat_received: 'Rebut', stat_sent: 'Enviat', stat_transactions: 'Transaccions', stat_all_confirmed: 'totes confirmades',
+    addr_txs_title: 'Transaccions', addr_txs_recent: '({n} més recents)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sense transaccions.',
+    csv_date: 'Data (ISO)', csv_type: 'Tipus', csv_in: 'entrada', csv_out: 'sortida',
+    modal_save_title: '👛 Guardar adreça', modal_save_msg: 'Nom per a aquesta adreça (opcional):', save: 'Guardar', cancel: 'Cancel·lar', accept: 'Acceptar', saved_check: '👛 Guardada ✓'
   },
   es: {
     subtitle: 'Explorador de blockchain Bitcoin',
@@ -565,7 +578,20 @@ const I18N = {
     eta_next_block: '~10 min (próximo bloque)', eta_30: '~30 min', eta_1h: '~1 hora', eta_1_4h: '1–4 horas', eta_uncertain: 'incierto (tarifa muy baja)',
     track_mempool_status: 'La transacción está en el mempool, esperando ser incluida en un bloque.', track_in_block: 'Incluida en el bloque #{h} · <strong>{c} de 6 confirmaciones</strong>', track_confirmed: '✅ Confirmada en el bloque #{h} · <strong>{conf}</strong>',
     track_fee_paid: 'Comisión pagada:', track_fee_recommended: 'Recomendado ahora:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1ª confirmación', ph_confirmed: '🟢 Confirmada (6/6 ✓)',
-    track_updated: 'Actualizado: {time}', track_done: 'Seguimiento completado ✓', notif_confirmed_title: 'FindBtc — ✅ Transacción confirmada', notif_confirmed_body: 'Confirmada en el bloque #{h} · {conf}'
+    track_updated: 'Actualizado: {time}', track_done: 'Seguimiento completado ✓', notif_confirmed_title: 'FindBtc — ✅ Transacción confirmada', notif_confirmed_body: 'Confirmada en el bloque #{h} · {conf}',
+    age_today: 'hoy', age_yesterday: 'ayer', age_ago: 'hace {x}',
+    utxo_none: '💰 Sin UTXOs (saldo cero o no cargado)', utxo_pending: '⏳ pendiente', utxo_more: '… y {n} UTXOs más', utxo_available_label: '💰 UTXOs disponibles',
+    as_coinbase: 'Una parte de los fondos proviene <strong>directamente de la minería</strong>: BTC de nueva creación.',
+    as_single_source: 'Todos los fondos recibidos provienen de <strong>una única fuente</strong>.', as_multi_source: 'Los fondos llegan de <strong>{n} orígenes diferentes</strong>: cobros múltiples.',
+    as_unmoved: 'Los fondos <strong>aún no se han movido</strong>: todo sigue en la dirección.', as_remaining: 'Quedan <strong>{btc} BTC sin gastar</strong>; el resto ya se ha reenviado.', as_empty: 'La dirección está <strong>vacía</strong>: todos los fondos recibidos se han reenviado.',
+    as_top_dest: 'La mayor parte de los fondos enviados ({pct}%) fueron a <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> aparece como origen y destino: posibles movimientos internos.',
+    as_period: 'Actividad analizada: del <strong>{from}</strong> al <strong>{to}</strong>.', as_partial: 'Análisis basado en las {n} transacciones más recientes (de {total} en total). ', as_heuristic: 'Heurística sobre datos públicos.',
+    as_from_label: 'De dónde han salido los fondos', as_to_label: 'Hacia dónde han ido',
+    addr_bitcoin: 'Dirección Bitcoin', alerts_active: '🔔 Alertas activas', alerts_enable: '🔔 Activar alertas', wallet_remove: '🗑️ Quitar de la cartera', wallet_save: '👛 Guardar en la cartera',
+    stat_received: 'Recibido', stat_sent: 'Enviado', stat_transactions: 'Transacciones', stat_all_confirmed: 'todas confirmadas',
+    addr_txs_title: 'Transacciones', addr_txs_recent: '({n} más recientes)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sin transacciones.',
+    csv_date: 'Fecha (ISO)', csv_type: 'Tipo', csv_in: 'entrada', csv_out: 'salida',
+    modal_save_title: '👛 Guardar dirección', modal_save_msg: 'Nombre para esta dirección (opcional):', save: 'Guardar', cancel: 'Cancelar', accept: 'Aceptar', saved_check: '👛 Guardada ✓'
   },
   en: {
     subtitle: 'Bitcoin blockchain explorer',
@@ -618,7 +644,20 @@ const I18N = {
     eta_next_block: '~10 min (next block)', eta_30: '~30 min', eta_1h: '~1 hour', eta_1_4h: '1–4 hours', eta_uncertain: 'uncertain (very low fee)',
     track_mempool_status: 'The transaction is in the mempool, waiting to be included in a block.', track_in_block: 'Included in block #{h} · <strong>{c} of 6 confirmations</strong>', track_confirmed: '✅ Confirmed in block #{h} · <strong>{conf}</strong>',
     track_fee_paid: 'Fee paid:', track_fee_recommended: 'Recommended now:', ph_mempool: '🟡 Mempool', ph_conf_progress: '🟠 {c}/6 conf.', ph_first_conf: '🟠 1st confirmation', ph_confirmed: '🟢 Confirmed (6/6 ✓)',
-    track_updated: 'Updated: {time}', track_done: 'Tracking completed ✓', notif_confirmed_title: 'FindBtc — ✅ Transaction confirmed', notif_confirmed_body: 'Confirmed in block #{h} · {conf}'
+    track_updated: 'Updated: {time}', track_done: 'Tracking completed ✓', notif_confirmed_title: 'FindBtc — ✅ Transaction confirmed', notif_confirmed_body: 'Confirmed in block #{h} · {conf}',
+    age_today: 'today', age_yesterday: 'yesterday', age_ago: '{x} ago',
+    utxo_none: '💰 No UTXOs (zero balance or not loaded)', utxo_pending: '⏳ pending', utxo_more: '… and {n} more UTXOs', utxo_available_label: '💰 Available UTXOs',
+    as_coinbase: 'Part of the funds comes <strong>directly from mining</strong>: newly created BTC.',
+    as_single_source: 'All received funds come from <strong>a single source</strong>.', as_multi_source: 'Funds arrive from <strong>{n} different sources</strong>: multiple incoming payments.',
+    as_unmoved: 'The funds <strong>have not moved yet</strong>: everything remains at the address.', as_remaining: '<strong>{btc} BTC unspent</strong> remain; the rest has already been forwarded.', as_empty: 'The address is <strong>empty</strong>: all received funds have been forwarded.',
+    as_top_dest: 'Most of the sent funds ({pct}%) went to <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> appears as both source and destination: possible internal movements.',
+    as_period: 'Activity analyzed: from <strong>{from}</strong> to <strong>{to}</strong>.', as_partial: 'Analysis based on the {n} most recent transactions (of {total} total). ', as_heuristic: 'Heuristic over public data.',
+    as_from_label: 'Where the funds went out from', as_to_label: 'Where they went',
+    addr_bitcoin: 'Bitcoin address', alerts_active: '🔔 Alerts active', alerts_enable: '🔔 Enable alerts', wallet_remove: '🗑️ Remove from wallet', wallet_save: '👛 Save to wallet',
+    stat_received: 'Received', stat_sent: 'Sent', stat_transactions: 'Transactions', stat_all_confirmed: 'all confirmed',
+    addr_txs_title: 'Transactions', addr_txs_recent: '({n} most recent)', export_csv: '⬇️ Export CSV', no_txs: 'No transactions.',
+    csv_date: 'Date (ISO)', csv_type: 'Type', csv_in: 'in', csv_out: 'out',
+    modal_save_title: '👛 Save address', modal_save_msg: 'Name for this address (optional):', save: 'Save', cancel: 'Cancel', accept: 'Accept', saved_check: '👛 Saved ✓'
   }
 };
 function t(key, params) {
@@ -640,9 +679,9 @@ function applyLang() {
 function initLang() { LANG = loadLang(); applyLang(); }
 function loc() { return LANG === 'en' ? 'en-GB' : LANG; }
 const PLURALS = {
-  ca: { input: ['entrada', 'entrades'], output: ['sortida', 'sortides'], address: ['adreça', 'adreces'], conf: ['confirmació', 'confirmacions'], recipient: ['destinatari', 'destinataris'], channel: ['canal', 'canals'], hop: ['salt', 'salts'], tx: ['transacció', 'transaccions'] },
-  es: { input: ['entrada', 'entradas'], output: ['salida', 'salidas'], address: ['dirección', 'direcciones'], conf: ['confirmación', 'confirmaciones'], recipient: ['destinatario', 'destinatarios'], channel: ['canal', 'canales'], hop: ['salto', 'saltos'], tx: ['transacción', 'transacciones'] },
-  en: { input: ['input', 'inputs'], output: ['output', 'outputs'], address: ['address', 'addresses'], conf: ['confirmation', 'confirmations'], recipient: ['recipient', 'recipients'], channel: ['channel', 'channels'], hop: ['hop', 'hops'], tx: ['transaction', 'transactions'] }
+  ca: { input: ['entrada', 'entrades'], output: ['sortida', 'sortides'], address: ['adreça', 'adreces'], conf: ['confirmació', 'confirmacions'], recipient: ['destinatari', 'destinataris'], channel: ['canal', 'canals'], hop: ['salt', 'salts'], tx: ['transacció', 'transaccions'], day: ['dia', 'dies'], month: ['mes', 'mesos'], year: ['any', 'anys'], pending: ['pendent', 'pendents'] },
+  es: { input: ['entrada', 'entradas'], output: ['salida', 'salidas'], address: ['dirección', 'direcciones'], conf: ['confirmación', 'confirmaciones'], recipient: ['destinatario', 'destinatarios'], channel: ['canal', 'canales'], hop: ['salto', 'saltos'], tx: ['transacción', 'transacciones'], day: ['día', 'días'], month: ['mes', 'meses'], year: ['año', 'años'], pending: ['pendiente', 'pendientes'] },
+  en: { input: ['input', 'inputs'], output: ['output', 'outputs'], address: ['address', 'addresses'], conf: ['confirmation', 'confirmations'], recipient: ['recipient', 'recipients'], channel: ['channel', 'channels'], hop: ['hop', 'hops'], tx: ['transaction', 'transactions'], day: ['day', 'days'], month: ['month', 'months'], year: ['year', 'years'], pending: ['pending', 'pending'] }
 };
 function plw(n, base) { const a = (PLURALS[LANG] || PLURALS.ca)[base]; return n === 1 ? a[0] : a[1]; }
 function pl(n, base) { return n.toLocaleString(loc()) + ' ' + plw(n, base); }
@@ -1322,18 +1361,18 @@ async function fetchUtxos(addr) {
 function utxoAgeStr(ts) {
   if (!ts) return '';
   const days = Math.floor((Date.now() / 1000 - ts) / 86400);
-  if (days === 0) return 'avui';
-  if (days === 1) return 'ahir';
-  if (days < 30) return `fa ${days} dies`;
+  if (days === 0) return t('age_today');
+  if (days === 1) return t('age_yesterday');
+  if (days < 30) return t('age_ago', { x: pl(days, 'day') });
   const months = Math.floor(days / 30);
-  if (months < 12) return `fa ${months} mes${months > 1 ? 'os' : ''}`;
+  if (months < 12) return t('age_ago', { x: pl(months, 'month') });
   const years = Math.floor(days / 365);
-  return `fa ${years} any${years > 1 ? 's' : ''}`;
+  return t('age_ago', { x: pl(years, 'year') });
 }
 
 function buildUtxoSection(utxos, price) {
   if (!utxos) return '';
-  if (!utxos.length) return `<details class="utxo-details"><summary>💰 Sense UTXOs (saldo zero o no carregat)</summary></details>`;
+  if (!utxos.length) return `<details class="utxo-details"><summary>${t('utxo_none')}</summary></details>`;
   const total = utxos.reduce((s, u) => s + u.value, 0);
   const SHOW = 10;
   const toShow = utxos.slice(0, SHOW);
@@ -1344,11 +1383,11 @@ function buildUtxoSection(utxos, price) {
     const uFiat = fmtFiat(u.value, price);
     const ageCell = conf
       ? `<span class="utxo-age">${utxoAgeStr(ts)}</span>`
-      : `<span class="utxo-age"><span class="tx-badge pend" style="font-size:0.6rem;padding:0.1rem 0.4rem;animation:none">⏳ pendent</span></span>`;
+      : `<span class="utxo-age"><span class="tx-badge pend" style="font-size:0.6rem;padding:0.1rem 0.4rem;animation:none">${t('utxo_pending')}</span></span>`;
     return `<div class="utxo-row"><span class="utxo-txid" onclick="searchTx('${u.txid}')" title="${u.txid}">${txidS}:${u.vout}</span>${ageCell}<span class="utxo-amt">${satsToBtc(u.value)} BTC${uFiat ? ` <span class="utxo-fiat">(${uFiat})</span>` : ''}</span></div>`;
-  }).join('') + (hidden > 0 ? `<div class="utxo-row utxo-more"><span>… i ${hidden} UTXOs més</span></div>` : '');
+  }).join('') + (hidden > 0 ? `<div class="utxo-row utxo-more"><span>${t('utxo_more', { n: hidden })}</span></div>` : '');
   const tFiat = fmtFiat(total, price);
-  return `<details class="utxo-details"><summary>💰 UTXOs disponibles (${utxos.length}) &nbsp;·&nbsp; Total: <strong>${satsToBtc(total)} BTC</strong>${tFiat ? ` &nbsp;·&nbsp; ${tFiat}` : ''}</summary><div class="utxo-list">${rows}</div></details>`;
+  return `<details class="utxo-details"><summary>${t('utxo_available_label')} (${utxos.length}) &nbsp;·&nbsp; Total: <strong>${satsToBtc(total)} BTC</strong>${tFiat ? ` &nbsp;·&nbsp; ${tFiat}` : ''}</summary><div class="utxo-list">${rows}</div></details>`;
 }
 
 // ── Anàlisi de privadesa ──────────────────────────────────────────────────────
@@ -1413,18 +1452,18 @@ function buildAddressSummary(addr, info, txs, price) {
     else if (sent > 0) { outTx++; (tx.vout||[]).forEach(o=>{ const a=o.scriptpubkey_address; if(a===addr) return; if(o.scriptpubkey_type==='op_return'){addFlow(dests,'op_return',0);return;} addFlow(dests,a||'nostd',o.value||0); }); }
   }
   const p = [];
-  if (coinbase) p.push(`Una part dels fons prové <strong>directament de la mineria</strong>: BTC de nova creació.`);
-  if (origins.size===1&&!coinbase) p.push(`Tots els fons rebuts provenen d'<strong>una única font</strong>.`);
-  else if (origins.size>5) p.push(`Els fons arriben de <strong>${origins.size} orígens diferents</strong>: cobraments múltiples.`);
-  if (bal>0&&outTx===0) p.push(`Els fons <strong>encara no s'han mogut</strong>: tot continua a l'adreça.`);
-  else if (bal>0) p.push(`Queden <strong>${satsToBtc(bal)} BTC sense gastar</strong>; la resta ja s'ha reenviat.`);
-  else if (outTx>0) p.push(`L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat.`);
+  if (coinbase) p.push(t('as_coinbase'));
+  if (origins.size===1&&!coinbase) p.push(t('as_single_source'));
+  else if (origins.size>5) p.push(t('as_multi_source', { n: origins.size }));
+  if (bal>0&&outTx===0) p.push(t('as_unmoved'));
+  else if (bal>0) p.push(t('as_remaining', { btc: satsToBtc(bal) }));
+  else if (outTx>0) p.push(t('as_empty'));
   const dEntries=[...dests.entries()].filter(([k])=>k!=='op_return'); const totalOut=dEntries.reduce((s,[,v])=>s+v.sats,0);
-  if (dEntries.length>1&&totalOut>0) { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; if(top[1].sats/totalOut>0.7) p.push(`La major part dels fons enviats (${Math.round(top[1].sats/totalOut*100)}%) van anar a <strong>${shortAddr(top[0])}</strong>.`); }
-  for (const [k] of origins) { if (dests.has(k)) { p.push(`<strong>${shortAddr(k)}</strong> apareix com a origen i destí: possibles moviments interns.`); break; } }
-  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs*1000).toLocaleDateString(loc())}</strong> al <strong>${new Date(lastTs*1000).toLocaleDateString(loc())}</strong>.`);
+  if (dEntries.length>1&&totalOut>0) { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; if(top[1].sats/totalOut>0.7) p.push(t('as_top_dest', { pct: Math.round(top[1].sats/totalOut*100), addr: shortAddr(top[0]) })); }
+  for (const [k] of origins) { if (dests.has(k)) { p.push(t('as_internal', { addr: shortAddr(k) })); break; } }
+  if (firstTs) p.push(t('as_period', { from: new Date(firstTs*1000).toLocaleDateString(loc()), to: new Date(lastTs*1000).toLocaleDateString(loc()) }));
   const partial = (cs.tx_count||0) > txs.length;
-  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on han sortit els fons</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>Cap a on han anat</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?`Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count||0).toLocaleString(loc())} en total). `:''}Heurística sobre dades públiques.</p></div>`;
+  return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('as_from_label')}</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>${t('as_to_label')}</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?t('as_partial', { n: txs.length, total: (cs.tx_count||0).toLocaleString(loc()) }):''}${t('as_heuristic')}</p></div>`;
 }
 
 function buildTxSummary(tx, price, outspends, inAddrSet) {
@@ -1565,35 +1604,36 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
   const alertActive = isAlertActive(addr);
   const walletEntry = loadSavedWallet().find(e => e.addr === addr);
   const safeName = walletEntry?.name ? walletEntry.name.replace(/'/g,"\\'") : (addrDisp.replace(/'/g,"\\'"));
+  _rerender = () => renderAddress(addr, addrType, info, txs, price, utxos);
 
   let html = mkPriceBar(price) + `
   <div class="addr-hero">
     <div class="addr-hero-top">
       <div class="addr-hero-sublabel">
-        Adreça Bitcoin
+        ${t('addr_bitcoin')}
         ${addrType ? `<span class="addr-type-badge">${addrType}</span>` : ''}
         ${selfLabel ? `<span class="entity-badge">${selfLabel.icon} ${selfLabel.name}</span>` : ''}
-        <button class="bell-btn${alertActive ? ' active' : ''}" id="alert-btn-${addr}" onclick="toggleAlert('${addr}','${safeName}')" style="margin-left:auto">${alertActive ? '🔔 Alertes actives' : '🔔 Activar alertes'}</button>
+        <button class="bell-btn${alertActive ? ' active' : ''}" id="alert-btn-${addr}" onclick="toggleAlert('${addr}','${safeName}')" style="margin-left:auto">${alertActive ? t('alerts_active') : t('alerts_enable')}</button>
         ${walletEntry
-          ? `<button class="wai-del-btn" onclick="removeAddrConfirm('${addr}')">🗑️ Treure de la cartera</button>`
-          : `<button class="wallet-add-btn" onclick="addToWalletFromCard('${addr}')">👛 Guardar a la cartera</button>`}
+          ? `<button class="wai-del-btn" onclick="removeAddrConfirm('${addr}')">${t('wallet_remove')}</button>`
+          : `<button class="wallet-add-btn" onclick="addToWalletFromCard('${addr}')">${t('wallet_save')}</button>`}
       </div>
-      <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button> <button class="copy-btn" onclick="showAddrQr('${addr}')">📱 QR</button></div>
+      <div class="addr-str">${addrDisp} <button class="copy-btn" onclick="copyText('${addr}',this)">${t('copy')}</button> <button class="copy-btn" onclick="showAddrQr('${addr}')">📱 QR</button></div>
     </div>
     <div class="addr-balance-hero">${satsToBtc(bal)}<span class="unit"> BTC</span></div>
     ${fmtFiat(bal,price) ? `<div class="addr-fiat-hero">${fmtFiat(bal,price)}</div>` : ''}
     <div class="addr-stats-row">
-      <div class="addr-stat"><div class="lbl"><span class="arrow dn">↓</span> Rebut</div><div class="v grn">${satsToBtc(rcv)} BTC</div>${fmtFiat(rcv,price)?`<div class="sub">${fmtFiat(rcv,price)}</div>`:''}</div>
-      <div class="addr-stat"><div class="lbl"><span class="arrow up">↑</span> Enviat</div><div class="v red">${satsToBtc(snt)} BTC</div>${fmtFiat(snt,price)?`<div class="sub">${fmtFiat(snt,price)}</div>`:''}</div>
-      <div class="addr-stat"><div class="lbl">Transaccions</div><div class="v neu">${cnt.toLocaleString(loc())}</div><div class="sub">${ms.tx_count ? ms.tx_count+' pendents' : 'totes confirmades'}</div></div>
+      <div class="addr-stat"><div class="lbl"><span class="arrow dn">↓</span> ${t('stat_received')}</div><div class="v grn">${satsToBtc(rcv)} BTC</div>${fmtFiat(rcv,price)?`<div class="sub">${fmtFiat(rcv,price)}</div>`:''}</div>
+      <div class="addr-stat"><div class="lbl"><span class="arrow up">↑</span> ${t('stat_sent')}</div><div class="v red">${satsToBtc(snt)} BTC</div>${fmtFiat(snt,price)?`<div class="sub">${fmtFiat(snt,price)}</div>`:''}</div>
+      <div class="addr-stat"><div class="lbl">${t('stat_transactions')}</div><div class="v neu">${cnt.toLocaleString(loc())}</div><div class="sub">${ms.tx_count ? pl(ms.tx_count, 'pending') : t('stat_all_confirmed')}</div></div>
     </div>
     ${buildUtxoSection(utxos, price)}
   </div>` + buildAddressSummary(addr, info, txs, price) + `
   <div class="card">
-    <h2 style="justify-content:space-between">Transaccions <span style="color:#555;font-size:0.8rem">(${txs.length} més recents)</span><button class="btn-sec" onclick="exportAddrCsv()" style="font-size:0.73rem;padding:0.28rem 0.65rem;margin-left:auto">⬇️ Exportar CSV</button></h2>
+    <h2 style="justify-content:space-between">${t('addr_txs_title')} <span style="color:#555;font-size:0.8rem">${t('addr_txs_recent', { n: txs.length })}</span><button class="btn-sec" onclick="exportAddrCsv()" style="font-size:0.73rem;padding:0.28rem 0.65rem;margin-left:auto">${t('export_csv')}</button></h2>
     <div class="tx-list">`;
 
-  if (!txs.length) { html += `<p style="color:#555;text-align:center;padding:1.25rem">Sense transaccions.</p>`; }
+  if (!txs.length) { html += `<p style="color:#555;text-align:center;padding:1.25rem">${t('no_txs')}</p>`; }
   else { txs.forEach(tx => {
     const conf = tx.status && tx.status.confirmed;
     const rcvAmt = (tx.vout||[]).filter(o=>o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
@@ -1609,7 +1649,7 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
 function exportAddrCsv() {
   if (!_lastAddrExportData) return;
   const { addr, txs, price } = _lastAddrExportData;
-  const rows = [['Data (ISO)', 'TXID', 'Tipus', 'BTC', 'EUR', 'USD']];
+  const rows = [[t('csv_date'), 'TXID', t('csv_type'), 'BTC', 'EUR', 'USD']];
   for (const tx of txs) {
     const rcvAmt = (tx.vout||[]).filter(o=>o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
     const sntAmt = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address===addr).reduce((s,v)=>s+(v.prevout.value||0),0);
@@ -1618,7 +1658,7 @@ function exportAddrCsv() {
     const dateISO = tx.status?.block_time ? new Date(tx.status.block_time*1000).toISOString() : '';
     const eur = price ? (net/1e8*price.eur).toFixed(2) : '';
     const usd = price ? (net/1e8*price.usd).toFixed(2) : '';
-    rows.push([dateISO, tx.txid, isRcv ? 'entrada' : 'sortida', btcAmt, eur, usd]);
+    rows.push([dateISO, tx.txid, isRcv ? t('csv_in') : t('csv_out'), btcAmt, eur, usd]);
   }
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
   const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
@@ -1628,12 +1668,12 @@ function exportAddrCsv() {
 }
 
 async function addToWalletFromCard(addr) {
-  const name = await showModal({ title: '👛 Guardar adreça', message: 'Nom per a aquesta adreça (opcional):', input: true, confirmText: 'Guardar', cancelText: 'Cancel·lar' });
+  const name = await showModal({ title: t('modal_save_title'), message: t('modal_save_msg'), input: true, confirmText: t('save'), cancelText: t('cancel') });
   if (name === null) return;
   const res = addAddrToWallet(addr, name);
-  if (res.error) { await showModal({ title: '⚠️ Error', message: res.error, confirmText: 'Acceptar' }); return; }
+  if (res.error) { await showModal({ title: '⚠️ Error', message: res.error, confirmText: t('accept') }); return; }
   const btn = document.querySelector(`[onclick="addToWalletFromCard('${addr}')"]`);
-  if (btn) { btn.textContent = '👛 Guardada ✓'; btn.disabled = true; }
+  if (btn) { btn.textContent = t('saved_check'); btn.disabled = true; }
 }
 
 // ── Generador de codis QR (mode byte · nivell M · algorisme de K. Arase, MIT) ──
