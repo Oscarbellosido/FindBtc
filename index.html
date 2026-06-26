@@ -474,7 +474,21 @@ const I18N = {
     err_invoice: 'Factura Lightning no vàlida: ', err_invoice_fmt: 'format incorrecte', err_query: 'Error en la consulta.',
     err_node_load: "No s'ha pogut carregar el node. L'API Lightning de mempool.space sovint va lenta des d'aquí; torna-ho a provar.",
     err_node_search: "No s'ha pogut cercar. L'API Lightning de mempool.space sovint va lenta des d'aquí; torna-ho a provar.",
-    offer_unrecognized: '⚠ Format no reconegut (txid, adreça, factura <code>lnbc…</code> o pubkey de node).', offer_search_node: 'Cercar un node Lightning anomenat «{q}»', load_nodes_search: 'Cercant nodes Lightning «{q}»…'
+    offer_unrecognized: '⚠ Format no reconegut (txid, adreça, factura <code>lnbc…</code> o pubkey de node).', offer_search_node: 'Cercar un node Lightning anomenat «{q}»', load_nodes_search: 'Cercant nodes Lightning «{q}»…',
+    pending: 'Pendent', price_btc: 'Preu BTC:', not_available: 'no disponible', copy: 'copiar', copied: 'copiat!',
+    banner_confirmed_block: 'CONFIRMADA &nbsp;·&nbsp; Bloc #{blk}', banner_unconfirmed: 'PENDENT — SENSE CONFIRMAR (mempool)', unconfirmed: 'No confirmada',
+    price_at_time: '📅 Preu en aquell moment', price_current_today: "preu actual (tx d'avui)",
+    label_date: 'Data', label_fee: 'Tarifa', label_size: 'Mida', label_inputs: 'Entrades', label_outputs: 'Sortides', label_weight: 'Pes',
+    mining_short: '⛏ Mineria', dest_sent_to: '💸 Fons enviats a:', track_btn: '📡 Seguir en temps real', tech_details: 'Detalls tècnics',
+    recipients_title: 'Adreces destinatàries', opreturn_data: 'OP_RETURN (dades)', nonstd_script: 'Script no estàndard',
+    tag_change: 'canvi', tag_change_title: "Torna a una adreça d'origen: canvi de l'emissor", tag_spent: 'gastada →', tag_spent_title: 'Sortida gastada: clica per seguir els fons', tag_unspent: 'sense gastar', tag_unspent_title: 'Els fons encara són en aquesta adreça',
+    pv_coinjoin: '🔒 Possible CoinJoin — privadesa alta', pv_coinjoin_detail: '{inputs}, {outputs} amb valor similar',
+    pv_segwit: "✓ SegWit/Taproot pur — bona higiene d'adreces", pv_segwit_detail: 'Tots els inputs i outputs usen formats moderns',
+    pv_batching: "⚠ Batching evident — típic d'exchange o servei", pv_batching_detail: '{recipients} des de {inputs}',
+    pv_mix: "⚠ Barreja de tipus d'adreces — menys privat", pv_mix_detail: 'Input/output amb Legacy i SegWit simultàniament',
+    ch_force: 'forçat', ch_coop: 'cooperatiu', ch_close_force_desc: 'Un dels dos participants ha tancat el canal unilateralment (commitment transaction).', ch_close_coop_desc: 'Els dos participants han tancat el canal de mutu acord.',
+    ch_close_title: '⚡ Tancament de canal Lightning', ch_close_spends: 'Gasta la sortida multisig 2-de-2 del finançament.', ch_opened_at: '📌 Canal obert a:', ch_nodes: '🔗 Nodes del canal:',
+    ch_open_title: '⚡ Obertura de canal Lightning', ch_open_funding: 'finançament', ch_open_desc: 'La sortida #{vout} és el multisig 2-de-2 que finança un canal Lightning.', ch_closed_by: '📌 Canal tancat per:'
   },
   es: {
     subtitle: 'Explorador de blockchain Bitcoin',
@@ -489,7 +503,21 @@ const I18N = {
     err_invoice: 'Factura Lightning no válida: ', err_invoice_fmt: 'formato incorrecto', err_query: 'Error en la consulta.',
     err_node_load: 'No se ha podido cargar el nodo. La API Lightning de mempool.space suele ir lenta desde aquí; inténtalo de nuevo.',
     err_node_search: 'No se ha podido buscar. La API Lightning de mempool.space suele ir lenta desde aquí; inténtalo de nuevo.',
-    offer_unrecognized: '⚠ Formato no reconocido (txid, dirección, factura <code>lnbc…</code> o pubkey de nodo).', offer_search_node: 'Buscar un nodo Lightning llamado «{q}»', load_nodes_search: 'Buscando nodos Lightning «{q}»…'
+    offer_unrecognized: '⚠ Formato no reconocido (txid, dirección, factura <code>lnbc…</code> o pubkey de nodo).', offer_search_node: 'Buscar un nodo Lightning llamado «{q}»', load_nodes_search: 'Buscando nodos Lightning «{q}»…',
+    pending: 'Pendiente', price_btc: 'Precio BTC:', not_available: 'no disponible', copy: 'copiar', copied: '¡copiado!',
+    banner_confirmed_block: 'CONFIRMADA &nbsp;·&nbsp; Bloque #{blk}', banner_unconfirmed: 'PENDIENTE — SIN CONFIRMAR (mempool)', unconfirmed: 'No confirmada',
+    price_at_time: '📅 Precio en aquel momento', price_current_today: 'precio actual (tx de hoy)',
+    label_date: 'Fecha', label_fee: 'Tarifa', label_size: 'Tamaño', label_inputs: 'Entradas', label_outputs: 'Salidas', label_weight: 'Peso',
+    mining_short: '⛏ Minería', dest_sent_to: '💸 Fondos enviados a:', track_btn: '📡 Seguir en tiempo real', tech_details: 'Detalles técnicos',
+    recipients_title: 'Direcciones destinatarias', opreturn_data: 'OP_RETURN (datos)', nonstd_script: 'Script no estándar',
+    tag_change: 'cambio', tag_change_title: 'Vuelve a una dirección de origen: cambio del emisor', tag_spent: 'gastada →', tag_spent_title: 'Salida gastada: clica para seguir los fondos', tag_unspent: 'sin gastar', tag_unspent_title: 'Los fondos aún están en esta dirección',
+    pv_coinjoin: '🔒 Posible CoinJoin — privacidad alta', pv_coinjoin_detail: '{inputs}, {outputs} con valor similar',
+    pv_segwit: '✓ SegWit/Taproot puro — buena higiene de direcciones', pv_segwit_detail: 'Todos los inputs y outputs usan formatos modernos',
+    pv_batching: '⚠ Batching evidente — típico de exchange o servicio', pv_batching_detail: '{recipients} desde {inputs}',
+    pv_mix: '⚠ Mezcla de tipos de direcciones — menos privado', pv_mix_detail: 'Input/output con Legacy y SegWit simultáneamente',
+    ch_force: 'forzado', ch_coop: 'cooperativo', ch_close_force_desc: 'Uno de los dos participantes ha cerrado el canal unilateralmente (commitment transaction).', ch_close_coop_desc: 'Los dos participantes han cerrado el canal de mutuo acuerdo.',
+    ch_close_title: '⚡ Cierre de canal Lightning', ch_close_spends: 'Gasta la salida multisig 2-de-2 de la financiación.', ch_opened_at: '📌 Canal abierto en:', ch_nodes: '🔗 Nodos del canal:',
+    ch_open_title: '⚡ Apertura de canal Lightning', ch_open_funding: 'financiación', ch_open_desc: 'La salida #{vout} es el multisig 2-de-2 que financia un canal Lightning.', ch_closed_by: '📌 Canal cerrado por:'
   },
   en: {
     subtitle: 'Bitcoin blockchain explorer',
@@ -504,7 +532,21 @@ const I18N = {
     err_invoice: 'Invalid Lightning invoice: ', err_invoice_fmt: 'incorrect format', err_query: 'Query error.',
     err_node_load: 'Could not load the node. The mempool.space Lightning API is often slow from here; please try again.',
     err_node_search: 'Search failed. The mempool.space Lightning API is often slow from here; please try again.',
-    offer_unrecognized: '⚠ Unrecognized format (txid, address, <code>lnbc…</code> invoice or node pubkey).', offer_search_node: 'Search for a Lightning node named «{q}»', load_nodes_search: 'Searching Lightning nodes «{q}»…'
+    offer_unrecognized: '⚠ Unrecognized format (txid, address, <code>lnbc…</code> invoice or node pubkey).', offer_search_node: 'Search for a Lightning node named «{q}»', load_nodes_search: 'Searching Lightning nodes «{q}»…',
+    pending: 'Pending', price_btc: 'BTC price:', not_available: 'not available', copy: 'copy', copied: 'copied!',
+    banner_confirmed_block: 'CONFIRMED &nbsp;·&nbsp; Block #{blk}', banner_unconfirmed: 'PENDING — UNCONFIRMED (mempool)', unconfirmed: 'Unconfirmed',
+    price_at_time: '📅 Price at that time', price_current_today: "current price (today's tx)",
+    label_date: 'Date', label_fee: 'Fee', label_size: 'Size', label_inputs: 'Inputs', label_outputs: 'Outputs', label_weight: 'Weight',
+    mining_short: '⛏ Mining', dest_sent_to: '💸 Funds sent to:', track_btn: '📡 Track in real time', tech_details: 'Technical details',
+    recipients_title: 'Recipient addresses', opreturn_data: 'OP_RETURN (data)', nonstd_script: 'Non-standard script',
+    tag_change: 'change', tag_change_title: "Returns to a source address: sender's change", tag_spent: 'spent →', tag_spent_title: 'Spent output: click to follow the funds', tag_unspent: 'unspent', tag_unspent_title: 'The funds are still at this address',
+    pv_coinjoin: '🔒 Possible CoinJoin — high privacy', pv_coinjoin_detail: '{inputs}, {outputs} with similar value',
+    pv_segwit: '✓ Pure SegWit/Taproot — good address hygiene', pv_segwit_detail: 'All inputs and outputs use modern formats',
+    pv_batching: '⚠ Clear batching — typical of an exchange or service', pv_batching_detail: '{recipients} from {inputs}',
+    pv_mix: '⚠ Mixed address types — less private', pv_mix_detail: 'Input/output with Legacy and SegWit simultaneously',
+    ch_force: 'force', ch_coop: 'cooperative', ch_close_force_desc: 'One of the two participants closed the channel unilaterally (commitment transaction).', ch_close_coop_desc: 'Both participants closed the channel by mutual agreement.',
+    ch_close_title: '⚡ Lightning channel close', ch_close_spends: 'Spends the 2-of-2 multisig funding output.', ch_opened_at: '📌 Channel opened at:', ch_nodes: '🔗 Channel nodes:',
+    ch_open_title: '⚡ Lightning channel open', ch_open_funding: 'funding', ch_open_desc: 'Output #{vout} is the 2-of-2 multisig that funds a Lightning channel.', ch_closed_by: '📌 Channel closed by:'
   }
 };
 function t(key, params) {
@@ -524,6 +566,14 @@ function applyLang() {
   if (typeof _rerender === 'function') { try { _rerender(); } catch {} }
 }
 function initLang() { LANG = loadLang(); applyLang(); }
+function loc() { return LANG === 'en' ? 'en-GB' : LANG; }
+const PLURALS = {
+  ca: { input: ['entrada', 'entrades'], output: ['sortida', 'sortides'], address: ['adreça', 'adreces'], conf: ['confirmació', 'confirmacions'], recipient: ['destinatari', 'destinataris'], channel: ['canal', 'canals'], hop: ['salt', 'salts'], tx: ['transacció', 'transaccions'] },
+  es: { input: ['entrada', 'entradas'], output: ['salida', 'salidas'], address: ['dirección', 'direcciones'], conf: ['confirmación', 'confirmaciones'], recipient: ['destinatario', 'destinatarios'], channel: ['canal', 'canales'], hop: ['salto', 'saltos'], tx: ['transacción', 'transacciones'] },
+  en: { input: ['input', 'inputs'], output: ['output', 'outputs'], address: ['address', 'addresses'], conf: ['confirmation', 'confirmations'], recipient: ['recipient', 'recipients'], channel: ['channel', 'channels'], hop: ['hop', 'hops'], tx: ['transaction', 'transactions'] }
+};
+function plw(n, base) { const a = (PLURALS[LANG] || PLURALS.ca)[base]; return n === 1 ? a[0] : a[1]; }
+function pl(n, base) { return n.toLocaleString(loc()) + ' ' + plw(n, base); }
 
 // ── Adreces d'exchanges coneguts ──────────────────────────────────────────────
 const KNOWN_ADDRS = {
@@ -674,7 +724,7 @@ function buildTrackerHtml(tx, confs, fees) {
   else if (!done) { ph1='ph-done'; ph2='ph-partial'; ph3='ph-inactive'; barCls='tbf-partial'; barStyle=`style="width:${Math.round(confs/6*100)}%"`; statusMsg=`Inclosa al bloc #${blockH} · <strong>${confs} de 6 confirmacions</strong>`; }
   else { ph1='ph-done'; ph2='ph-done'; ph3='ph-done'; barCls='tbf-done'; barStyle='style="width:100%"'; statusMsg=`✅ Confirmada al bloc #${blockH} · <strong>${confs} confirmacions</strong>`; }
   const feeRow = feeRate ? `<div class="tracker-fee-row">Fee pagada: <strong>${feeRate} sat/vB</strong>${fees&&fees.fastestFee?` &nbsp;·&nbsp; Recomanat ara: <strong>${fees.fastestFee} sat/vB</strong>`:''}${eta?` &nbsp;→&nbsp; <span class="tracker-eta">⏱ ${eta}</span>`:''}</div>` : '';
-  return `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div class="tracker-phases"><div class="ph ${ph1}">🟡 Mempool</div><div class="ph-arrow">→</div><div class="ph ${ph2}">🟠 ${conf&&!done?`${confs}/6 conf.`:'1a confirmació'}</div><div class="ph-arrow">→</div><div class="ph ${ph3}">🟢 Confirmada (6/6 ✓)</div></div><div class="tracker-bar-wrap"><div class="tracker-bar-fill ${barCls}" ${barStyle}></div></div><div class="tracker-status">${statusMsg}</div>${feeRow}<div class="tracker-footer"><span>Actualitzat: ${new Date().toLocaleTimeString('ca')}</span><span class="tracker-countdown" id="trk-countdown">${done?'Seguiment completat ✓':'Actualitzant en 30s…'}</span></div></div>`;
+  return `<div class="tracker-card"><div class="tracker-header"><span class="tracker-title">📡 Seguiment en temps real</span><button class="tracker-stop" onclick="stopTracking()">✕ Aturar</button></div><div class="tracker-phases"><div class="ph ${ph1}">🟡 Mempool</div><div class="ph-arrow">→</div><div class="ph ${ph2}">🟠 ${conf&&!done?`${confs}/6 conf.`:'1a confirmació'}</div><div class="ph-arrow">→</div><div class="ph ${ph3}">🟢 Confirmada (6/6 ✓)</div></div><div class="tracker-bar-wrap"><div class="tracker-bar-fill ${barCls}" ${barStyle}></div></div><div class="tracker-status">${statusMsg}</div>${feeRow}<div class="tracker-footer"><span>Actualitzat: ${new Date().toLocaleTimeString(loc())}</span><span class="tracker-countdown" id="trk-countdown">${done?'Seguiment completat ✓':'Actualitzant en 30s…'}</span></div></div>`;
 }
 function updateStatusBanner(tx, confs) {
   const el = document.getElementById('tx-status-banner'); if (!el) return;
@@ -971,7 +1021,7 @@ async function fetchBtcPrice() {
 }
 function fmtFiat(sats, price) {
   if (!sats || !price) return '';
-  const btc = sats / 1e8; const n = v => v.toLocaleString('ca', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const btc = sats / 1e8; const n = v => v.toLocaleString(loc(), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   return `€${n(btc * price.eur)} · $${n(btc * price.usd)}`;
 }
 
@@ -1084,12 +1134,12 @@ window.addEventListener('hashchange', () => {
 
 // ── Formatadors ───────────────────────────────────────────────────────────────
 function satsToBtc(s) { return s == null ? '—' : (s / 1e8).toFixed(8); }
-function fmtSats(s)   { return (s || 0).toLocaleString('ca') + ' sat'; }
-function fmtDate(ts)  { return ts ? new Date(ts * 1000).toLocaleString('ca') : 'Pendent'; }
+function fmtSats(s)   { return (s || 0).toLocaleString(loc()) + ' sat'; }
+function fmtDate(ts)  { return ts ? new Date(ts * 1000).toLocaleString(loc()) : t('pending'); }
 function shortAddr(a) { return a.length > 26 ? a.slice(0, 14) + '…' + a.slice(-8) : a; }
 function mkPriceBar(price) {
-  if (!price) return `<div class="price-bar"><span class="pl">Preu BTC:</span><span style="color:#555;font-style:italic">no disponible</span></div>`;
-  return `<div class="price-bar"><span class="pl">Preu BTC:</span><span class="pv">$${price.usd.toLocaleString('ca')} · €${price.eur.toLocaleString('ca')}</span><span class="src">${price.src}</span></div>`;
+  if (!price) return `<div class="price-bar"><span class="pl">${t('price_btc')}</span><span style="color:#555;font-style:italic">${t('not_available')}</span></div>`;
+  return `<div class="price-bar"><span class="pl">${t('price_btc')}</span><span class="pv">$${price.usd.toLocaleString(loc())} · €${price.eur.toLocaleString(loc())}</span><span class="src">${price.src}</span></div>`;
 }
 
 // ── Resum en llenguatge planer ────────────────────────────────────────────────
@@ -1101,7 +1151,7 @@ function buildPlainSummary(tx, price, knownDests) {
   const feeRate = calcFeeRate(tx);
   const fiatStr = price ? `≈ ${fmtFiat(total, price)}` : '';
   const fiatFeeStr = tx.fee && price ? `≈ ${fmtFiat(tx.fee, price)}` : '';
-  const dateStr = conf && tx.status.block_time ? `el ${new Date(tx.status.block_time * 1000).toLocaleDateString('ca')}` : '';
+  const dateStr = conf && tx.status.block_time ? `el ${new Date(tx.status.block_time * 1000).toLocaleDateString(loc())}` : '';
   const status = conf ? `confirmada${dateStr ? ' ' + dateStr : ''}` : '<strong style="color:#fdba74">pendent de confirmació</strong>';
 
   let text = '';
@@ -1238,16 +1288,16 @@ function detectCoinJoin(tx) {
 function analyzePrivacy(tx) {
   const vins = tx.vin || [], outs = tx.vout || [];
   if (vins.some(v => v.is_coinbase)) return null;
-  if (detectCoinJoin(tx)) return { level: 'green', text: '🔒 Possible CoinJoin — privadesa alta', detail: `${vins.length} entrades, ${outs.length} sortides amb valor similar` };
+  if (detectCoinJoin(tx)) return { level: 'green', text: t('pv_coinjoin'), detail: t('pv_coinjoin_detail', { inputs: pl(vins.length, 'input'), outputs: pl(outs.length, 'output') }) };
   const inTypes  = vins.map(v => v.prevout?.scriptpubkey_type).filter(Boolean);
-  const outTypes = outs.map(o => o.scriptpubkey_type).filter(t => t && t !== 'op_return');
-  const allModern = [...inTypes, ...outTypes].every(t => t === 'v0_p2wpkh' || t === 'v0_p2wsh' || t === 'v1_p2tr');
-  if (allModern && inTypes.length > 0) return { level: 'green', text: '✓ SegWit/Taproot pur — bona higiene d\'adreces', detail: 'Tots els inputs i outputs usen formats moderns' };
-  if (vins.length <= 2 && outs.length >= 8) return { level: 'red', text: '⚠ Batching evident — típic d\'exchange o servei', detail: `${outs.length} destinataris des de ${vins.length} entrada${vins.length > 1 ? 'des' : ''}` };
+  const outTypes = outs.map(o => o.scriptpubkey_type).filter(ty => ty && ty !== 'op_return');
+  const allModern = [...inTypes, ...outTypes].every(ty => ty === 'v0_p2wpkh' || ty === 'v0_p2wsh' || ty === 'v1_p2tr');
+  if (allModern && inTypes.length > 0) return { level: 'green', text: t('pv_segwit'), detail: t('pv_segwit_detail') };
+  if (vins.length <= 2 && outs.length >= 8) return { level: 'red', text: t('pv_batching'), detail: t('pv_batching_detail', { recipients: pl(outs.length, 'recipient'), inputs: pl(vins.length, 'input') }) };
   const allTypes = [...inTypes, ...outTypes];
-  const hasLegacy = allTypes.some(t => t === 'p2pkh' || t === 'p2sh');
-  const hasSegwit = allTypes.some(t => t === 'v0_p2wpkh' || t === 'v0_p2wsh' || t === 'v1_p2tr');
-  if (hasLegacy && hasSegwit) return { level: 'red', text: '⚠ Barreja de tipus d\'adreces — menys privat', detail: 'Input/output amb Legacy i SegWit simultàniament' };
+  const hasLegacy = allTypes.some(ty => ty === 'p2pkh' || ty === 'p2sh');
+  const hasSegwit = allTypes.some(ty => ty === 'v0_p2wpkh' || ty === 'v0_p2wsh' || ty === 'v1_p2tr');
+  if (hasLegacy && hasSegwit) return { level: 'red', text: t('pv_mix'), detail: t('pv_mix_detail') };
   return null;
 }
 
@@ -1295,9 +1345,9 @@ function buildAddressSummary(addr, info, txs, price) {
   const dEntries=[...dests.entries()].filter(([k])=>k!=='op_return'); const totalOut=dEntries.reduce((s,[,v])=>s+v.sats,0);
   if (dEntries.length>1&&totalOut>0) { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; if(top[1].sats/totalOut>0.7) p.push(`La major part dels fons enviats (${Math.round(top[1].sats/totalOut*100)}%) van anar a <strong>${shortAddr(top[0])}</strong>.`); }
   for (const [k] of origins) { if (dests.has(k)) { p.push(`<strong>${shortAddr(k)}</strong> apareix com a origen i destí: possibles moviments interns.`); break; } }
-  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs*1000).toLocaleDateString('ca')}</strong> al <strong>${new Date(lastTs*1000).toLocaleDateString('ca')}</strong>.`);
+  if (firstTs) p.push(`Activitat analitzada: del <strong>${new Date(firstTs*1000).toLocaleDateString(loc())}</strong> al <strong>${new Date(lastTs*1000).toLocaleDateString(loc())}</strong>.`);
   const partial = (cs.tx_count||0) > txs.length;
-  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on han sortit els fons</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>Cap a on han anat</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?`Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count||0).toLocaleString('ca')} en total). `:''}Heurística sobre dades públiques.</p></div>`;
+  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on han sortit els fons</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>Cap a on han anat</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?`Anàlisi basada en les ${txs.length} transaccions més recents (de ${(cs.tx_count||0).toLocaleString(loc())} en total). `:''}Heurística sobre dades públiques.</p></div>`;
 }
 
 function buildTxSummary(tx, price, outspends, inAddrSet) {
@@ -1337,16 +1387,17 @@ async function renderTx(tx, price) {
   const conf = tx.status && tx.status.confirmed, blk = tx.status && tx.status.block_height;
   const confsCount = conf && tipHeightTx && blk ? tipHeightTx - blk + 1 : null;
   const confBadge = conf
-    ? (confsCount !== null ? `<span class="conf-badge">${confsCount} confirmaci${confsCount === 1 ? 'ó' : 'ons'}</span>` : '')
-    : `<span class="unconf-badge">No confirmada</span>`;
+    ? (confsCount !== null ? `<span class="conf-badge">${pl(confsCount, 'conf')}</span>` : '')
+    : `<span class="unconf-badge">${t('unconfirmed')}</span>`;
   const isCb = vins.some(v => v.is_coinbase);
   const totFiat = fmtFiat(total, price), feeFiat = fmtFiat(tx.fee, price);
   const inAddrSet = new Set(vins.map(v => v.prevout && v.prevout.scriptpubkey_address).filter(Boolean));
   const feeRate = calcFeeRate(tx);
 
   const knownDests = [...new Set(outAddrs.map(a => getEntityLabel(a)).filter(Boolean).map(l => `${l.icon} ${l.name}`))];
-  const destBanner = knownDests.length ? `<div class="dest-banner"><span class="dl">💸 Fons enviats a:</span><span class="dn">${knownDests.join(' &nbsp;·&nbsp; ')}</span></div>` : '';
+  const destBanner = knownDests.length ? `<div class="dest-banner"><span class="dl">${t('dest_sent_to')}</span><span class="dn">${knownDests.join(' &nbsp;·&nbsp; ')}</span></div>` : '';
 
+  _rerender = () => renderTx(tx, price);
   const bannerCls = conf ? 'confirmed' : 'pending';
   const plainSummary = buildPlainSummary(tx, price, knownDests);
   const privacyBadge = buildPrivacyBadge(tx);
@@ -1354,9 +1405,9 @@ async function renderTx(tx, price) {
   const lnChannelBanner = lnChannel ? lnCloseBannerHtml(lnChannel) : '';
   const histPriceRow = (() => {
     if (!conf || !tx.status?.block_time) return '';
-    const n = v => Math.round(v).toLocaleString('ca');
-    if (histPrice?.usd) return `<div class="tx-meta-cell"><span class="lbl">📅 Preu en aquell moment</span><span class="val" style="color:#7a9a8a">$${n(histPrice.usd)}${histPrice.eur ? ` · €${n(histPrice.eur)}` : ''}</span></div>`;
-    if (price && isToday(tx.status.block_time)) return `<div class="tx-meta-cell"><span class="lbl">📅 Preu en aquell moment</span><span class="val" style="color:#666">preu actual (tx d'avui)</span></div>`;
+    const n = v => Math.round(v).toLocaleString(loc());
+    if (histPrice?.usd) return `<div class="tx-meta-cell"><span class="lbl">${t('price_at_time')}</span><span class="val" style="color:#7a9a8a">$${n(histPrice.usd)}${histPrice.eur ? ` · €${n(histPrice.eur)}` : ''}</span></div>`;
+    if (price && isToday(tx.status.block_time)) return `<div class="tx-meta-cell"><span class="lbl">${t('price_at_time')}</span><span class="val" style="color:#666">${t('price_current_today')}</span></div>`;
     return '';
   })();
 
@@ -1364,7 +1415,7 @@ async function renderTx(tx, price) {
   <div class="tx-hero" data-txid="${tx.txid}">
     <div class="tx-status-banner ${bannerCls}" id="tx-status-banner">
       <span class="tx-status-icon">${conf ? '✓' : '⏳'}</span>
-      <span>${conf ? `CONFIRMADA &nbsp;·&nbsp; Bloc #${blk}` : 'PENDENT — SENSE CONFIRMAR (mempool)'}</span>${confBadge}
+      <span>${conf ? t('banner_confirmed_block', { blk }) : t('banner_unconfirmed')}</span>${confBadge}
     </div>
     <div id="ln-channel-banner">${lnChannelBanner}</div>
     ${plainSummary}${privacyBadge}
@@ -1372,44 +1423,44 @@ async function renderTx(tx, price) {
       <div class="tx-amount-hero">${satsToBtc(total)}<span class="unit">BTC</span></div>
       ${totFiat ? `<div class="tx-fiat-hero">${totFiat}</div>` : ''}
       <div class="tx-meta-row">
-        <div class="tx-meta-cell"><span class="lbl">Data</span><span class="val">${fmtDate(tx.status && tx.status.block_time)}</span></div>
+        <div class="tx-meta-cell"><span class="lbl">${t('label_date')}</span><span class="val">${fmtDate(tx.status && tx.status.block_time)}</span></div>
         ${histPriceRow}
-        ${tx.fee != null ? `<div class="tx-meta-cell"><span class="lbl">Tarifa</span><span class="val">${fmtSats(tx.fee)}${feeRate ? ` · ${feeRate} sat/vB` : ''}${feeFiat ? ` · ${feeFiat}` : ''}</span></div>` : ''}
-        <div class="tx-meta-cell"><span class="lbl">Mida</span><span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span></div>
+        ${tx.fee != null ? `<div class="tx-meta-cell"><span class="lbl">${t('label_fee')}</span><span class="val">${fmtSats(tx.fee)}${feeRate ? ` · ${feeRate} sat/vB` : ''}${feeFiat ? ` · ${feeFiat}` : ''}</span></div>` : ''}
+        <div class="tx-meta-cell"><span class="lbl">${t('label_size')}</span><span class="val">${tx.size ? tx.size + ' bytes' : '—'}</span></div>
       </div>
       <div class="tx-flow-line">
-        <span class="fc">${isCb ? '⛏ Mineria' : vins.length + (vins.length === 1 ? ' entrada' : ' entrades')}</span>
+        <span class="fc">${isCb ? t('mining_short') : pl(vins.length, 'input')}</span>
         <span class="arr">→</span>
-        <span class="fc">${outs.length} ${outs.length === 1 ? 'sortida' : 'sortides'}</span>
+        <span class="fc">${pl(outs.length, 'output')}</span>
       </div>
       ${destBanner}
-      <button class="track-btn" onclick="startTracking('${tx.txid}')">📡 Seguir en temps real</button>
+      <button class="track-btn" onclick="startTracking('${tx.txid}')">${t('track_btn')}</button>
       <details>
-        <summary>Detalls tècnics</summary>
+        <summary>${t('tech_details')}</summary>
         <div class="det-grid">
-          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">TXID</div><div class="val txid-mono">${tx.txid} <button class="copy-btn" onclick="copyText('${tx.txid}',this)">copiar</button></div></div>
-          <div class="det-cell"><div class="lbl">Entrades</div><div class="val">${vins.length}</div></div>
-          <div class="det-cell"><div class="lbl">Sortides</div><div class="val">${outs.length}</div></div>
-          <div class="det-cell"><div class="lbl">Mida</div><div class="val">${tx.size ? tx.size + ' bytes' : '—'}</div></div>
-          ${tx.weight ? `<div class="det-cell"><div class="lbl">Pes</div><div class="val">${tx.weight} WU</div></div>` : ''}
-          ${tx.fee != null ? `<div class="det-cell"><div class="lbl">Tarifa</div><div class="val">${fmtSats(tx.fee)}</div></div>` : ''}
+          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">TXID</div><div class="val txid-mono">${tx.txid} <button class="copy-btn" onclick="copyText('${tx.txid}',this)">${t('copy')}</button></div></div>
+          <div class="det-cell"><div class="lbl">${t('label_inputs')}</div><div class="val">${vins.length}</div></div>
+          <div class="det-cell"><div class="lbl">${t('label_outputs')}</div><div class="val">${outs.length}</div></div>
+          <div class="det-cell"><div class="lbl">${t('label_size')}</div><div class="val">${tx.size ? tx.size + ' bytes' : '—'}</div></div>
+          ${tx.weight ? `<div class="det-cell"><div class="lbl">${t('label_weight')}</div><div class="val">${tx.weight} WU</div></div>` : ''}
+          ${tx.fee != null ? `<div class="det-cell"><div class="lbl">${t('label_fee')}</div><div class="val">${fmtSats(tx.fee)}</div></div>` : ''}
         </div>
       </details>
     </div>
   </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
   <div class="card">
-    <div class="outputs-hd"><h2>Adreces destinatàries</h2><div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> · ${totFiat}</span>` : ''}</div></div>
+    <div class="outputs-hd"><h2>${t('recipients_title')}</h2><div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> · ${totFiat}</span>` : ''}</div></div>
     <div class="wallet-list">`;
 
   outs.forEach((out, i) => {
     const addr = out.scriptpubkey_address || null, isOpRet = out.scriptpubkey_type === 'op_return';
-    const disp = addr ? (addr.length > 32 ? addr.slice(0,14)+'…'+addr.slice(-10) : addr) : (isOpRet ? 'OP_RETURN (dades)' : 'Script no estàndard');
+    const disp = addr ? (addr.length > 32 ? addr.slice(0,14)+'…'+addr.slice(-10) : addr) : (isOpRet ? t('opreturn_data') : t('nonstd_script'));
     const oFiat = fmtFiat(out.value || 0, price), osp = outspends && outspends[i], entBadge = entityBadgeHtml(addr);
     let tags = '';
-    if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="Torna a una adreça d'origen: canvi de l'emissor">canvi</span>`;
-    if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="Sortida gastada: clica per seguir els fons">gastada →</span>`;
-    else if (osp && !osp.spent && !isOpRet) tags += ` <span class="tag unspent" title="Els fons encara són en aquesta adreça">sense gastar</span>`;
-    html += `<div class="wallet-item"><div class="wallet-addr"><span class="idx">#${i}</span><span class="addr-text${!addr?' op-return':''}" title="${addr||''}" ${addr?`onclick="searchAddr('${addr}')"`:''}>${disp}</span>${addr?`<button class="copy-btn" onclick="copyText('${addr}',this)">copiar</button>`:''} ${entBadge}${tags}</div><div class="wallet-amount"><div class="btc">${satsToBtc(out.value||0)} BTC</div><div class="sat">${fmtSats(out.value||0)}</div>${oFiat?`<div class="fiat">${oFiat}</div>`:''}</div></div>`;
+    if (addr && inAddrSet.has(addr)) tags += ` <span class="tag change" title="${t('tag_change_title')}">${t('tag_change')}</span>`;
+    if (osp && osp.spent && osp.txid) tags += ` <span class="tag spent" style="cursor:pointer" onclick="searchTx('${osp.txid}')" title="${t('tag_spent_title')}">${t('tag_spent')}</span>`;
+    else if (osp && !osp.spent && !isOpRet) tags += ` <span class="tag unspent" title="${t('tag_unspent_title')}">${t('tag_unspent')}</span>`;
+    html += `<div class="wallet-item"><div class="wallet-addr"><span class="idx">#${i}</span><span class="addr-text${!addr?' op-return':''}" title="${addr||''}" ${addr?`onclick="searchAddr('${addr}')"`:''}>${disp}</span>${addr?`<button class="copy-btn" onclick="copyText('${addr}',this)">${t('copy')}</button>`:''} ${entBadge}${tags}</div><div class="wallet-amount"><div class="btc">${satsToBtc(out.value||0)} BTC</div><div class="sat">${fmtSats(out.value||0)}</div>${oFiat?`<div class="fiat">${oFiat}</div>`:''}</div></div>`;
   });
   html += `</div></div>`;
   showResult(html);
@@ -1456,7 +1507,7 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
     <div class="addr-stats-row">
       <div class="addr-stat"><div class="lbl"><span class="arrow dn">↓</span> Rebut</div><div class="v grn">${satsToBtc(rcv)} BTC</div>${fmtFiat(rcv,price)?`<div class="sub">${fmtFiat(rcv,price)}</div>`:''}</div>
       <div class="addr-stat"><div class="lbl"><span class="arrow up">↑</span> Enviat</div><div class="v red">${satsToBtc(snt)} BTC</div>${fmtFiat(snt,price)?`<div class="sub">${fmtFiat(snt,price)}</div>`:''}</div>
-      <div class="addr-stat"><div class="lbl">Transaccions</div><div class="v neu">${cnt.toLocaleString('ca')}</div><div class="sub">${ms.tx_count ? ms.tx_count+' pendents' : 'totes confirmades'}</div></div>
+      <div class="addr-stat"><div class="lbl">Transaccions</div><div class="v neu">${cnt.toLocaleString(loc())}</div><div class="sub">${ms.tx_count ? ms.tx_count+' pendents' : 'totes confirmades'}</div></div>
     </div>
     ${buildUtxoSection(utxos, price)}
   </div>` + buildAddressSummary(addr, info, txs, price) + `
@@ -1744,10 +1795,10 @@ function renderLnInvoice(d, price) {
   const expiresAt = d.timestamp + (d.expiry || 3600), expired = nowS > expiresAt;
   const amtKnown = d.amountMsat != null && d.amountMsat > 0;
   const btcStr = amtKnown ? (d.amountMsat / 1e11).toFixed(8) : null;
-  const satsStr = amtKnown ? Math.round(d.amountSats).toLocaleString('ca') : null;
+  const satsStr = amtKnown ? Math.round(d.amountSats).toLocaleString(loc()) : null;
   const fiat = amtKnown ? fmtFiat(d.amountSats, price) : '';
-  const createdStr = new Date(d.timestamp * 1000).toLocaleString('ca');
-  const expiresStr = new Date(expiresAt * 1000).toLocaleString('ca');
+  const createdStr = new Date(d.timestamp * 1000).toLocaleString(loc());
+  const expiresStr = new Date(expiresAt * 1000).toLocaleString(loc());
   const statusBadge = expired ? `<span class="ln-expired">⏰ Caducada</span>` : `<span class="ln-valid">✓ Vàlida</span>`;
   const netReal = d.network === 'mainnet';
   const nodeLink = pk => netReal ? ` <a href="https://mempool.space/lightning/node/${pk}" target="_blank" rel="noopener" style="color:#a78bfa;text-decoration:none" title="Explorar node a mempool.space">↗</a>` : '';
@@ -1762,7 +1813,7 @@ function renderLnInvoice(d, price) {
     <div class="plain-summary"><span class="ps-icon">📖</span>${lnPlainSummary(d, expired, amtKnown)}</div>
     <div class="tx-hero-body">
       ${amtKnown
-        ? `<div class="tx-amount-hero">${btcStr}<span class="unit">BTC</span></div>${fiat ? `<div class="tx-fiat-hero">${fiat}</div>` : ''}<div class="tx-meta-cell" style="margin-bottom:0.5rem"><span class="lbl">Import exacte</span><span class="val">${satsStr} sats · ${d.amountMsat.toLocaleString('ca')} msat</span></div>`
+        ? `<div class="tx-amount-hero">${btcStr}<span class="unit">BTC</span></div>${fiat ? `<div class="tx-fiat-hero">${fiat}</div>` : ''}<div class="tx-meta-cell" style="margin-bottom:0.5rem"><span class="lbl">Import exacte</span><span class="val">${satsStr} sats · ${d.amountMsat.toLocaleString(loc())} msat</span></div>`
         : `<div class="tx-amount-hero" style="font-size:1.6rem">Import obert</div><div class="tx-fiat-hero">El pagador decideix la quantitat</div>`}
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.5rem 0 1rem">
         <a class="track-btn" href="lightning:${d.raw}" style="margin:0;color:#fcd34d;border-color:#fcd34d55">⚡ Obre al moneder</a>
@@ -1807,8 +1858,8 @@ function renderLnInvoice(d, price) {
           <div class="ln-hop-grid">
             <div style="grid-column:1/-1"><div class="k">Node d'entrada</div><div class="vv ln-node">${h.pubkey}${nodeLink(h.pubkey)}</div></div>
             <div><div class="k">Canal (scid)</div><div class="vv">${h.block}×${h.txidx}×${h.outidx}</div></div>
-            <div><div class="k">Comissió base</div><div class="vv">${h.feeBaseMsat.toLocaleString('ca')} msat</div></div>
-            <div><div class="k">Comissió variable</div><div class="vv">${h.feeProp.toLocaleString('ca')} ppm (${(h.feeProp / 1e4).toFixed(4)} %)</div></div>
+            <div><div class="k">Comissió base</div><div class="vv">${h.feeBaseMsat.toLocaleString(loc())} msat</div></div>
+            <div><div class="k">Comissió variable</div><div class="vv">${h.feeProp.toLocaleString(loc())} ppm (${(h.feeProp / 1e4).toFixed(4)} %)</div></div>
             <div><div class="k">CLTV delta</div><div class="vv">${h.cltvDelta} blocs</div></div>
           </div>
         </div>`;
@@ -1851,23 +1902,21 @@ function lnNodesHtml(pubkeys) {
 }
 function lnCloseBannerHtml(info) {
   const isForce = info.closeType === 'force';
-  const badge = isForce ? `<span class="lc-force">forçat</span>` : `<span class="lc-coop">cooperatiu</span>`;
-  const desc = isForce
-    ? 'Un dels dos participants ha tancat el canal unilateralment (commitment transaction).'
-    : 'Els dos participants han tancat el canal de mutu acord.';
+  const badge = isForce ? `<span class="lc-force">${t('ch_force')}</span>` : `<span class="lc-coop">${t('ch_coop')}</span>`;
+  const desc = isForce ? t('ch_close_force_desc') : t('ch_close_coop_desc');
   return `<div class="ln-channel">
-    <div class="lc-title">⚡ Tancament de canal Lightning ${badge}</div>
-    <div class="lc-sub">${desc} Gasta la sortida multisig 2-de-2 del finançament.</div>
-    <div class="lc-sub">📌 Canal obert a: <span class="lc-link" onclick="searchTx('${info.fundingTxid}')" title="${info.fundingTxid}">${info.fundingTxid.slice(0, 18)}…:${info.fundingVout}</span></div>
-    <div class="lc-sub">🔗 Nodes del canal: ${lnNodesHtml(info.pubkeys)}</div>
+    <div class="lc-title">${t('ch_close_title')} ${badge}</div>
+    <div class="lc-sub">${desc} ${t('ch_close_spends')}</div>
+    <div class="lc-sub">${t('ch_opened_at')} <span class="lc-link" onclick="searchTx('${info.fundingTxid}')" title="${info.fundingTxid}">${info.fundingTxid.slice(0, 18)}…:${info.fundingVout}</span></div>
+    <div class="lc-sub">${t('ch_nodes')} ${lnNodesHtml(info.pubkeys)}</div>
   </div>`;
 }
 function lnOpenBannerHtml(info) {
   return `<div class="ln-channel">
-    <div class="lc-title">⚡ Obertura de canal Lightning <span class="lc-open">finançament</span></div>
-    <div class="lc-sub">La sortida #${info.vout} és el multisig 2-de-2 que finança un canal Lightning.</div>
-    <div class="lc-sub">📌 Canal tancat per: <span class="lc-link" onclick="searchTx('${info.closeTxid}')" title="${info.closeTxid}">${info.closeTxid.slice(0, 18)}…</span> (${info.closeType === 'force' ? 'forçat' : 'cooperatiu'})</div>
-    <div class="lc-sub">🔗 Nodes del canal: ${lnNodesHtml(info.pubkeys)}</div>
+    <div class="lc-title">${t('ch_open_title')} <span class="lc-open">${t('ch_open_funding')}</span></div>
+    <div class="lc-sub">${t('ch_open_desc', { vout: info.vout })}</div>
+    <div class="lc-sub">${t('ch_closed_by')} <span class="lc-link" onclick="searchTx('${info.closeTxid}')" title="${info.closeTxid}">${info.closeTxid.slice(0, 18)}…</span> (${info.closeType === 'force' ? t('ch_force') : t('ch_coop')})</div>
+    <div class="lc-sub">${t('ch_nodes')} ${lnNodesHtml(info.pubkeys)}</div>
   </div>`;
 }
 async function fetchTxQuiet(txid) {
@@ -1935,9 +1984,9 @@ function renderLnNode(node, channels, price) {
     <div class="addr-balance-hero">${satsToBtc(cap)}<span class="unit"> BTC</span></div>
     <div class="addr-fiat-hero">Capacitat total${capFiat ? ` · ${capFiat}` : ''}</div>
     <div class="addr-stats-row">
-      <div class="addr-stat"><div class="lbl">Canals actius</div><div class="v neu">${(node.active_channel_count || 0).toLocaleString('ca')}</div></div>
-      <div class="addr-stat"><div class="lbl">Oberts (històric)</div><div class="v neu">${(node.opened_channel_count || 0).toLocaleString('ca')}</div></div>
-      <div class="addr-stat"><div class="lbl">Tancats</div><div class="v neu">${(node.closed_channel_count || 0).toLocaleString('ca')}</div></div>
+      <div class="addr-stat"><div class="lbl">Canals actius</div><div class="v neu">${(node.active_channel_count || 0).toLocaleString(loc())}</div></div>
+      <div class="addr-stat"><div class="lbl">Oberts (històric)</div><div class="v neu">${(node.opened_channel_count || 0).toLocaleString(loc())}</div></div>
+      <div class="addr-stat"><div class="lbl">Tancats</div><div class="v neu">${(node.closed_channel_count || 0).toLocaleString(loc())}</div></div>
     </div>
   </div>`;
 
@@ -1956,7 +2005,7 @@ function renderLnNode(node, channels, price) {
 
   // Targeta de canals
   const totalCh = node.active_channel_count || chList.length;
-  const countLabel = totalCh > chList.length ? `mostrant ${chList.length} de ${totalCh.toLocaleString('ca')}` : `${chList.length} ${chList.length === 1 ? 'canal' : 'canals'}`;
+  const countLabel = totalCh > chList.length ? `mostrant ${chList.length} de ${totalCh.toLocaleString(loc())}` : `${chList.length} ${chList.length === 1 ? 'canal' : 'canals'}`;
   html += `<div class="card"><h2>Canals <span style="color:var(--text-secondary);font-size:0.8rem">(${countLabel})</span></h2>`;
   if (chList.length) {
     const sorted = [...chList].sort((a, b) => (Number(b.capacity) || 0) - (Number(a.capacity) || 0));
@@ -2002,7 +2051,7 @@ function renderLnNodeSearch(text, res) {
   nodes.forEach(n => {
     const alias = escapeHtml(n.alias || '(sense àlias)');
     const cap = n.capacity != null ? satsToBtc(Number(n.capacity)) + ' BTC' : '—';
-    const chans = n.channels != null ? Number(n.channels).toLocaleString('ca') + ' canals' : '';
+    const chans = n.channels != null ? Number(n.channels).toLocaleString(loc()) + ' canals' : '';
     html += `<div class="wallet-item" style="cursor:pointer" onclick="searchLnNode('${n.public_key}')"><div class="wallet-addr"><div style="min-width:0"><div style="color:var(--accent);font-weight:bold">${alias}</div><div style="color:var(--text-secondary);font-size:0.66rem;word-break:break-all">${n.public_key.slice(0, 28)}…</div></div></div><div class="wallet-amount"><div class="btc">${cap}</div>${chans ? `<div class="sat">${chans}</div>` : ''}</div></div>`;
   });
   html += `</div></div>`;
@@ -2016,7 +2065,7 @@ function showResult(html) {
   void r.offsetWidth; r.classList.add('fade-in');
 }
 function copyText(text, btn) {
-  navigator.clipboard.writeText(text).then(() => { btn.textContent = 'copiat!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 1500); });
+  navigator.clipboard.writeText(text).then(() => { btn.textContent = t('copied'); btn.classList.add('copied'); setTimeout(() => { btn.textContent = t('copy'); btn.classList.remove('copied'); }, 1500); });
 }
 function showLoading(msg) { const s = document.getElementById('status'); s.className = 'loading'; s.style.display = 'block'; s.innerHTML = '<span class="spinner"></span>' + msg; }
 function showError(msg)   { const s = document.getElementById('status'); s.className = 'error'; s.style.display = 'block'; s.textContent = '⚠ ' + msg; }
