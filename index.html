@@ -525,7 +525,20 @@ const I18N = {
     stat_received: 'Rebut', stat_sent: 'Enviat', stat_transactions: 'Transaccions', stat_all_confirmed: 'totes confirmades',
     addr_txs_title: 'Transaccions', addr_txs_recent: '({n} més recents)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sense transaccions.',
     csv_date: 'Data (ISO)', csv_type: 'Tipus', csv_in: 'entrada', csv_out: 'sortida',
-    modal_save_title: '👛 Guardar adreça', modal_save_msg: 'Nom per a aquesta adreça (opcional):', save: 'Guardar', cancel: 'Cancel·lar', accept: 'Acceptar', saved_check: '👛 Guardada ✓'
+    modal_save_title: '👛 Guardar adreça', modal_save_msg: 'Nom per a aquesta adreça (opcional):', save: 'Guardar', cancel: 'Cancel·lar', accept: 'Acceptar', saved_check: '👛 Guardada ✓',
+    ln_sum_node: 'el node <strong>{pk}…</strong>', ln_sum_node_generic: 'un node Lightning', ln_sum_amt_open: 'una quantitat oberta',
+    ln_sum_desc: ' pel concepte «{desc}»', ln_sum_routes: ' Incrusta <strong>{hops}</strong> de route hints cap a canals privats.', ln_sum_expired: ' Aquesta factura ja ha <strong style="color:#f87171">caducat</strong>.',
+    ln_sum_main: 'Sol·licitud de pagament Lightning de {amt}{desc} cap a {who}.{routes}{st}',
+    ln_status_expired: '⏰ Caducada', ln_status_valid: '✓ Vàlida', ln_invoice_title: 'FACTURA LIGHTNING',
+    ln_exact_amount: 'Import exacte', ln_open_amount: 'Import obert', ln_payer_decides: 'El pagador decideix la quantitat', ln_open_wallet: '⚡ Obre al moneder',
+    ln_concept: '📝 Concepte:', ln_long_desc: '(descripció llarga — la factura només en porta el hash)',
+    ln_created: 'Creada', ln_expired_label: 'Va caducar', ln_expires_label: 'Caduca', ln_validity: 'Validesa',
+    ln_dest_node: '🎯 Node destí:', ln_node_implicit: 'no inclòs explícitament (es recupera de la signatura)', ln_node_explore_title: 'Explorar node a mempool.space',
+    ln_full_invoice: 'Factura completa (BOLT11)', checksum_valid: '✓ vàlid', checksum_invalid: '⚠ NO vàlid', ln_blocks_n: '{n} blocs',
+    routes_title: '🛣️ Rutes (route hints)', route_n: 'Ruta {n}', hop_n: '⚡ Salt {n}', hop_node: "Node d'entrada", hop_channel: 'Canal (scid)', hop_fee_base: 'Comissió base', hop_fee_var: 'Comissió variable', hop_cltv: 'CLTV delta',
+    routes_intro: "La factura incrusta aquestes <strong>pistes de ruta</strong> perquè el pagament arribi a través de canals <strong>privats</strong> del destinatari (que no estan anunciats al graf públic). Cada salt indica el node d'entrada i el canal a fer servir.",
+    routes_none: 'Aquesta factura <strong>no inclou route hints</strong>: el destinatari té prou canals <strong>públics</strong> (anunciats al graf de la xarxa) perquè el pagador pugui calcular una ruta pel seu compte.',
+    routes_note: "⚠️ Lightning enruta amb <em>onion routing</em>: la ruta real que segueix un pagament és privada i no queda registrada enlloc públic. Aquests <em>route hints</em> són l'única informació d'enrutament que viatja dins la factura."
   },
   es: {
     subtitle: 'Explorador de blockchain Bitcoin',
@@ -591,7 +604,20 @@ const I18N = {
     stat_received: 'Recibido', stat_sent: 'Enviado', stat_transactions: 'Transacciones', stat_all_confirmed: 'todas confirmadas',
     addr_txs_title: 'Transacciones', addr_txs_recent: '({n} más recientes)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sin transacciones.',
     csv_date: 'Fecha (ISO)', csv_type: 'Tipo', csv_in: 'entrada', csv_out: 'salida',
-    modal_save_title: '👛 Guardar dirección', modal_save_msg: 'Nombre para esta dirección (opcional):', save: 'Guardar', cancel: 'Cancelar', accept: 'Aceptar', saved_check: '👛 Guardada ✓'
+    modal_save_title: '👛 Guardar dirección', modal_save_msg: 'Nombre para esta dirección (opcional):', save: 'Guardar', cancel: 'Cancelar', accept: 'Aceptar', saved_check: '👛 Guardada ✓',
+    ln_sum_node: 'el nodo <strong>{pk}…</strong>', ln_sum_node_generic: 'un nodo Lightning', ln_sum_amt_open: 'una cantidad abierta',
+    ln_sum_desc: ' por el concepto «{desc}»', ln_sum_routes: ' Incrusta <strong>{hops}</strong> de route hints hacia canales privados.', ln_sum_expired: ' Esta factura ya ha <strong style="color:#f87171">caducado</strong>.',
+    ln_sum_main: 'Solicitud de pago Lightning de {amt}{desc} hacia {who}.{routes}{st}',
+    ln_status_expired: '⏰ Caducada', ln_status_valid: '✓ Válida', ln_invoice_title: 'FACTURA LIGHTNING',
+    ln_exact_amount: 'Importe exacto', ln_open_amount: 'Importe abierto', ln_payer_decides: 'El pagador decide la cantidad', ln_open_wallet: '⚡ Abrir en el monedero',
+    ln_concept: '📝 Concepto:', ln_long_desc: '(descripción larga — la factura solo lleva el hash)',
+    ln_created: 'Creada', ln_expired_label: 'Caducó', ln_expires_label: 'Caduca', ln_validity: 'Validez',
+    ln_dest_node: '🎯 Nodo destino:', ln_node_implicit: 'no incluido explícitamente (se recupera de la firma)', ln_node_explore_title: 'Explorar nodo en mempool.space',
+    ln_full_invoice: 'Factura completa (BOLT11)', checksum_valid: '✓ válido', checksum_invalid: '⚠ NO válido', ln_blocks_n: '{n} bloques',
+    routes_title: '🛣️ Rutas (route hints)', route_n: 'Ruta {n}', hop_n: '⚡ Salto {n}', hop_node: 'Nodo de entrada', hop_channel: 'Canal (scid)', hop_fee_base: 'Comisión base', hop_fee_var: 'Comisión variable', hop_cltv: 'CLTV delta',
+    routes_intro: 'La factura incrusta estas <strong>pistas de ruta</strong> para que el pago llegue a través de canales <strong>privados</strong> del destinatario (que no están anunciados en el grafo público). Cada salto indica el nodo de entrada y el canal a usar.',
+    routes_none: 'Esta factura <strong>no incluye route hints</strong>: el destinatario tiene suficientes canales <strong>públicos</strong> (anunciados en el grafo de la red) para que el pagador pueda calcular una ruta por su cuenta.',
+    routes_note: '⚠️ Lightning enruta con <em>onion routing</em>: la ruta real que sigue un pago es privada y no queda registrada en ningún sitio público. Estos <em>route hints</em> son la única información de enrutamiento que viaja dentro de la factura.'
   },
   en: {
     subtitle: 'Bitcoin blockchain explorer',
@@ -657,7 +683,20 @@ const I18N = {
     stat_received: 'Received', stat_sent: 'Sent', stat_transactions: 'Transactions', stat_all_confirmed: 'all confirmed',
     addr_txs_title: 'Transactions', addr_txs_recent: '({n} most recent)', export_csv: '⬇️ Export CSV', no_txs: 'No transactions.',
     csv_date: 'Date (ISO)', csv_type: 'Type', csv_in: 'in', csv_out: 'out',
-    modal_save_title: '👛 Save address', modal_save_msg: 'Name for this address (optional):', save: 'Save', cancel: 'Cancel', accept: 'Accept', saved_check: '👛 Saved ✓'
+    modal_save_title: '👛 Save address', modal_save_msg: 'Name for this address (optional):', save: 'Save', cancel: 'Cancel', accept: 'Accept', saved_check: '👛 Saved ✓',
+    ln_sum_node: 'node <strong>{pk}…</strong>', ln_sum_node_generic: 'a Lightning node', ln_sum_amt_open: 'an open amount',
+    ln_sum_desc: ' for «{desc}»', ln_sum_routes: ' Embeds <strong>{hops}</strong> of route hints toward private channels.', ln_sum_expired: ' This invoice has already <strong style="color:#f87171">expired</strong>.',
+    ln_sum_main: 'Lightning payment request for {amt}{desc} to {who}.{routes}{st}',
+    ln_status_expired: '⏰ Expired', ln_status_valid: '✓ Valid', ln_invoice_title: 'LIGHTNING INVOICE',
+    ln_exact_amount: 'Exact amount', ln_open_amount: 'Open amount', ln_payer_decides: 'The payer decides the amount', ln_open_wallet: '⚡ Open in wallet',
+    ln_concept: '📝 Description:', ln_long_desc: '(long description — the invoice only carries its hash)',
+    ln_created: 'Created', ln_expired_label: 'Expired', ln_expires_label: 'Expires', ln_validity: 'Validity',
+    ln_dest_node: '🎯 Destination node:', ln_node_implicit: 'not explicitly included (recovered from the signature)', ln_node_explore_title: 'Explore node on mempool.space',
+    ln_full_invoice: 'Full invoice (BOLT11)', checksum_valid: '✓ valid', checksum_invalid: '⚠ NOT valid', ln_blocks_n: '{n} blocks',
+    routes_title: '🛣️ Routes (route hints)', route_n: 'Route {n}', hop_n: '⚡ Hop {n}', hop_node: 'Entry node', hop_channel: 'Channel (scid)', hop_fee_base: 'Base fee', hop_fee_var: 'Variable fee', hop_cltv: 'CLTV delta',
+    routes_intro: 'The invoice embeds these <strong>route hints</strong> so the payment can reach the recipient through their <strong>private</strong> channels (not announced in the public graph). Each hop indicates the entry node and the channel to use.',
+    routes_none: 'This invoice <strong>includes no route hints</strong>: the recipient has enough <strong>public</strong> channels (announced in the network graph) for the payer to compute a route on their own.',
+    routes_note: '⚠️ Lightning routes with <em>onion routing</em>: the actual path a payment follows is private and is not recorded anywhere public. These <em>route hints</em> are the only routing information that travels inside the invoice.'
   }
 };
 function t(key, params) {
@@ -1895,16 +1934,16 @@ function fmtDuration(sec) {
   if (sec < 60) return `${sec} s`;
   if (sec < 3600) return `${Math.round(sec / 60)} min`;
   if (sec < 86400) { const h = sec / 3600; return `${Number.isInteger(h) ? h : h.toFixed(1)} h`; }
-  return `${Math.round(sec / 86400)} dies`;
+  return pl(Math.round(sec / 86400), 'day');
 }
 function lnPlainSummary(d, expired, amtKnown) {
-  const who = d.payeeNode ? `el node <strong>${d.payeeNode.slice(0, 12)}…</strong>` : 'un node Lightning';
-  const amt = amtKnown ? `<strong>${(d.amountMsat / 1e11).toFixed(8)} BTC</strong>` : 'una quantitat oberta';
-  const desc = d.description ? ` pel concepte «${escapeHtml(d.description)}»` : '';
+  const who = d.payeeNode ? t('ln_sum_node', { pk: d.payeeNode.slice(0, 12) }) : t('ln_sum_node_generic');
+  const amt = amtKnown ? `<strong>${(d.amountMsat / 1e11).toFixed(8)} BTC</strong>` : t('ln_sum_amt_open');
+  const desc = d.description ? t('ln_sum_desc', { desc: escapeHtml(d.description) }) : '';
   const nHops = (d.routes || []).reduce((s, r) => s + r.length, 0);
-  const routes = nHops ? ` Incrusta <strong>${nHops} salt${nHops > 1 ? 's' : ''}</strong> de route hints cap a canals privats.` : '';
-  const st = expired ? ' Aquesta factura ja ha <strong style="color:#f87171">caducat</strong>.' : '';
-  return `Sol·licitud de pagament Lightning de ${amt}${desc} cap a ${who}.${routes}${st}`;
+  const routes = nHops ? t('ln_sum_routes', { hops: pl(nHops, 'hop') }) : '';
+  const st = expired ? t('ln_sum_expired') : '';
+  return t('ln_sum_main', { amt, desc, who, routes, st });
 }
 
 function renderLnInvoice(d, price) {
@@ -1917,46 +1956,47 @@ function renderLnInvoice(d, price) {
   const fiat = amtKnown ? fmtFiat(d.amountSats, price) : '';
   const createdStr = new Date(d.timestamp * 1000).toLocaleString(loc());
   const expiresStr = new Date(expiresAt * 1000).toLocaleString(loc());
-  const statusBadge = expired ? `<span class="ln-expired">⏰ Caducada</span>` : `<span class="ln-valid">✓ Vàlida</span>`;
+  const statusBadge = expired ? `<span class="ln-expired">${t('ln_status_expired')}</span>` : `<span class="ln-valid">${t('ln_status_valid')}</span>`;
   const netReal = d.network === 'mainnet';
-  const nodeLink = pk => netReal ? ` <a href="https://mempool.space/lightning/node/${pk}" target="_blank" rel="noopener" style="color:#a78bfa;text-decoration:none" title="Explorar node a mempool.space">↗</a>` : '';
+  const nodeLink = pk => netReal ? ` <a href="https://mempool.space/lightning/node/${pk}" target="_blank" rel="noopener" style="color:#a78bfa;text-decoration:none" title="${t('ln_node_explore_title')}">↗</a>` : '';
+  _rerender = () => renderLnInvoice(d, price);
 
   let html = mkPriceBar(price) + `
   <div class="tx-hero">
     <div class="tx-status-banner lightning">
       <span class="tx-status-icon">⚡</span>
-      <span>FACTURA LIGHTNING</span>
+      <span>${t('ln_invoice_title')}</span>
       <span class="ln-net-badge">${lnFmtNetwork(d.network)}</span>${statusBadge}
     </div>
     <div class="plain-summary"><span class="ps-icon">📖</span>${lnPlainSummary(d, expired, amtKnown)}</div>
     <div class="tx-hero-body">
       ${amtKnown
-        ? `<div class="tx-amount-hero">${btcStr}<span class="unit">BTC</span></div>${fiat ? `<div class="tx-fiat-hero">${fiat}</div>` : ''}<div class="tx-meta-cell" style="margin-bottom:0.5rem"><span class="lbl">Import exacte</span><span class="val">${satsStr} sats · ${d.amountMsat.toLocaleString(loc())} msat</span></div>`
-        : `<div class="tx-amount-hero" style="font-size:1.6rem">Import obert</div><div class="tx-fiat-hero">El pagador decideix la quantitat</div>`}
+        ? `<div class="tx-amount-hero">${btcStr}<span class="unit">BTC</span></div>${fiat ? `<div class="tx-fiat-hero">${fiat}</div>` : ''}<div class="tx-meta-cell" style="margin-bottom:0.5rem"><span class="lbl">${t('ln_exact_amount')}</span><span class="val">${satsStr} sats · ${d.amountMsat.toLocaleString(loc())} msat</span></div>`
+        : `<div class="tx-amount-hero" style="font-size:1.6rem">${t('ln_open_amount')}</div><div class="tx-fiat-hero">${t('ln_payer_decides')}</div>`}
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.5rem 0 1rem">
-        <a class="track-btn" href="lightning:${d.raw}" style="margin:0;color:#fcd34d;border-color:#fcd34d55">⚡ Obre al moneder</a>
+        <a class="track-btn" href="lightning:${d.raw}" style="margin:0;color:#fcd34d;border-color:#fcd34d55">${t('ln_open_wallet')}</a>
       </div>
       ${d.description
-        ? `<div class="dest-banner"><span class="dl">📝 Concepte:</span><span class="dn" style="color:var(--text-primary);font-weight:normal">${escapeHtml(d.description)}</span></div>`
-        : (d.descriptionHash ? `<div class="dest-banner"><span class="dl">📝 Concepte:</span><span class="dn" style="color:var(--text-secondary);font-weight:normal">(descripció llarga — la factura només en porta el hash)</span></div>` : '')}
+        ? `<div class="dest-banner"><span class="dl">${t('ln_concept')}</span><span class="dn" style="color:var(--text-primary);font-weight:normal">${escapeHtml(d.description)}</span></div>`
+        : (d.descriptionHash ? `<div class="dest-banner"><span class="dl">${t('ln_concept')}</span><span class="dn" style="color:var(--text-secondary);font-weight:normal">${t('ln_long_desc')}</span></div>` : '')}
       <div class="tx-meta-row" style="margin-top:1rem">
-        <div class="tx-meta-cell"><span class="lbl">Creada</span><span class="val">${createdStr}</span></div>
-        <div class="tx-meta-cell"><span class="lbl">${expired ? 'Va caducar' : 'Caduca'}</span><span class="val" style="${expired ? 'color:#f87171' : ''}">${expiresStr}</span></div>
-        <div class="tx-meta-cell"><span class="lbl">Validesa</span><span class="val">${fmtDuration(d.expiry || 3600)}</span></div>
+        <div class="tx-meta-cell"><span class="lbl">${t('ln_created')}</span><span class="val">${createdStr}</span></div>
+        <div class="tx-meta-cell"><span class="lbl">${expired ? t('ln_expired_label') : t('ln_expires_label')}</span><span class="val" style="${expired ? 'color:#f87171' : ''}">${expiresStr}</span></div>
+        <div class="tx-meta-cell"><span class="lbl">${t('ln_validity')}</span><span class="val">${fmtDuration(d.expiry || 3600)}</span></div>
       </div>
       ${d.payeeNode
-        ? `<div class="dest-banner"><span class="dl">🎯 Node destí:</span><span class="dn ln-node">${d.payeeNode}</span> <button class="copy-btn" onclick="copyText('${d.payeeNode}',this)">copiar</button>${nodeLink(d.payeeNode)}</div>`
-        : `<div class="dest-banner"><span class="dl">🎯 Node destí:</span><span class="dn" style="color:var(--text-secondary);font-weight:normal">no inclòs explícitament (es recupera de la signatura)</span></div>`}
+        ? `<div class="dest-banner"><span class="dl">${t('ln_dest_node')}</span><span class="dn ln-node">${d.payeeNode}</span> <button class="copy-btn" onclick="copyText('${d.payeeNode}',this)">${t('copy')}</button>${nodeLink(d.payeeNode)}</div>`
+        : `<div class="dest-banner"><span class="dl">${t('ln_dest_node')}</span><span class="dn" style="color:var(--text-secondary);font-weight:normal">${t('ln_node_implicit')}</span></div>`}
       <details>
-        <summary>Detalls tècnics</summary>
+        <summary>${t('tech_details')}</summary>
         <div class="det-grid">
           ${d.paymentHash ? `<div class="det-cell" style="grid-column:1/-1"><div class="lbl">Payment hash</div><div class="val txid-mono">${d.paymentHash}</div></div>` : ''}
           ${d.paymentSecret ? `<div class="det-cell" style="grid-column:1/-1"><div class="lbl">Payment secret</div><div class="val txid-mono">${d.paymentSecret}</div></div>` : ''}
           ${d.descriptionHash ? `<div class="det-cell" style="grid-column:1/-1"><div class="lbl">Description hash</div><div class="val txid-mono">${d.descriptionHash}</div></div>` : ''}
-          ${d.minFinalCltv != null ? `<div class="det-cell"><div class="lbl">min_final_cltv</div><div class="val">${d.minFinalCltv} blocs</div></div>` : ''}
+          ${d.minFinalCltv != null ? `<div class="det-cell"><div class="lbl">min_final_cltv</div><div class="val">${t('ln_blocks_n', { n: d.minFinalCltv })}</div></div>` : ''}
           ${d.features ? `<div class="det-cell"><div class="lbl">Feature bits</div><div class="val txid-mono">0x${d.features}</div></div>` : ''}
-          <div class="det-cell"><div class="lbl">Checksum</div><div class="val">${d.checksumOk ? '✓ vàlid' : '⚠ NO vàlid'}</div></div>
-          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">Factura completa (BOLT11)</div><div class="val txid-mono">${d.raw} <button class="copy-btn" onclick="copyText('${d.raw}',this)">copiar</button></div></div>
+          <div class="det-cell"><div class="lbl">Checksum</div><div class="val">${d.checksumOk ? t('checksum_valid') : t('checksum_invalid')}</div></div>
+          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">${t('ln_full_invoice')}</div><div class="val txid-mono">${d.raw} <button class="copy-btn" onclick="copyText('${d.raw}',this)">${t('copy')}</button></div></div>
         </div>
       </details>
     </div>
@@ -1964,29 +2004,29 @@ function renderLnInvoice(d, price) {
 
   // ── Rutes (route hints) ──
   const hasHints = d.routes.length && d.routes.some(r => r.length);
-  html += `<div class="card"><h2>🛣️ Rutes (route hints)</h2>`;
+  html += `<div class="card"><h2>${t('routes_title')}</h2>`;
   if (hasHints) {
-    html += `<div class="summary-text"><p>La factura incrusta aquestes <strong>pistes de ruta</strong> perquè el pagament arribi a través de canals <strong>privats</strong> del destinatari (que no estan anunciats al graf públic). Cada salt indica el node d'entrada i el canal a fer servir.</p></div>`;
+    html += `<div class="summary-text"><p>${t('routes_intro')}</p></div>`;
     d.routes.forEach((hops, ri) => {
       if (!hops.length) return;
-      if (d.routes.length > 1) html += `<div style="color:var(--text-secondary);font-size:0.72rem;margin:0.65rem 0 0.3rem">Ruta ${ri + 1}</div>`;
+      if (d.routes.length > 1) html += `<div style="color:var(--text-secondary);font-size:0.72rem;margin:0.65rem 0 0.3rem">${t('route_n', { n: ri + 1 })}</div>`;
       hops.forEach((h, hi) => {
         html += `<div class="ln-hop">
-          <div class="ln-hop-title">⚡ Salt ${hi + 1}</div>
+          <div class="ln-hop-title">${t('hop_n', { n: hi + 1 })}</div>
           <div class="ln-hop-grid">
-            <div style="grid-column:1/-1"><div class="k">Node d'entrada</div><div class="vv ln-node">${h.pubkey}${nodeLink(h.pubkey)}</div></div>
-            <div><div class="k">Canal (scid)</div><div class="vv">${h.block}×${h.txidx}×${h.outidx}</div></div>
-            <div><div class="k">Comissió base</div><div class="vv">${h.feeBaseMsat.toLocaleString(loc())} msat</div></div>
-            <div><div class="k">Comissió variable</div><div class="vv">${h.feeProp.toLocaleString(loc())} ppm (${(h.feeProp / 1e4).toFixed(4)} %)</div></div>
-            <div><div class="k">CLTV delta</div><div class="vv">${h.cltvDelta} blocs</div></div>
+            <div style="grid-column:1/-1"><div class="k">${t('hop_node')}</div><div class="vv ln-node">${h.pubkey}${nodeLink(h.pubkey)}</div></div>
+            <div><div class="k">${t('hop_channel')}</div><div class="vv">${h.block}×${h.txidx}×${h.outidx}</div></div>
+            <div><div class="k">${t('hop_fee_base')}</div><div class="vv">${h.feeBaseMsat.toLocaleString(loc())} msat</div></div>
+            <div><div class="k">${t('hop_fee_var')}</div><div class="vv">${h.feeProp.toLocaleString(loc())} ppm (${(h.feeProp / 1e4).toFixed(4)} %)</div></div>
+            <div><div class="k">${t('hop_cltv')}</div><div class="vv">${t('ln_blocks_n', { n: h.cltvDelta })}</div></div>
           </div>
         </div>`;
       });
     });
   } else {
-    html += `<div class="summary-text"><p>Aquesta factura <strong>no inclou route hints</strong>: el destinatari té prou canals <strong>públics</strong> (anunciats al graf de la xarxa) perquè el pagador pugui calcular una ruta pel seu compte.</p></div>`;
+    html += `<div class="summary-text"><p>${t('routes_none')}</p></div>`;
   }
-  html += `<p class="summary-note">⚠️ Lightning enruta amb <em>onion routing</em>: la ruta real que segueix un pagament és privada i no queda registrada enlloc públic. Aquests <em>route hints</em> són l'única informació d'enrutament que viatja dins la factura.</p></div>`;
+  html += `<p class="summary-note">${t('routes_note')}</p></div>`;
 
   showResult(html);
 }
