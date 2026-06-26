@@ -365,6 +365,22 @@ details[open] summary::before { transform: rotate(90deg); }
 .ln-channel .lc-force { background: rgba(248,113,113,0.16); color: #f87171; border: 1px solid rgba(248,113,113,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
 .ln-channel .lc-coop { background: rgba(74,222,128,0.16); color: #4ade80; border: 1px solid rgba(74,222,128,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
 .ln-channel .lc-open { background: rgba(167,139,250,0.16); color: #a78bfa; border: 1px solid rgba(167,139,250,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
+
+/* ── Responsive (mòbil) ──────────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+  body { padding: 1.25rem 0.6rem; }
+  h1 { font-size: 1.4rem; }
+  .search-box { flex-wrap: wrap; }
+  .search-box input[type="text"] { flex: 1 1 100%; }
+  .search-box button { flex: 1 1 auto; }
+  .app-tabs { flex-wrap: wrap; }
+  .addr-stats-row { grid-template-columns: 1fr; }
+  .addr-stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .addr-stat:last-child { border-bottom: none; }
+  .tx-meta-row { gap: 1rem; }
+  .tx-amount-hero, .addr-balance-hero, .ws-btc { font-size: 2rem; }
+  .tx-status-banner { font-size: 0.92rem; }
+}
 </style>
 </head>
 <body>
@@ -797,6 +813,23 @@ if (Object.values(loadAlerts()).some(v => v.enabled)) startAlertPolling();
 routeFromHash();
 
 // ── Input detection ───────────────────────────────────────────────────────────
+function normalizeQuery(v) {
+  // URI BIP21: bitcoin:<adreça>?amount=…&label=…&lightning=lnbc…
+  if (/^bitcoin:/i.test(v)) {
+    const body = v.replace(/^bitcoin:/i, '');
+    const qIdx = body.indexOf('?');
+    const addrPart = (qIdx === -1 ? body : body.slice(0, qIdx)).trim();
+    const query = qIdx === -1 ? '' : body.slice(qIdx + 1);
+    if (addrPart && detectInput(addrPart)) return addrPart;
+    const lnParam = query.match(/(?:^|&)lightning=([^&]+)/i);
+    if (lnParam) { try { return decodeURIComponent(lnParam[1]); } catch { return lnParam[1]; } }
+    return addrPart || v;
+  }
+  // Factura/adreça/pubkey partida per espais o salts de línia en enganxar
+  if (/\s/.test(v)) { const compact = v.replace(/\s+/g, ''); if (detectInput(compact)) return compact; }
+  return v;
+}
+
 function detectInput(val) {
   const lnClean = val.replace(/^lightning:/i, '');
   if (/^ln(bcrt|bc|tbs|tb|sb)[0-9]*[munp]?1[ac-hj-np-z02-9]{6,}$/i.test(lnClean)) return { type: 'lninvoice', invoice: lnClean };
@@ -880,7 +913,10 @@ function searchFromHist(el) { document.getElementById('txInput').value = el.data
 
 // ── Cerca principal ───────────────────────────────────────────────────────────
 async function search() {
-  const val = document.getElementById('txInput').value.trim(); if (!val) return;
+  let val = document.getElementById('txInput').value.trim(); if (!val) return;
+  val = normalizeQuery(val);
+  const inp = document.getElementById('txInput');
+  if (inp.value.trim() !== val) inp.value = val;
   const det = detectInput(val);
   if (!det) { offerNodeSearch(val); return; }
   stopTracking();
@@ -1635,6 +1671,9 @@ function renderLnInvoice(d, price) {
       ${amtKnown
         ? `<div class="tx-amount-hero">${btcStr}<span class="unit">BTC</span></div>${fiat ? `<div class="tx-fiat-hero">${fiat}</div>` : ''}<div class="tx-meta-cell" style="margin-bottom:0.5rem"><span class="lbl">Import exacte</span><span class="val">${satsStr} sats · ${d.amountMsat.toLocaleString('ca')} msat</span></div>`
         : `<div class="tx-amount-hero" style="font-size:1.6rem">Import obert</div><div class="tx-fiat-hero">El pagador decideix la quantitat</div>`}
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:0.5rem 0 1rem">
+        <a class="track-btn" href="lightning:${d.raw}" style="margin:0;color:#fcd34d;border-color:#fcd34d55">⚡ Obre al moneder</a>
+      </div>
       ${d.description
         ? `<div class="dest-banner"><span class="dl">📝 Concepte:</span><span class="dn" style="color:var(--text-primary);font-weight:normal">${escapeHtml(d.description)}</span></div>`
         : (d.descriptionHash ? `<div class="dest-banner"><span class="dl">📝 Concepte:</span><span class="dn" style="color:var(--text-secondary);font-weight:normal">(descripció llarga — la factura només en porta el hash)</span></div>` : '')}
@@ -1655,6 +1694,7 @@ function renderLnInvoice(d, price) {
           ${d.minFinalCltv != null ? `<div class="det-cell"><div class="lbl">min_final_cltv</div><div class="val">${d.minFinalCltv} blocs</div></div>` : ''}
           ${d.features ? `<div class="det-cell"><div class="lbl">Feature bits</div><div class="val txid-mono">0x${d.features}</div></div>` : ''}
           <div class="det-cell"><div class="lbl">Checksum</div><div class="val">${d.checksumOk ? '✓ vàlid' : '⚠ NO vàlid'}</div></div>
+          <div class="det-cell" style="grid-column:1/-1"><div class="lbl">Factura completa (BOLT11)</div><div class="val txid-mono">${d.raw} <button class="copy-btn" onclick="copyText('${d.raw}',this)">copiar</button></div></div>
         </div>
       </details>
     </div>

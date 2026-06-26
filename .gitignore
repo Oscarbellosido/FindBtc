@@ -1,0 +1,13 @@
+# Scripts i secrets locals de configuració — NO pujar mai al repo públic
+*.ps1
+*.bat
+token_out.txt
+token*.txt
+pages_output.txt
+
+# Configuració local de l'editor / Claude Code
+.claude/
+
+# Sistema operatiu
+Thumbs.db
+.DS_Store
