@@ -386,7 +386,7 @@ details[open] summary::before { transform: rotate(90deg); }
       <button id="searchBtn" onclick="search()">Cercar</button>
       <button id="clearBtn" class="btn-sec" onclick="clearInput()" title="Esborrar el text">🗑️ Esborrar</button>
     </div>
-    <p class="hint">Detecta automàticament <span>transaccions</span>, <span>adreces</span> i <span>factures Lightning ⚡</span> · Suporta <span>Taproot</span>, <span>SegWit</span> i <span>Legacy</span></p>
+    <p class="hint">Detecta <span>transaccions</span>, <span>adreces</span>, <span>factures Lightning ⚡</span> i <span>nodes Lightning</span> (pubkey o àlies) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span></p>
     <div id="historySection" class="history-section" style="display:none">
       <div class="history-header">
         <span class="history-label">Cerques recents</span>
@@ -415,6 +415,7 @@ let priceCache = null;
 let searchGen = 0;
 let _lastAddrExportData = null;
 let _suppressHashRoute = false;
+let _lastUnrecognized = '';
 
 // ── Adreces d'exchanges coneguts ──────────────────────────────────────────────
 const KNOWN_ADDRS = {
@@ -799,6 +800,7 @@ routeFromHash();
 function detectInput(val) {
   const lnClean = val.replace(/^lightning:/i, '');
   if (/^ln(bcrt|bc|tbs|tb|sb)[0-9]*[munp]?1[ac-hj-np-z02-9]{6,}$/i.test(lnClean)) return { type: 'lninvoice', invoice: lnClean };
+  if (/^0[23][0-9a-fA-F]{64}$/.test(val)) return { type: 'lnnode', pubkey: val.toLowerCase() };
   if (/^[0-9a-fA-F]{64}$/.test(val)) return { type: 'txid' };
   if (/^bc1p[a-z0-9]{6,87}$/i.test(val)) return { type: 'address', addrType: 'Taproot (P2TR)' };
   if (/^bc1q[a-z0-9]{6,87}$/i.test(val)) return { type: 'address', addrType: 'SegWit natiu (P2WPKH)' };
@@ -880,13 +882,13 @@ function searchFromHist(el) { document.getElementById('txInput').value = el.data
 async function search() {
   const val = document.getElementById('txInput').value.trim(); if (!val) return;
   const det = detectInput(val);
-  if (!det) { showError('Format no reconegut. Introdueix un txid (64 hex) o adreça Bitcoin vàlida.'); return; }
+  if (!det) { offerNodeSearch(val); return; }
   stopTracking();
   setHashForQuery(val, det.type);
   const gen = ++searchGen;
   const btn = document.getElementById('searchBtn'); btn.disabled = true;
   document.getElementById('result').style.display = 'none'; document.getElementById('result').innerHTML = '';
-  showLoading(det.type === 'txid' ? 'Cercant la transacció…' : det.type === 'lninvoice' ? 'Descodificant la factura Lightning…' : "Cercant transaccions de l'adreça…");
+  showLoading(det.type === 'txid' ? 'Cercant la transacció…' : det.type === 'lninvoice' ? 'Descodificant la factura Lightning…' : det.type === 'lnnode' ? 'Carregant el node Lightning…' : "Cercant transaccions de l'adreça…");
   // Fire price fetch independently — does NOT block rendering
   const priceP = fetchBtcPrice();
   try {
@@ -898,6 +900,16 @@ async function search() {
       const price = priceCache && Date.now() - priceCache.ts < PRICE_TTL ? priceCache.price : null;
       renderLnInvoice(decoded, price);
       if (!price) priceP.then(p => { if (p && gen === searchGen) renderLnInvoice(decoded, p); }).catch(() => {});
+    } else if (det.type === 'lnnode') {
+      let node;
+      try { node = await lnApiGet('/nodes/' + det.pubkey); }
+      catch (e) { if (gen === searchGen) showError("No s'ha pogut carregar el node. L'API Lightning de mempool.space sovint va lenta des d'aquí; torna-ho a provar."); return; }
+      if (gen !== searchGen) return;
+      const channels = await lnApiGet('/channels?public_key=' + det.pubkey + '&status=active').catch(() => null);
+      if (gen !== searchGen) return;
+      const price = priceCache && Date.now() - priceCache.ts < PRICE_TTL ? priceCache.price : null;
+      renderLnNode(node, channels, price);
+      if (!price) priceP.then(p => { if (p && gen === searchGen) renderLnNode(node, channels, p); }).catch(() => {});
     } else if (det.type === 'txid') {
       const tx = await apiFetch('/tx/' + val);
       if (gen !== searchGen) return;
@@ -921,13 +933,13 @@ function clearInput() { const i = document.getElementById('txInput'); i.value = 
 
 // ── Deep-linking (#tx/… · #addr/…) ────────────────────────────────────────────
 function setHashForQuery(val, type) {
-  const prefix = type === 'txid' ? 'tx/' : type === 'lninvoice' ? 'ln/' : 'addr/';
+  const prefix = type === 'txid' ? 'tx/' : type === 'lninvoice' ? 'ln/' : type === 'lnnode' ? 'node/' : 'addr/';
   const newHash = '#' + prefix + val;
   if (location.hash !== newHash) { _suppressHashRoute = true; location.hash = newHash; }
 }
 function routeFromHash() {
   let raw = decodeURIComponent(location.hash.replace(/^#/, '')).trim();
-  raw = raw.replace(/^(tx|addr|ln)\//i, '');
+  raw = raw.replace(/^(tx|addr|ln|node)\//i, '');
   if (!raw) return;
   if (!detectInput(raw)) return;
   const input = document.getElementById('txInput');
@@ -1748,6 +1760,120 @@ async function detectChannelOpen(tx, outspends) {
       return { vout: c.vout, closeTxid: c.spendTxid, closeType: det.closeType, pubkeys: det.pubkeys };
   }
   return null;
+}
+
+// ── Explorador de nodes Lightning (API mempool.space, només mainnet) ──────────
+async function lnApiGet(path) {
+  const r = await fetch('https://mempool.space/api/v1/lightning' + path, { signal: AbortSignal.timeout(12000) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+function searchLnNode(pk) { switchTab('search'); document.getElementById('txInput').value = pk; search(); }
+
+function offerNodeSearch(val) {
+  _lastUnrecognized = val;
+  const s = document.getElementById('status');
+  s.className = 'error'; s.style.display = 'block';
+  s.innerHTML = `⚠ Format no reconegut (txid, adreça, factura <code>lnbc…</code> o pubkey de node).<div style="margin-top:0.7rem"><button class="track-btn" style="margin:0;color:#a78bfa;border-color:#a78bfa44" onclick="searchLnNodes()">🔍 Cercar un node Lightning anomenat «${escapeHtml(val)}»</button></div>`;
+}
+
+function renderLnNode(node, channels, price) {
+  hideStatus();
+  const cap = Number(node.capacity) || 0;
+  const safeColor = /^#[0-9a-f]{6}$/i.test(node.color || '') ? node.color : '#888888';
+  const alias = escapeHtml(node.alias || '(sense àlias)');
+  const pk = node.public_key;
+  const pkDisp = pk.slice(0, 20) + '…' + pk.slice(-12);
+  const capFiat = fmtFiat(cap, price);
+  const country = node.country ? escapeHtml(node.country.es || node.country.en || '') : '';
+  const city = node.city ? escapeHtml(node.city.es || node.city.en || '') : '';
+  const loc = [city, country].filter(Boolean).join(', ');
+  const isp = node.as_organization ? escapeHtml(node.as_organization) : '';
+  const sockets = (node.sockets || '').split(',').map(s => s.trim()).filter(Boolean);
+  const chList = Array.isArray(channels) ? channels : [];
+
+  let html = mkPriceBar(price) + `
+  <div class="addr-hero">
+    <div class="addr-hero-top">
+      <div class="addr-hero-sublabel">⚡ Node Lightning <span style="display:inline-block;width:0.85rem;height:0.85rem;border-radius:3px;background:${safeColor};border:1px solid var(--border);vertical-align:middle" title="Color del node"></span></div>
+      <div style="font-size:1.5rem;color:var(--accent);font-weight:bold;margin:0.25rem 0 0.35rem;word-break:break-word">${alias}</div>
+      <div class="addr-str">${pkDisp} <button class="copy-btn" onclick="copyText('${pk}',this)">copiar</button> <a class="copy-btn" href="https://mempool.space/lightning/node/${pk}" target="_blank" rel="noopener" style="text-decoration:none">↗ mempool</a></div>
+    </div>
+    <div class="addr-balance-hero">${satsToBtc(cap)}<span class="unit"> BTC</span></div>
+    <div class="addr-fiat-hero">Capacitat total${capFiat ? ` · ${capFiat}` : ''}</div>
+    <div class="addr-stats-row">
+      <div class="addr-stat"><div class="lbl">Canals actius</div><div class="v neu">${(node.active_channel_count || 0).toLocaleString('ca')}</div></div>
+      <div class="addr-stat"><div class="lbl">Oberts (històric)</div><div class="v neu">${(node.opened_channel_count || 0).toLocaleString('ca')}</div></div>
+      <div class="addr-stat"><div class="lbl">Tancats</div><div class="v neu">${(node.closed_channel_count || 0).toLocaleString('ca')}</div></div>
+    </div>
+  </div>`;
+
+  // Targeta d'informació
+  const rows = [];
+  if (loc) rows.push(['📍 Ubicació', loc]);
+  if (isp) rows.push(['🌐 Proveïdor (ISP)', isp + (node.as_number ? ` · AS${node.as_number}` : '')]);
+  if (node.first_seen) rows.push(['👁 Primer cop vist', fmtDate(node.first_seen)]);
+  if (node.updated_at) rows.push(['🔄 Última actualització', fmtDate(node.updated_at)]);
+  let infoHtml = rows.map(([k, v]) => `<div class="det-cell"><div class="lbl">${k}</div><div class="val">${v}</div></div>`).join('');
+  if (sockets.length) {
+    const socketsHtml = sockets.map(s => `<div style="font-size:0.72rem;color:var(--text-secondary);word-break:break-all">${s.includes('.onion') ? '🧅 ' : '🌍 '}${escapeHtml(s)}</div>`).join('');
+    infoHtml += `<div class="det-cell" style="grid-column:1/-1"><div class="lbl">🔌 Adreces de connexió</div><div class="val">${socketsHtml}</div></div>`;
+  }
+  if (infoHtml) html += `<div class="card"><h2>Informació del node</h2><div class="det-grid">${infoHtml}</div></div>`;
+
+  // Targeta de canals
+  const totalCh = node.active_channel_count || chList.length;
+  const countLabel = totalCh > chList.length ? `mostrant ${chList.length} de ${totalCh.toLocaleString('ca')}` : `${chList.length} ${chList.length === 1 ? 'canal' : 'canals'}`;
+  html += `<div class="card"><h2>Canals <span style="color:var(--text-secondary);font-size:0.8rem">(${countLabel})</span></h2>`;
+  if (chList.length) {
+    const sorted = [...chList].sort((a, b) => (Number(b.capacity) || 0) - (Number(a.capacity) || 0));
+    const SHOW = 20;
+    html += `<div class="wallet-list">`;
+    sorted.slice(0, SHOW).forEach(ch => {
+      const peer = ch.node || {};
+      const peerAlias = escapeHtml(peer.alias || (peer.public_key ? peer.public_key.slice(0, 14) + '…' : 'desconegut'));
+      const chCap = Number(ch.capacity) || 0, chFiat = fmtFiat(chCap, price);
+      html += `<div class="wallet-item"><div class="wallet-addr"><span class="addr-text" ${peer.public_key ? `onclick="searchLnNode('${peer.public_key}')" title="${peer.public_key}"` : 'style="color:var(--text-secondary);cursor:default"'}>${peerAlias}</span></div><div class="wallet-amount"><div class="btc">${satsToBtc(chCap)} BTC</div>${chFiat ? `<div class="fiat">${chFiat}</div>` : ''}${ch.fee_rate != null ? `<div class="sat">${ch.fee_rate} ppm</div>` : ''}</div></div>`;
+    });
+    html += `</div>`;
+    if (sorted.length > SHOW) html += `<p class="summary-note">Mostrant els ${SHOW} canals de més capacitat de ${sorted.length}.</p>`;
+  } else {
+    html += `<p style="color:var(--text-secondary);text-align:center;padding:1rem;font-size:0.82rem">No s'han pogut carregar els canals (o el node no en té d'actius).</p>`;
+  }
+  html += `<p class="summary-note">Dades del graf públic de la xarxa via mempool.space.</p></div>`;
+
+  showResult(html);
+}
+
+function searchLnNodes(text) {
+  text = (text || _lastUnrecognized || '').trim();
+  if (!text) return;
+  switchTab('search');
+  showLoading(`Cercant nodes Lightning «${escapeHtml(text)}»…`);
+  document.getElementById('result').style.display = 'none';
+  const gen = ++searchGen;
+  lnApiGet('/search?searchText=' + encodeURIComponent(text))
+    .then(res => { if (gen === searchGen) renderLnNodeSearch(text, res); })
+    .catch(() => { if (gen === searchGen) showError("No s'ha pogut cercar. L'API Lightning de mempool.space sovint va lenta des d'aquí; torna-ho a provar."); });
+}
+
+function renderLnNodeSearch(text, res) {
+  hideStatus();
+  const nodes = (res && res.nodes) || [];
+  let html = `<div class="card"><h2>Nodes Lightning «${escapeHtml(text)}» <span style="color:var(--text-secondary);font-size:0.8rem">(${nodes.length})</span></h2>`;
+  if (!nodes.length) {
+    html += `<p style="color:var(--text-secondary);text-align:center;padding:1.25rem;font-size:0.85rem">Cap node trobat amb aquest nom.</p></div>`;
+    showResult(html); return;
+  }
+  html += `<div class="wallet-list">`;
+  nodes.forEach(n => {
+    const alias = escapeHtml(n.alias || '(sense àlias)');
+    const cap = n.capacity != null ? satsToBtc(Number(n.capacity)) + ' BTC' : '—';
+    const chans = n.channels != null ? Number(n.channels).toLocaleString('ca') + ' canals' : '';
+    html += `<div class="wallet-item" style="cursor:pointer" onclick="searchLnNode('${n.public_key}')"><div class="wallet-addr"><div style="min-width:0"><div style="color:var(--accent);font-weight:bold">${alias}</div><div style="color:var(--text-secondary);font-size:0.66rem;word-break:break-all">${n.public_key.slice(0, 28)}…</div></div></div><div class="wallet-amount"><div class="btc">${cap}</div>${chans ? `<div class="sat">${chans}</div>` : ''}</div></div>`;
+  });
+  html += `</div></div>`;
+  showResult(html);
 }
 
 // ── Utilitats UI ──────────────────────────────────────────────────────────────
