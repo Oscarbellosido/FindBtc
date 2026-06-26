@@ -488,7 +488,26 @@ const I18N = {
     pv_mix: "⚠ Barreja de tipus d'adreces — menys privat", pv_mix_detail: 'Input/output amb Legacy i SegWit simultàniament',
     ch_force: 'forçat', ch_coop: 'cooperatiu', ch_close_force_desc: 'Un dels dos participants ha tancat el canal unilateralment (commitment transaction).', ch_close_coop_desc: 'Els dos participants han tancat el canal de mutu acord.',
     ch_close_title: '⚡ Tancament de canal Lightning', ch_close_spends: 'Gasta la sortida multisig 2-de-2 del finançament.', ch_opened_at: '📌 Canal obert a:', ch_nodes: '🔗 Nodes del canal:',
-    ch_open_title: '⚡ Obertura de canal Lightning', ch_open_funding: 'finançament', ch_open_desc: 'La sortida #{vout} és el multisig 2-de-2 que finança un canal Lightning.', ch_closed_by: '📌 Canal tancat per:'
+    ch_open_title: '⚡ Obertura de canal Lightning', ch_open_funding: 'finançament', ch_open_desc: 'La sortida #{vout} és el multisig 2-de-2 que finança un canal Lightning.', ch_closed_by: '📌 Canal tancat per:',
+    st_confirmed: 'confirmada', st_confirmed_on: 'confirmada el {date}', st_pending: '<strong style="color:#fdba74">pendent de confirmació</strong>',
+    ps_coinbase: 'Un miner ha generat <strong>{btc} BTC</strong> nous (recompensa del bloc #{block} + comissions), {status}.',
+    ps_one_address: 'una adreça', ps_from_generic: 'Una adreça', ps_fee: ', pagant <strong>{rate} sat/vB</strong>{fiatFee} de comissió',
+    ps_single: '{from} ha enviat <strong>{btc} BTC</strong>{fiat} a {dest}{fee}, {status}.',
+    ps_consolidation: 'Consolidació de fons: <strong>{inputs}</strong> fusionades en {outputs} per un total de <strong>{btc} BTC</strong>{fiat}, {status}.',
+    ps_distribution: "Distribució massiva: <strong>{inputs}</strong> cap a <strong>{recipients}</strong> per <strong>{btc} BTC</strong> — típic d'un exchange processant retirades, {status}.",
+    ps_fee_short: ', comissió {rate} sat/vB', ps_default: '<strong>{inputs}</strong> han mogut <strong>{btc} BTC</strong>{fiat} a <strong>{outputs}</strong>{fee}, {status}.',
+    ps_known_dest: ' Els fons han anat a <strong>{dests}</strong>.', join_and: ' i ',
+    sum_title: 'Resum del moviment', sum_coinbase: 'Transacció <strong>coinbase</strong>: BTC de nova creació (recompensa de mineria + tarifes del bloc), sense origen previ.',
+    sum_origins_one: "d'<strong>una única adreça d'origen</strong>", sum_origins_many: "de <strong>{n} adreces d'origen</strong>",
+    sum_funds_out: 'Els fons surten {origins} ({inputs}) per un total de <strong>{btc} BTC</strong>.',
+    sum_consolidation: 'Patró de <strong>consolidació</strong>: molts UTXOs agrupats en poques sortides.',
+    sum_batching: "Patró de <strong>batching</strong>: una font reparteix fons a {n} destins — típic d'un exchange processant retirades.",
+    sum_payment: "Patró de <strong>pagament típic</strong>: una sortida és el pagament i l'altra probablement el <strong>canvi</strong>{chg}.", sum_change_confirmed: ' (confirmat)',
+    sum_no_spent: '<strong>Cap sortida gastada</strong>: els fons continuen a les adreces destinatàries.',
+    sum_all_spent: '<strong>Totes les sortides gastades</strong>: els fons han continuat movent-se.',
+    sum_some_spent: '<strong>{spent} de {total} sortides gastades</strong>: part dels fons ha continuat movent-se.',
+    sum_from_label: "D'on venen els fons", sum_heuristic: 'Heurística sobre dades públiques de la blockchain.',
+    flow_none: '— cap a la mostra analitzada —', flow_mining: '⛏ Mineria (BTC de nova creació)', flow_opreturn: 'OP_RETURN (dades, sense valor)', flow_more: '… i {addrs} més'
   },
   es: {
     subtitle: 'Explorador de blockchain Bitcoin',
@@ -517,7 +536,26 @@ const I18N = {
     pv_mix: '⚠ Mezcla de tipos de direcciones — menos privado', pv_mix_detail: 'Input/output con Legacy y SegWit simultáneamente',
     ch_force: 'forzado', ch_coop: 'cooperativo', ch_close_force_desc: 'Uno de los dos participantes ha cerrado el canal unilateralmente (commitment transaction).', ch_close_coop_desc: 'Los dos participantes han cerrado el canal de mutuo acuerdo.',
     ch_close_title: '⚡ Cierre de canal Lightning', ch_close_spends: 'Gasta la salida multisig 2-de-2 de la financiación.', ch_opened_at: '📌 Canal abierto en:', ch_nodes: '🔗 Nodos del canal:',
-    ch_open_title: '⚡ Apertura de canal Lightning', ch_open_funding: 'financiación', ch_open_desc: 'La salida #{vout} es el multisig 2-de-2 que financia un canal Lightning.', ch_closed_by: '📌 Canal cerrado por:'
+    ch_open_title: '⚡ Apertura de canal Lightning', ch_open_funding: 'financiación', ch_open_desc: 'La salida #{vout} es el multisig 2-de-2 que financia un canal Lightning.', ch_closed_by: '📌 Canal cerrado por:',
+    st_confirmed: 'confirmada', st_confirmed_on: 'confirmada el {date}', st_pending: '<strong style="color:#fdba74">pendiente de confirmación</strong>',
+    ps_coinbase: 'Un minero ha generado <strong>{btc} BTC</strong> nuevos (recompensa del bloque #{block} + comisiones), {status}.',
+    ps_one_address: 'una dirección', ps_from_generic: 'Una dirección', ps_fee: ', pagando <strong>{rate} sat/vB</strong>{fiatFee} de comisión',
+    ps_single: '{from} ha enviado <strong>{btc} BTC</strong>{fiat} a {dest}{fee}, {status}.',
+    ps_consolidation: 'Consolidación de fondos: <strong>{inputs}</strong> fusionadas en {outputs} por un total de <strong>{btc} BTC</strong>{fiat}, {status}.',
+    ps_distribution: 'Distribución masiva: <strong>{inputs}</strong> hacia <strong>{recipients}</strong> por <strong>{btc} BTC</strong> — típico de un exchange procesando retiros, {status}.',
+    ps_fee_short: ', comisión {rate} sat/vB', ps_default: '<strong>{inputs}</strong> han movido <strong>{btc} BTC</strong>{fiat} a <strong>{outputs}</strong>{fee}, {status}.',
+    ps_known_dest: ' Los fondos han ido a <strong>{dests}</strong>.', join_and: ' y ',
+    sum_title: 'Resumen del movimiento', sum_coinbase: 'Transacción <strong>coinbase</strong>: BTC de nueva creación (recompensa de minería + tarifas del bloque), sin origen previo.',
+    sum_origins_one: 'de <strong>una única dirección de origen</strong>', sum_origins_many: 'de <strong>{n} direcciones de origen</strong>',
+    sum_funds_out: 'Los fondos salen {origins} ({inputs}) por un total de <strong>{btc} BTC</strong>.',
+    sum_consolidation: 'Patrón de <strong>consolidación</strong>: muchos UTXOs agrupados en pocas salidas.',
+    sum_batching: 'Patrón de <strong>batching</strong>: una fuente reparte fondos a {n} destinos — típico de un exchange procesando retiros.',
+    sum_payment: 'Patrón de <strong>pago típico</strong>: una salida es el pago y la otra probablemente el <strong>cambio</strong>{chg}.', sum_change_confirmed: ' (confirmado)',
+    sum_no_spent: '<strong>Ninguna salida gastada</strong>: los fondos siguen en las direcciones destinatarias.',
+    sum_all_spent: '<strong>Todas las salidas gastadas</strong>: los fondos han seguido moviéndose.',
+    sum_some_spent: '<strong>{spent} de {total} salidas gastadas</strong>: parte de los fondos ha seguido moviéndose.',
+    sum_from_label: 'De dónde vienen los fondos', sum_heuristic: 'Heurística sobre datos públicos de la blockchain.',
+    flow_none: '— ninguno en la muestra analizada —', flow_mining: '⛏ Minería (BTC de nueva creación)', flow_opreturn: 'OP_RETURN (datos, sin valor)', flow_more: '… y {addrs} más'
   },
   en: {
     subtitle: 'Bitcoin blockchain explorer',
@@ -546,7 +584,26 @@ const I18N = {
     pv_mix: '⚠ Mixed address types — less private', pv_mix_detail: 'Input/output with Legacy and SegWit simultaneously',
     ch_force: 'force', ch_coop: 'cooperative', ch_close_force_desc: 'One of the two participants closed the channel unilaterally (commitment transaction).', ch_close_coop_desc: 'Both participants closed the channel by mutual agreement.',
     ch_close_title: '⚡ Lightning channel close', ch_close_spends: 'Spends the 2-of-2 multisig funding output.', ch_opened_at: '📌 Channel opened at:', ch_nodes: '🔗 Channel nodes:',
-    ch_open_title: '⚡ Lightning channel open', ch_open_funding: 'funding', ch_open_desc: 'Output #{vout} is the 2-of-2 multisig that funds a Lightning channel.', ch_closed_by: '📌 Channel closed by:'
+    ch_open_title: '⚡ Lightning channel open', ch_open_funding: 'funding', ch_open_desc: 'Output #{vout} is the 2-of-2 multisig that funds a Lightning channel.', ch_closed_by: '📌 Channel closed by:',
+    st_confirmed: 'confirmed', st_confirmed_on: 'confirmed on {date}', st_pending: '<strong style="color:#fdba74">pending confirmation</strong>',
+    ps_coinbase: 'A miner generated <strong>{btc} new BTC</strong> (block #{block} reward + fees), {status}.',
+    ps_one_address: 'one address', ps_from_generic: 'An address', ps_fee: ', paying <strong>{rate} sat/vB</strong>{fiatFee} in fees',
+    ps_single: '{from} sent <strong>{btc} BTC</strong>{fiat} to {dest}{fee}, {status}.',
+    ps_consolidation: 'Fund consolidation: <strong>{inputs}</strong> merged into {outputs} for a total of <strong>{btc} BTC</strong>{fiat}, {status}.',
+    ps_distribution: 'Mass distribution: <strong>{inputs}</strong> to <strong>{recipients}</strong> for <strong>{btc} BTC</strong> — typical of an exchange processing withdrawals, {status}.',
+    ps_fee_short: ', fee {rate} sat/vB', ps_default: '<strong>{inputs}</strong> moved <strong>{btc} BTC</strong>{fiat} to <strong>{outputs}</strong>{fee}, {status}.',
+    ps_known_dest: ' The funds went to <strong>{dests}</strong>.', join_and: ' and ',
+    sum_title: 'Movement summary', sum_coinbase: '<strong>Coinbase</strong> transaction: newly created BTC (mining reward + block fees), with no prior origin.',
+    sum_origins_one: 'from <strong>a single source address</strong>', sum_origins_many: 'from <strong>{n} source addresses</strong>',
+    sum_funds_out: 'Funds leave {origins} ({inputs}) for a total of <strong>{btc} BTC</strong>.',
+    sum_consolidation: '<strong>Consolidation</strong> pattern: many UTXOs grouped into few outputs.',
+    sum_batching: '<strong>Batching</strong> pattern: one source distributes funds to {n} destinations — typical of an exchange processing withdrawals.',
+    sum_payment: '<strong>Typical payment</strong> pattern: one output is the payment and the other is probably the <strong>change</strong>{chg}.', sum_change_confirmed: ' (confirmed)',
+    sum_no_spent: '<strong>No output spent</strong>: the funds remain at the recipient addresses.',
+    sum_all_spent: '<strong>All outputs spent</strong>: the funds have kept moving.',
+    sum_some_spent: '<strong>{spent} of {total} outputs spent</strong>: part of the funds has kept moving.',
+    sum_from_label: 'Where the funds come from', sum_heuristic: 'Heuristic over public blockchain data.',
+    flow_none: '— none in the analyzed sample —', flow_mining: '⛏ Mining (newly created BTC)', flow_opreturn: 'OP_RETURN (data, no value)', flow_more: '… and {addrs} more'
   }
 };
 function t(key, params) {
@@ -1149,28 +1206,33 @@ function buildPlainSummary(tx, price, knownDests) {
   const conf = tx.status && tx.status.confirmed;
   const total = outs.reduce((s, o) => s + (o.value || 0), 0);
   const feeRate = calcFeeRate(tx);
-  const fiatStr = price ? `≈ ${fmtFiat(total, price)}` : '';
-  const fiatFeeStr = tx.fee && price ? `≈ ${fmtFiat(tx.fee, price)}` : '';
-  const dateStr = conf && tx.status.block_time ? `el ${new Date(tx.status.block_time * 1000).toLocaleDateString(loc())}` : '';
-  const status = conf ? `confirmada${dateStr ? ' ' + dateStr : ''}` : '<strong style="color:#fdba74">pendent de confirmació</strong>';
+  const fiat = price ? ` (≈ ${fmtFiat(total, price)})` : '';
+  const fiatFee = tx.fee && price ? ` (≈ ${fmtFiat(tx.fee, price)})` : '';
+  const status = conf
+    ? (tx.status.block_time ? t('st_confirmed_on', { date: new Date(tx.status.block_time * 1000).toLocaleDateString(loc()) }) : t('st_confirmed'))
+    : t('st_pending');
+  const btc = satsToBtc(total);
 
   let text = '';
   if (isCb) {
-    text = `Un miner ha generat <strong>${satsToBtc(total)} BTC</strong> nous (recompensa del bloc #${tx.status?.block_height || '?'} + comissions), ${status}.`;
+    text = t('ps_coinbase', { btc, block: tx.status?.block_height || '?', status });
   } else if (vins.length === 1 && outs.length <= 3) {
     const fromAddr = vins[0].prevout?.scriptpubkey_address;
     const fromLbl  = getEntityLabel(fromAddr);
-    const from = fromLbl ? `${fromLbl.icon} <strong>${fromLbl.name}</strong>` : (fromAddr ? `<strong>${fromAddr.slice(0,10)}…</strong>` : 'Una adreça');
+    const from = fromLbl ? `${fromLbl.icon} <strong>${fromLbl.name}</strong>` : (fromAddr ? `<strong>${fromAddr.slice(0,10)}…</strong>` : t('ps_from_generic'));
     const destOuts = outs.filter(o => o.scriptpubkey_type !== 'op_return');
-    text = `${from} ha enviat <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''} a ${destOuts.length > 1 ? `<strong>${destOuts.length} adreces</strong>` : 'una adreça'}${feeRate ? `, pagant <strong>${feeRate} sat/vB</strong>${fiatFeeStr ? ` (${fiatFeeStr})` : ''} de comissió` : ''}, ${status}.`;
+    const dest = destOuts.length > 1 ? `<strong>${pl(destOuts.length, 'address')}</strong>` : t('ps_one_address');
+    const fee = feeRate ? t('ps_fee', { rate: feeRate, fiatFee }) : '';
+    text = t('ps_single', { from, btc, fiat, dest, fee, status });
   } else if (vins.length >= 5 && outs.length <= 2) {
-    text = `Consolidació de fons: <strong>${vins.length} entrades</strong> fusionades en ${outs.length} sortida${outs.length > 1 ? 's' : ''} per un total de <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''}, ${status}.`;
+    text = t('ps_consolidation', { inputs: pl(vins.length, 'input'), outputs: pl(outs.length, 'output'), btc, fiat, status });
   } else if (outs.length >= 8) {
-    text = `Distribució massiva: <strong>${vins.length} entrada${vins.length > 1 ? 'des' : ''}</strong> repartida${vins.length > 1 ? 'des' : ''} a <strong>${outs.length} destinataris</strong> per <strong>${satsToBtc(total)} BTC</strong> — típic d'un exchange processant retirades, ${status}.`;
+    text = t('ps_distribution', { inputs: pl(vins.length, 'input'), recipients: pl(outs.length, 'recipient'), btc, status });
   } else {
-    text = `<strong>${vins.length} entrada${vins.length > 1 ? 'des' : ''}</strong> han mogut <strong>${satsToBtc(total)} BTC</strong>${fiatStr ? ` (${fiatStr})` : ''} a <strong>${outs.length} sortida${outs.length > 1 ? 'des' : ''}</strong>${feeRate ? `, comissió ${feeRate} sat/vB` : ''}, ${status}.`;
+    const fee = feeRate ? t('ps_fee_short', { rate: feeRate }) : '';
+    text = t('ps_default', { inputs: pl(vins.length, 'input'), btc, fiat, outputs: pl(outs.length, 'output'), fee, status });
   }
-  if (knownDests && knownDests.length > 0) text += ` Els fons han anat a <strong>${knownDests.join(' i ')}</strong>.`;
+  if (knownDests && knownDests.length > 0) text += t('ps_known_dest', { dests: knownDests.join(t('join_and')) });
   return `<div class="plain-summary"><span class="ps-icon">📖</span>${text}</div>`;
 }
 
@@ -1311,15 +1373,15 @@ function buildPrivacyBadge(tx) {
 function addFlow(map, key, sats) { const e = map.get(key) || { sats: 0, n: 0 }; e.sats += sats; e.n++; map.set(key, e); }
 function flowListHtml(map, price, max = 5) {
   const items = [...map.entries()].sort((a, b) => b[1].sats - a[1].sats);
-  if (!items.length) return '<div class="flow-item"><span class="flow-addr nolink">— cap a la mostra analitzada —</span></div>';
+  if (!items.length) return `<div class="flow-item"><span class="flow-addr nolink">${t('flow_none')}</span></div>`;
   let html = items.slice(0, max).map(([k, v]) => {
     const isAddr = k !== 'coinbase' && k !== 'op_return' && k !== 'nostd';
-    const label = k === 'coinbase' ? '⛏ Mineria (BTC de nova creació)' : k === 'op_return' ? 'OP_RETURN (dades, sense valor)' : k === 'nostd' ? 'Script no estàndard' : shortAddr(k);
+    const label = k === 'coinbase' ? t('flow_mining') : k === 'op_return' ? t('flow_opreturn') : k === 'nostd' ? t('nonstd_script') : shortAddr(k);
     const lbl = isAddr ? getEntityLabel(k) : null;
     const fiat = fmtFiat(v.sats, price);
     return `<div class="flow-item"><span class="flow-addr${isAddr ? '' : ' nolink'}" ${isAddr ? `onclick="searchAddr('${k}')" title="${k}"` : ''}>${label}${lbl ? ` <span class="entity-badge" style="font-size:0.58rem;padding:0.1rem 0.35rem">${lbl.icon} ${lbl.name}</span>` : ''}</span>${v.n > 1 ? `<span class="flow-cnt">×${v.n}</span>` : ''}<span class="flow-amt" ${fiat ? `title="${fiat}"` : ''}>${satsToBtc(v.sats)} BTC</span></div>`;
   }).join('');
-  if (items.length > max) html += `<div class="flow-item"><span class="flow-addr nolink">… i ${items.length - max} adreces més</span></div>`;
+  if (items.length > max) html += `<div class="flow-item"><span class="flow-addr nolink">${t('flow_more', { addrs: pl(items.length - max, 'address') })}</span></div>`;
   return html;
 }
 
@@ -1356,15 +1418,16 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
   if (isCb) { addFlow(origins,'coinbase',outs.reduce((s,o)=>s+(o.value||0),0)); }
   else { vins.forEach(v=>{ totalIn+=(v.prevout&&v.prevout.value)||0; const a=v.prevout&&v.prevout.scriptpubkey_address; if(a) addFlow(origins,a,v.prevout.value||0); }); }
   const p = [];
-  if (isCb) p.push(`Transacció <strong>coinbase</strong>: BTC de nova creació (recompensa de mineria + tarifes del bloc), sense origen previ.`);
+  if (isCb) p.push(t('sum_coinbase'));
   else {
-    p.push(`Els fons surten ${origins.size===1?`d'<strong>una única adreça d'origen</strong>`:`de <strong>${origins.size} adreces d'origen</strong>`} (${vins.length} entrad${vins.length===1?'a':'es'}) per un total de <strong>${satsToBtc(totalIn)} BTC</strong>.`);
-    if (vins.length>=5&&outs.length<=2) p.push(`Patró de <strong>consolidació</strong>: molts UTXOs agrupats en poques sortides.`);
-    else if (vins.length<=2&&outs.length>=5) p.push(`Patró de <strong>batching</strong>: una font reparteix fons a ${outs.length} destins — típic d'un exchange processant retirades.`);
-    else if (outs.length===2) { const chg=outs.some(o=>o.scriptpubkey_address&&inAddrSet.has(o.scriptpubkey_address)); p.push(`Patró de <strong>pagament típic</strong>: una sortida és el pagament i l'altra probablement el <strong>canvi</strong>${chg?' (confirmat)':''}.`); }
+    const originsStr = origins.size === 1 ? t('sum_origins_one') : t('sum_origins_many', { n: origins.size });
+    p.push(t('sum_funds_out', { origins: originsStr, inputs: pl(vins.length, 'input'), btc: satsToBtc(totalIn) }));
+    if (vins.length>=5&&outs.length<=2) p.push(t('sum_consolidation'));
+    else if (vins.length<=2&&outs.length>=5) p.push(t('sum_batching', { n: outs.length }));
+    else if (outs.length===2) { const chg=outs.some(o=>o.scriptpubkey_address&&inAddrSet.has(o.scriptpubkey_address)); p.push(t('sum_payment', { chg: chg ? t('sum_change_confirmed') : '' })); }
   }
-  if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(`<strong>Cap sortida gastada</strong>: els fons continuen a les adreces destinatàries.`); else if(spnt>=sp) p.push(`<strong>Totes les sortides gastades</strong>: els fons han continuat movent-se.`); else p.push(`<strong>${spnt} de ${sp} sortides gastades</strong>: part dels fons ha continuat movent-se.`); }
-  return `<div class="card"><h2>Resum del moviment</h2><div class="summary-text">${p.map(t=>`<p>${t}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>D'on venen els fons</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">Heurística sobre dades públiques de la blockchain.</p></div>`;
+  if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(t('sum_no_spent')); else if(spnt>=sp) p.push(t('sum_all_spent')); else p.push(t('sum_some_spent', { spent: spnt, total: sp })); }
+  return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('sum_from_label')}</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">${t('sum_heuristic')}</p></div>`;
 }
 
 // ── Renderitzadors ────────────────────────────────────────────────────────────
