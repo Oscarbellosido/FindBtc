@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FindBtc — Explorador Bitcoin</title>
+<!-- PWA: instal·lable a mòbil i escriptori -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1a1a2e">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FindBtc">
 <!--
   FindBtc — Explorador de blockchain Bitcoin i Lightning
   Copyright (C) 2026 Oscarbellosido
@@ -399,6 +408,7 @@ details[open] summary::before { transform: rotate(90deg); }
 <body>
 <div class="container">
   <div class="topbar">
+    <button id="install-btn" onclick="installApp()" data-i18n-title="install_app" title="Instal·lar app" style="display:none; background:var(--bg-card); border:1px solid #f7931a55; color:var(--accent); padding:0.2rem 0.5rem; border-radius:5px; font-size:0.78rem; cursor:pointer; font-family:'Courier New',monospace; font-weight:bold;">⬇️</button>
     <div class="lang-switch">
       <button class="lang-btn" data-lang="ca" onclick="setLang('ca')">CA</button>
       <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
@@ -467,7 +477,7 @@ const I18N = {
     search_btn: 'Cercar', clear_btn: '🗑️ Esborrar', clear_title: 'Esborrar el text',
     search_ph: 'txid · adreça (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ factura Lightning',
     hint: 'Detecta <span>transaccions</span>, <span>adreces</span>, <span>factures Lightning ⚡</span> i <span>nodes Lightning</span> (pubkey o àlies) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
-    recent_searches: 'Cerques recents', clear: 'Esborrar', theme_toggle: 'Canviar tema',
+    recent_searches: 'Cerques recents', clear: 'Esborrar', theme_toggle: 'Canviar tema', install_app: 'Instal·lar app',
     footer_free: 'programari lliure sota', footer_source: 'codi font',
     load_tx: 'Cercant la transacció…', load_invoice: 'Descodificant la factura Lightning…', load_node: 'Carregant el node Lightning…', load_addr: "Cercant transaccions de l'adreça…",
     err_tx_notfound: 'Transacció no trobada.', err_addr_notfound: 'Adreça no reconeguda o sense activitat.', err_no_api: 'Cap API disponible. Comprova la connexió.', api_trying: '{a} no disponible, provant {b}…',
@@ -558,7 +568,7 @@ const I18N = {
     search_btn: 'Buscar', clear_btn: '🗑️ Borrar', clear_title: 'Borrar el texto',
     search_ph: 'txid · dirección (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ factura Lightning',
     hint: 'Detecta <span>transacciones</span>, <span>direcciones</span>, <span>facturas Lightning ⚡</span> y <span>nodos Lightning</span> (pubkey o alias) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
-    recent_searches: 'Búsquedas recientes', clear: 'Borrar', theme_toggle: 'Cambiar tema',
+    recent_searches: 'Búsquedas recientes', clear: 'Borrar', theme_toggle: 'Cambiar tema', install_app: 'Instalar app',
     footer_free: 'software libre bajo', footer_source: 'código fuente',
     load_tx: 'Buscando la transacción…', load_invoice: 'Descodificando la factura Lightning…', load_node: 'Cargando el nodo Lightning…', load_addr: 'Buscando transacciones de la dirección…',
     err_tx_notfound: 'Transacción no encontrada.', err_addr_notfound: 'Dirección no reconocida o sin actividad.', err_no_api: 'Ninguna API disponible. Comprueba la conexión.', api_trying: '{a} no disponible, probando {b}…',
@@ -649,7 +659,7 @@ const I18N = {
     search_btn: 'Search', clear_btn: '🗑️ Clear', clear_title: 'Clear the text',
     search_ph: 'txid · address (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ Lightning invoice',
     hint: 'Detects <span>transactions</span>, <span>addresses</span>, <span>Lightning invoices ⚡</span> and <span>Lightning nodes</span> (pubkey or alias) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
-    recent_searches: 'Recent searches', clear: 'Clear', theme_toggle: 'Toggle theme',
+    recent_searches: 'Recent searches', clear: 'Clear', theme_toggle: 'Toggle theme', install_app: 'Install app',
     footer_free: 'free software under', footer_source: 'source code',
     load_tx: 'Searching the transaction…', load_invoice: 'Decoding the Lightning invoice…', load_node: 'Loading the Lightning node…', load_addr: 'Searching the address transactions…',
     err_tx_notfound: 'Transaction not found.', err_addr_notfound: 'Address not recognized or with no activity.', err_no_api: 'No API available. Check your connection.', api_trying: '{a} unavailable, trying {b}…',
@@ -2289,6 +2299,26 @@ function toggleTheme() {
   applyTheme(newTheme);
 }
 initTheme();
+
+// ── PWA: service worker + instal·lació ────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+let _deferredInstall = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); _deferredInstall = e;
+  const b = document.getElementById('install-btn'); if (b) b.style.display = '';
+});
+async function installApp() {
+  if (!_deferredInstall) return;
+  _deferredInstall.prompt();
+  try { await _deferredInstall.userChoice; } catch {}
+  _deferredInstall = null;
+  const b = document.getElementById('install-btn'); if (b) b.style.display = 'none';
+}
+window.addEventListener('appinstalled', () => {
+  const b = document.getElementById('install-btn'); if (b) b.style.display = 'none';
+});
 </script>
 </body>
 </html>
