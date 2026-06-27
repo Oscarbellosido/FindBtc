@@ -383,15 +383,16 @@ details[open] summary::before { transform: rotate(90deg); }
 
 /* ── Selector d'idioma ───────────────────────────────────────────────────────── */
 .topbar { position: absolute; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 0.5rem; z-index: 10; }
-.lang-switch { display: flex; gap: 0.2rem; }
-.lang-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.2rem 0.45rem; border-radius: 5px; font-size: 0.68rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; }
+.lang-switch { display: flex; gap: 0.25rem; flex-shrink: 0; flex-wrap: nowrap; }
+.lang-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.2rem 0.45rem; border-radius: 5px; font-size: 0.68rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; min-width: 1.8rem; text-align: center; }
 .lang-btn:hover { color: var(--text-primary); }
 .lang-btn.active { background: #f7931a18; color: var(--accent); border-color: #f7931a55; font-weight: bold; }
 
 /* ── Responsive (mòbil) ──────────────────────────────────────────────────────── */
 @media (max-width: 560px) {
   body { padding: 1.25rem 0.6rem; }
-  h1 { font-size: 1.4rem; }
+  h1 { font-size: 1.4rem; padding-right: 7rem; }
+  .subtitle { padding-right: 7rem; }
   .search-box { flex-wrap: wrap; }
   .search-box input[type="text"] { flex: 1 1 100%; }
   .search-box button { flex: 1 1 auto; }
@@ -455,6 +456,7 @@ details[open] summary::before { transform: rotate(90deg); }
 const CACHE_TTL  = 5 * 60 * 1000;
 const PRICE_TTL  = 2 * 60 * 1000;
 const MAX_HIST   = 10;
+const LN_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 const WALLET_KEY     = 'findbtc_wallet';
 const ALERTS_KEY     = 'findbtc_alerts';
 const PRICE_HIST_PRE = 'findbtc_prices_';
@@ -1891,7 +1893,6 @@ function showAddrQr(addr) {
 }
 
 // ── Descodificador de factures Lightning (BOLT11, 100% local) ─────────────────
-const LN_CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 function lnPolymod(values) {
   const GEN = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
   let chk = 1;
