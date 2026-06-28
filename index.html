@@ -54,7 +54,7 @@ body {
 }
 .container { max-width: 860px; margin: 0 auto; position: relative; }
 h1 { color: var(--accent); font-size: 1.6rem; margin-bottom: 0.3rem; }
-.subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; }
+.subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0; }
 
 /* ── Tabs ──────────────────────────────────────────────────────────────────── */
 .app-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
@@ -381,8 +381,11 @@ details[open] summary::before { transform: rotate(90deg); }
 .ln-channel .lc-coop { background: rgba(74,222,128,0.16); color: #4ade80; border: 1px solid rgba(74,222,128,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
 .ln-channel .lc-open { background: rgba(167,139,250,0.16); color: #a78bfa; border: 1px solid rgba(167,139,250,0.4); padding: 0.08rem 0.5rem; border-radius: 8px; font-size: 0.68rem; }
 
+/* ── Capçalera (títol + controls) ───────────────────────────────────────────── */
+.site-header { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; }
+.site-title { flex: 1 1 0; min-width: 0; }
 /* ── Selector d'idioma ───────────────────────────────────────────────────────── */
-.topbar { position: absolute; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 0.5rem; z-index: 10; }
+.topbar { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
 .lang-switch { display: flex; gap: 0.25rem; flex-shrink: 0; flex-wrap: nowrap; }
 .lang-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.2rem 0.45rem; border-radius: 5px; font-size: 0.68rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; min-width: 1.8rem; text-align: center; }
 .lang-btn:hover { color: var(--text-primary); }
@@ -391,8 +394,7 @@ details[open] summary::before { transform: rotate(90deg); }
 /* ── Responsive (mòbil) ──────────────────────────────────────────────────────── */
 @media (max-width: 560px) {
   body { padding: 1.25rem 0.6rem; }
-  h1 { font-size: 1.4rem; padding-right: 7rem; }
-  .subtitle { padding-right: 7rem; }
+  h1 { font-size: 1.4rem; }
   .search-box { flex-wrap: wrap; }
   .search-box input[type="text"] { flex: 1 1 100%; }
   .search-box button { flex: 1 1 auto; }
@@ -408,17 +410,21 @@ details[open] summary::before { transform: rotate(90deg); }
 </head>
 <body>
 <div class="container">
-  <div class="topbar">
-    <button id="install-btn" onclick="installApp()" data-i18n-title="install_app" title="Instal·lar app" style="display:none; background:var(--bg-card); border:1px solid #f7931a55; color:var(--accent); padding:0.2rem 0.5rem; border-radius:5px; font-size:0.78rem; cursor:pointer; font-family:'Courier New',monospace; font-weight:bold;">⬇️</button>
-    <div class="lang-switch">
-      <button class="lang-btn" data-lang="ca" onclick="setLang('ca')">CA</button>
-      <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
-      <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+  <div class="site-header">
+    <div class="site-title">
+      <h1>₿ FindBtc</h1>
+      <p class="subtitle" data-i18n="subtitle">Explorador de blockchain Bitcoin</p>
     </div>
-    <button id="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle" title="Canviar tema" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">☀️</button>
+    <div class="topbar">
+      <button id="install-btn" onclick="installApp()" data-i18n-title="install_app" title="Instal·lar app" style="display:none; background:var(--bg-card); border:1px solid #f7931a55; color:var(--accent); padding:0.2rem 0.5rem; border-radius:5px; font-size:0.78rem; cursor:pointer; font-family:'Courier New',monospace; font-weight:bold;">⬇️</button>
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="ca" onclick="setLang('ca')">CA</button>
+        <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <button id="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle" title="Canviar tema" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">☀️</button>
+    </div>
   </div>
-  <h1>₿ FindBtc</h1>
-  <p class="subtitle" data-i18n="subtitle">Explorador de blockchain Bitcoin</p>
 
   <div class="app-tabs">
     <button class="tab-btn active" id="tab-search" data-i18n="tab_search" onclick="switchTab('search')">🔍 Cerca</button>
