@@ -557,6 +557,7 @@ const I18N = {
     as_coinbase: 'Una part dels fons prové <strong>directament de la mineria</strong>: BTC de nova creació.',
     as_single_source: "Tots els fons rebuts provenen d'<strong>una única font</strong>.", as_multi_source: 'Els fons arriben de <strong>{n} orígens diferents</strong>: cobraments múltiples.',
     as_unmoved: "Els fons <strong>encara no s'han mogut</strong>: tot continua a l'adreça.", as_remaining: "Queden <strong>{btc} BTC sense gastar</strong>; la resta ja s'ha reenviat.", as_empty: "L'adreça està <strong>buida</strong>: tots els fons rebuts s'han reenviat.",
+    as_overview: "En total ha rebut <strong>{recv} BTC</strong> i n'ha tornat a enviar <strong>{sent} BTC</strong>.", as_passthrough: "Tot el que ha entrat ha tornat a sortir: aquesta adreça ha funcionat com a <strong>pas de fons</strong>. És el comportament típic d'una <strong>adreça de dipòsit d'un exchange</strong> o moneder custodial, que recull el que hi envies i ho mou de seguida al seu propi moneder intern. Per això el saldo on-chain és <strong>0</strong> tot i haver-hi hagut moviment.", as_swept: "Tots els fons reenviats van anar a <strong>una sola adreça</strong>, cosa habitual quan un servei recull els dipòsits cap al seu moneder principal.",
     as_top_dest: 'La major part dels fons enviats ({pct}%) van anar a <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> apareix com a origen i destí: possibles moviments interns.',
     as_period: 'Activitat analitzada: del <strong>{from}</strong> al <strong>{to}</strong>.', as_partial: 'Anàlisi basada en les {n} transaccions més recents (de {total} en total). ', as_heuristic: 'Heurística sobre dades públiques.',
     as_from_label: "D'on han sortit els fons", as_to_label: 'Cap a on han anat',
@@ -662,6 +663,7 @@ const I18N = {
     as_coinbase: 'Una parte de los fondos proviene <strong>directamente de la minería</strong>: BTC de nueva creación.',
     as_single_source: 'Todos los fondos recibidos provienen de <strong>una única fuente</strong>.', as_multi_source: 'Los fondos llegan de <strong>{n} orígenes diferentes</strong>: cobros múltiples.',
     as_unmoved: 'Los fondos <strong>aún no se han movido</strong>: todo sigue en la dirección.', as_remaining: 'Quedan <strong>{btc} BTC sin gastar</strong>; el resto ya se ha reenviado.', as_empty: 'La dirección está <strong>vacía</strong>: todos los fondos recibidos se han reenviado.',
+    as_overview: 'En total ha recibido <strong>{recv} BTC</strong> y ha vuelto a enviar <strong>{sent} BTC</strong>.', as_passthrough: 'Todo lo que entró volvió a salir: esta dirección ha funcionado como <strong>paso de fondos</strong>. Es el comportamiento típico de una <strong>dirección de depósito de un exchange</strong> o monedero custodial, que recoge lo que le envías y lo mueve enseguida a su propio monedero interno. Por eso el saldo on-chain es <strong>0</strong> aunque haya habido movimiento.', as_swept: 'Todos los fondos reenviados fueron a <strong>una sola dirección</strong>, algo habitual cuando un servicio recoge los depósitos hacia su monedero principal.',
     as_top_dest: 'La mayor parte de los fondos enviados ({pct}%) fueron a <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> aparece como origen y destino: posibles movimientos internos.',
     as_period: 'Actividad analizada: del <strong>{from}</strong> al <strong>{to}</strong>.', as_partial: 'Análisis basado en las {n} transacciones más recientes (de {total} en total). ', as_heuristic: 'Heurística sobre datos públicos.',
     as_from_label: 'De dónde han salido los fondos', as_to_label: 'Hacia dónde han ido',
@@ -767,6 +769,7 @@ const I18N = {
     as_coinbase: 'Part of the funds comes <strong>directly from mining</strong>: newly created BTC.',
     as_single_source: 'All received funds come from <strong>a single source</strong>.', as_multi_source: 'Funds arrive from <strong>{n} different sources</strong>: multiple incoming payments.',
     as_unmoved: 'The funds <strong>have not moved yet</strong>: everything remains at the address.', as_remaining: '<strong>{btc} BTC unspent</strong> remain; the rest has already been forwarded.', as_empty: 'The address is <strong>empty</strong>: all received funds have been forwarded.',
+    as_overview: 'In total it has received <strong>{recv} BTC</strong> and forwarded <strong>{sent} BTC</strong>.', as_passthrough: 'Everything that came in went back out: this address has acted as a <strong>pass-through</strong>. This is the typical behaviour of an <strong>exchange deposit address</strong> or custodial wallet, which collects what you send and quickly moves it to its own internal wallet. That is why the on-chain balance is <strong>0</strong> even though there has been activity.', as_swept: 'All forwarded funds went to <strong>a single address</strong>, common when a service sweeps deposits into its main wallet.',
     as_top_dest: 'Most of the sent funds ({pct}%) went to <strong>{addr}</strong>.', as_internal: '<strong>{addr}</strong> appears as both source and destination: possible internal movements.',
     as_period: 'Activity analyzed: from <strong>{from}</strong> to <strong>{to}</strong>.', as_partial: 'Analysis based on the {n} most recent transactions (of {total} total). ', as_heuristic: 'Heuristic over public data.',
     as_from_label: 'Where the funds went out from', as_to_label: 'Where they went',
@@ -1629,15 +1632,22 @@ function buildAddressSummary(addr, info, txs, price) {
     if (recv > sent) { inTx++; if ((tx.vin||[]).some(v=>v.is_coinbase)) { coinbase=true; addFlow(origins,'coinbase',recv); } else { (tx.vin||[]).forEach(v=>{ const a=v.prevout&&v.prevout.scriptpubkey_address; if(a&&a!==addr) addFlow(origins,a,v.prevout.value||0); }); } }
     else if (sent > 0) { outTx++; (tx.vout||[]).forEach(o=>{ const a=o.scriptpubkey_address; if(a===addr) return; if(o.scriptpubkey_type==='op_return'){addFlow(dests,'op_return',0);return;} addFlow(dests,a||'nostd',o.value||0); }); }
   }
+  const recv = cs.funded_txo_sum||0, sent = cs.spent_txo_sum||0;
+  const passthrough = bal<=0 && inTx>0 && outTx>0;
   const p = [];
+  if (recv>0) p.push(t('as_overview', { recv: satsToBtc(recv), sent: satsToBtc(sent) }));
   if (coinbase) p.push(t('as_coinbase'));
   if (origins.size===1&&!coinbase) p.push(t('as_single_source'));
   else if (origins.size>5) p.push(t('as_multi_source', { n: origins.size }));
   if (bal>0&&outTx===0) p.push(t('as_unmoved'));
   else if (bal>0) p.push(t('as_remaining', { btc: satsToBtc(bal) }));
+  else if (passthrough) p.push(t('as_passthrough'));
   else if (outTx>0) p.push(t('as_empty'));
   const dEntries=[...dests.entries()].filter(([k])=>k!=='op_return'); const totalOut=dEntries.reduce((s,[,v])=>s+v.sats,0);
-  if (dEntries.length>1&&totalOut>0) { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; if(top[1].sats/totalOut>0.7) p.push(t('as_top_dest', { pct: Math.round(top[1].sats/totalOut*100), addr: shortAddr(top[0]) })); }
+  if (totalOut>0) {
+    if (dEntries.length===1) p.push(t('as_swept'));
+    else { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; const frac=top[1].sats/totalOut; if(frac>0.95) p.push(t('as_swept')); else if(frac>0.7) p.push(t('as_top_dest', { pct: Math.round(frac*100), addr: shortAddr(top[0]) })); }
+  }
   for (const [k] of origins) { if (dests.has(k)) { p.push(t('as_internal', { addr: shortAddr(k) })); break; } }
   if (firstTs) p.push(t('as_period', { from: new Date(firstTs*1000).toLocaleDateString(loc()), to: new Date(lastTs*1000).toLocaleDateString(loc()) }));
   const partial = (cs.tx_count||0) > txs.length;
