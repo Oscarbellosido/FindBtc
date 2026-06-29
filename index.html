@@ -422,7 +422,8 @@ details[open] summary::before { transform: rotate(90deg); }
         <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
         <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
       </div>
-      <button id="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle" title="Canviar tema" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">☀️</button>
+      <button id="help-btn" onclick="showHelp()" data-i18n-title="help_title" title="Com funciona FindBtc" style="background:var(--bg-card); border:1px solid var(--border); color:var(--text-secondary); width:1.7rem; height:1.7rem; border-radius:50%; font-size:0.9rem; font-weight:bold; cursor:pointer; font-family:'Courier New',monospace; line-height:1; padding:0;">?</button>
+    <button id="theme-toggle" onclick="toggleTheme()" data-i18n-title="theme_toggle" title="Canviar tema" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">☀️</button>
     </div>
   </div>
 
@@ -486,6 +487,20 @@ const I18N = {
     search_ph: 'txid · adreça (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ factura Lightning',
     hint: 'Detecta <span>transaccions</span>, <span>adreces</span>, <span>factures Lightning ⚡</span> i <span>nodes Lightning</span> (pubkey o àlies) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
     recent_searches: 'Cerques recents', clear: 'Esborrar', theme_toggle: 'Canviar tema', install_app: 'Instal·lar app',
+    help_title: 'Com funciona FindBtc',
+    help_html: `<div style="text-align:left;line-height:1.6;white-space:normal;max-height:62vh;overflow-y:auto">
+<p><strong>FindBtc</strong> és un explorador de Bitcoin i Lightning. Enganxa qualsevol cosa a la barra de cerca i la detecta sola:</p>
+<ul style="margin:0.5rem 0;padding-left:1.1rem">
+<li>🔗 <strong>Transacció</strong> (txid): estat, import, comissions i seguiment en temps real.</li>
+<li>📥 <strong>Adreça</strong> (bc1…, 1…, 3…): saldo, historial i moviments.</li>
+<li>⚡ <strong>Factura Lightning</strong> (lnbc…): import, concepte i com pagar-la.</li>
+<li>🛰️ <strong>Node Lightning</strong> (pubkey o nom): capacitat i canals.</li>
+</ul>
+<p>A dalt hi ha dues pestanyes: <strong>🔍 Cerca</strong> i <strong>👛 La meva cartera</strong> (desa fins a 10 adreces i veu el saldo total).</p>
+<p>Pots canviar d'<strong>idioma</strong> (CA/ES/EN), de <strong>tema</strong> clar/fosc i <strong>instal·lar</strong> l'app al mòbil o a l'ordinador.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">És només una eina de consulta: no envia diners. Les dades vénen d'APIs públiques i res no es desa en cap servidor, només al teu navegador.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">Torna a obrir aquesta ajuda amb el botó <strong>?</strong> de dalt.</p>
+</div>`,
     footer_free: 'programari lliure sota', footer_source: 'codi font',
     load_tx: 'Cercant la transacció…', load_invoice: 'Descodificant la factura Lightning…', load_node: 'Carregant el node Lightning…', load_addr: "Cercant transaccions de l'adreça…",
     err_tx_notfound: 'Transacció no trobada.', err_addr_notfound: 'Adreça no reconeguda o sense activitat.', err_no_api: 'Cap API disponible. Comprova la connexió.', api_trying: '{a} no disponible, provant {b}…',
@@ -577,6 +592,20 @@ const I18N = {
     search_ph: 'txid · dirección (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ factura Lightning',
     hint: 'Detecta <span>transacciones</span>, <span>direcciones</span>, <span>facturas Lightning ⚡</span> y <span>nodos Lightning</span> (pubkey o alias) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
     recent_searches: 'Búsquedas recientes', clear: 'Borrar', theme_toggle: 'Cambiar tema', install_app: 'Instalar app',
+    help_title: 'Cómo funciona FindBtc',
+    help_html: `<div style="text-align:left;line-height:1.6;white-space:normal;max-height:62vh;overflow-y:auto">
+<p><strong>FindBtc</strong> es un explorador de Bitcoin y Lightning. Pega cualquier cosa en la barra de búsqueda y la detecta sola:</p>
+<ul style="margin:0.5rem 0;padding-left:1.1rem">
+<li>🔗 <strong>Transacción</strong> (txid): estado, importe, comisiones y seguimiento en tiempo real.</li>
+<li>📥 <strong>Dirección</strong> (bc1…, 1…, 3…): saldo, historial y movimientos.</li>
+<li>⚡ <strong>Factura Lightning</strong> (lnbc…): importe, concepto y cómo pagarla.</li>
+<li>🛰️ <strong>Nodo Lightning</strong> (pubkey o nombre): capacidad y canales.</li>
+</ul>
+<p>Arriba hay dos pestañas: <strong>🔍 Buscar</strong> y <strong>👛 Mi cartera</strong> (guarda hasta 10 direcciones y ve el saldo total).</p>
+<p>Puedes cambiar de <strong>idioma</strong> (CA/ES/EN), de <strong>tema</strong> claro/oscuro e <strong>instalar</strong> la app en el móvil o el ordenador.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">Es solo una herramienta de consulta: no envía dinero. Los datos vienen de APIs públicas y nada se guarda en ningún servidor, solo en tu navegador.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">Vuelve a abrir esta ayuda con el botón <strong>?</strong> de arriba.</p>
+</div>`,
     footer_free: 'software libre bajo', footer_source: 'código fuente',
     load_tx: 'Buscando la transacción…', load_invoice: 'Descodificando la factura Lightning…', load_node: 'Cargando el nodo Lightning…', load_addr: 'Buscando transacciones de la dirección…',
     err_tx_notfound: 'Transacción no encontrada.', err_addr_notfound: 'Dirección no reconocida o sin actividad.', err_no_api: 'Ninguna API disponible. Comprueba la conexión.', api_trying: '{a} no disponible, probando {b}…',
@@ -668,6 +697,20 @@ const I18N = {
     search_ph: 'txid · address (bc1p…/bc1q…/1…/3…) · lnbc… ⚡ Lightning invoice',
     hint: 'Detects <span>transactions</span>, <span>addresses</span>, <span>Lightning invoices ⚡</span> and <span>Lightning nodes</span> (pubkey or alias) · <span>Taproot</span>, <span>SegWit</span>, <span>Legacy</span>',
     recent_searches: 'Recent searches', clear: 'Clear', theme_toggle: 'Toggle theme', install_app: 'Install app',
+    help_title: 'How FindBtc works',
+    help_html: `<div style="text-align:left;line-height:1.6;white-space:normal;max-height:62vh;overflow-y:auto">
+<p><strong>FindBtc</strong> is a Bitcoin and Lightning explorer. Paste anything into the search bar and it auto-detects it:</p>
+<ul style="margin:0.5rem 0;padding-left:1.1rem">
+<li>🔗 <strong>Transaction</strong> (txid): status, amount, fees and real-time tracking.</li>
+<li>📥 <strong>Address</strong> (bc1…, 1…, 3…): balance, history and movements.</li>
+<li>⚡ <strong>Lightning invoice</strong> (lnbc…): amount, description and how to pay it.</li>
+<li>🛰️ <strong>Lightning node</strong> (pubkey or name): capacity and channels.</li>
+</ul>
+<p>At the top there are two tabs: <strong>🔍 Search</strong> and <strong>👛 My wallet</strong> (save up to 10 addresses and see the total balance).</p>
+<p>You can change <strong>language</strong> (CA/ES/EN), <strong>theme</strong> (light/dark) and <strong>install</strong> the app on your phone or computer.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">It is only a lookup tool: it does not send money. Data comes from public APIs and nothing is stored on any server, only in your browser.</p>
+<p style="color:var(--text-secondary);font-size:0.82rem">Reopen this help with the <strong>?</strong> button at the top.</p>
+</div>`,
     footer_free: 'free software under', footer_source: 'source code',
     load_tx: 'Searching the transaction…', load_invoice: 'Decoding the Lightning invoice…', load_node: 'Loading the Lightning node…', load_addr: 'Searching the address transactions…',
     err_tx_notfound: 'Transaction not found.', err_addr_notfound: 'Address not recognized or with no activity.', err_no_api: 'No API available. Check your connection.', api_trying: '{a} unavailable, trying {b}…',
@@ -770,6 +813,8 @@ function applyLang() {
   if (typeof _rerender === 'function') { try { _rerender(); } catch {} }
 }
 function initLang() { LANG = loadLang(); applyLang(); }
+function showHelp() { showModal({ title: t('help_title'), message: t('help_html'), confirmText: t('understood') }); }
+function maybeShowFirstHelp() { try { if (!localStorage.getItem('findbtc_help_seen')) { localStorage.setItem('findbtc_help_seen', '1'); showHelp(); } } catch {} }
 function loc() { return LANG === 'en' ? 'en-GB' : LANG; }
 const PLURALS = {
   ca: { input: ['entrada', 'entrades'], output: ['sortida', 'sortides'], address: ['adreça', 'adreces'], conf: ['confirmació', 'confirmacions'], recipient: ['destinatari', 'destinataris'], channel: ['canal', 'canals'], hop: ['salt', 'salts'], tx: ['transacció', 'transaccions'], day: ['dia', 'dies'], month: ['mes', 'mesos'], year: ['any', 'anys'], pending: ['pendent', 'pendents'] },
@@ -1159,6 +1204,7 @@ renderHistory();
 fetchBtcPrice();
 if (Object.values(loadAlerts()).some(v => v.enabled)) startAlertPolling();
 routeFromHash();
+maybeShowFirstHelp();
 
 // ── Input detection ───────────────────────────────────────────────────────────
 function normalizeQuery(v) {
