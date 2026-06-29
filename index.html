@@ -545,6 +545,10 @@ const I18N = {
     sum_no_spent: '<strong>Cap sortida gastada</strong>: els fons continuen a les adreces destinatàries.',
     sum_all_spent: '<strong>Totes les sortides gastades</strong>: els fons han continuat movent-se.',
     sum_some_spent: '<strong>{spent} de {total} sortides gastades</strong>: part dels fons ha continuat movent-se.',
+    sum_self: "Totes les sortides tornen a adreces del remitent: és un <strong>moviment intern</strong> (consolidació o reorganització de fons propis), no un pagament a un tercer.",
+    sum_payment_split: "D'aquests, <strong>{pay} BTC</strong> són el pagament real i <strong>{chg} BTC</strong> tornen com a <strong>canvi</strong> al remitent.",
+    sum_opreturn: "Inclou una sortida <strong>OP_RETURN</strong> amb dades incrustades a la blockchain (no transfereix bitcoins).",
+    sum_fee: "Comissió de xarxa pagada: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).",
     sum_from_label: "D'on venen els fons", sum_heuristic: 'Heurística sobre dades públiques de la blockchain.',
     flow_none: '— cap a la mostra analitzada —', flow_mining: '⛏ Mineria (BTC de nova creació)', flow_opreturn: 'OP_RETURN (dades, sense valor)', flow_more: '… i {addrs} més',
     track_title: '📡 Seguiment en temps real', track_stop: '✕ Aturar', loading: 'Carregant…', track_updating: 'Actualitzant en {n}s…',
@@ -651,6 +655,10 @@ const I18N = {
     sum_no_spent: '<strong>Ninguna salida gastada</strong>: los fondos siguen en las direcciones destinatarias.',
     sum_all_spent: '<strong>Todas las salidas gastadas</strong>: los fondos han seguido moviéndose.',
     sum_some_spent: '<strong>{spent} de {total} salidas gastadas</strong>: parte de los fondos ha seguido moviéndose.',
+    sum_self: 'Todas las salidas vuelven a direcciones del remitente: es un <strong>movimiento interno</strong> (consolidación o reorganización de fondos propios), no un pago a un tercero.',
+    sum_payment_split: 'De estos, <strong>{pay} BTC</strong> son el pago real y <strong>{chg} BTC</strong> vuelven como <strong>cambio</strong> al remitente.',
+    sum_opreturn: 'Incluye una salida <strong>OP_RETURN</strong> con datos incrustados en la blockchain (no transfiere bitcoins).',
+    sum_fee: 'Comisión de red pagada: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).',
     sum_from_label: 'De dónde vienen los fondos', sum_heuristic: 'Heurística sobre datos públicos de la blockchain.',
     flow_none: '— ninguno en la muestra analizada —', flow_mining: '⛏ Minería (BTC de nueva creación)', flow_opreturn: 'OP_RETURN (datos, sin valor)', flow_more: '… y {addrs} más',
     track_title: '📡 Seguimiento en tiempo real', track_stop: '✕ Detener', loading: 'Cargando…', track_updating: 'Actualizando en {n}s…',
@@ -757,6 +765,10 @@ const I18N = {
     sum_no_spent: '<strong>No output spent</strong>: the funds remain at the recipient addresses.',
     sum_all_spent: '<strong>All outputs spent</strong>: the funds have kept moving.',
     sum_some_spent: '<strong>{spent} of {total} outputs spent</strong>: part of the funds has kept moving.',
+    sum_self: "All outputs return to the sender's addresses: this is an <strong>internal movement</strong> (consolidation or reorganisation of own funds), not a payment to a third party.",
+    sum_payment_split: 'Of these, <strong>{pay} BTC</strong> is the actual payment and <strong>{chg} BTC</strong> returns as <strong>change</strong> to the sender.',
+    sum_opreturn: 'Includes an <strong>OP_RETURN</strong> output with data embedded in the blockchain (transfers no bitcoin).',
+    sum_fee: 'Network fee paid: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).',
     sum_from_label: 'Where the funds come from', sum_heuristic: 'Heuristic over public blockchain data.',
     flow_none: '— none in the analyzed sample —', flow_mining: '⛏ Mining (newly created BTC)', flow_opreturn: 'OP_RETURN (data, no value)', flow_more: '… and {addrs} more',
     track_title: '📡 Real-time tracking', track_stop: '✕ Stop', loading: 'Loading…', track_updating: 'Updating in {n}s…',
@@ -1664,9 +1676,19 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
   else {
     const originsStr = origins.size === 1 ? t('sum_origins_one') : t('sum_origins_many', { n: origins.size });
     p.push(t('sum_funds_out', { origins: originsStr, inputs: pl(vins.length, 'input'), btc: satsToBtc(totalIn) }));
-    if (vins.length>=5&&outs.length<=2) p.push(t('sum_consolidation'));
+    const spendOuts = outs.filter(o => o.scriptpubkey_type !== 'op_return');
+    const selfTransfer = spendOuts.length > 0 && spendOuts.every(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
+    if (selfTransfer) p.push(t('sum_self'));
+    else if (vins.length>=5&&outs.length<=2) p.push(t('sum_consolidation'));
     else if (vins.length<=2&&outs.length>=5) p.push(t('sum_batching', { n: outs.length }));
-    else if (outs.length===2) { const chg=outs.some(o=>o.scriptpubkey_address&&inAddrSet.has(o.scriptpubkey_address)); p.push(t('sum_payment', { chg: chg ? t('sum_change_confirmed') : '' })); }
+    else if (outs.length===2) {
+      const changeOut = outs.find(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
+      const payOut = changeOut ? outs.find(o => o !== changeOut && o.scriptpubkey_type !== 'op_return') : null;
+      p.push(t('sum_payment', { chg: changeOut ? t('sum_change_confirmed') : '' }));
+      if (changeOut && payOut) p.push(t('sum_payment_split', { pay: satsToBtc(payOut.value||0), chg: satsToBtc(changeOut.value||0) }));
+    }
+    if (outs.some(o => o.scriptpubkey_type === 'op_return')) p.push(t('sum_opreturn'));
+    if (tx.fee) { const rate = calcFeeRate(tx), ff = price ? fmtFiat(tx.fee, price) : ''; p.push(t('sum_fee', { btc: satsToBtc(tx.fee), fiat: ff ? ` (${ff})` : '', rate: rate || '?' })); }
   }
   if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(t('sum_no_spent')); else if(spnt>=sp) p.push(t('sum_all_spent')); else p.push(t('sum_some_spent', { spent: spnt, total: sp })); }
   return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('sum_from_label')}</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">${t('sum_heuristic')}</p></div>`;
