@@ -1,6 +1,6 @@
 // Service worker de FindBtc — app shell offline, network-first.
 // Pugeu CACHE_VERSION en cada canvi important per invalidar la memòria cau.
-const CACHE_VERSION = 'findbtc-v1';
+const CACHE_VERSION = 'findbtc-v2';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png', './maskable-512.png'];
 
 self.addEventListener('install', e => {
