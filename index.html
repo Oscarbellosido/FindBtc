@@ -225,7 +225,7 @@ details[open] summary::before { transform: rotate(90deg); }
 /* ── Wallet section ────────────────────────────────────────────────────────── */
 .wallet-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem; }
 .wallet-topbar-title { color: var(--text-secondary); font-size: 0.88rem; }
-.wallet-topbar-actions { display: flex; gap: 0.4rem; }
+.wallet-topbar-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 .wallet-add-btn { background: #f7931a18; border: 1px solid #f7931a44; color: var(--accent); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; }
 .wallet-add-btn:hover { background: #f7931a30; }
 .wallet-refresh-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.78rem; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.2s; }
@@ -456,6 +456,7 @@ details[open] summary::before { transform: rotate(90deg); }
   </div>
 
   <div id="wallet-section" style="display:none"></div>
+  <input type="file" id="wallet-import-file" accept=".json" style="display:none">
   <div id="tracker" style="display:none"></div>
   <div id="status"></div>
   <div id="result"></div>
@@ -581,7 +582,7 @@ const I18N = {
     node_location: '📍 Ubicació', node_isp: '🌐 Proveïdor (ISP)', node_first_seen: '👁 Primer cop vist', node_last_update: '🔄 Última actualització', node_sockets: '🔌 Adreces de connexió', node_info_title: 'Informació del node',
     node_channels_title: 'Canals', node_channels_showing: 'mostrant {n} de {total}', node_channels_top: 'Mostrant els {n} canals de més capacitat de {total}.', node_no_channels: "No s'han pogut carregar els canals (o el node no en té d'actius).", node_graph_data: 'Dades del graf públic de la xarxa via mempool.space.', node_unknown_peer: 'desconegut', node_no_alias: '(sense àlies)',
     node_search_title: 'Nodes Lightning «{q}»', node_search_none: 'Cap node trobat amb aquest nom.',
-    wallet_upto: 'Fins a 10 adreces Bitcoin', wallet_add_btn: '➕ Afegir adreça', wallet_refresh: '🔄 Actualitzar', wallet_ph_addr: 'Adreça Bitcoin (bc1q…, 1…, 3…)', wallet_ph_name: 'Nom opcional (ex: Cartera freda)', add: 'Afegir',
+    wallet_upto: 'Fins a 10 adreces Bitcoin', wallet_add_btn: '➕ Afegir adreça', wallet_refresh: '🔄 Actualitzar', wallet_export: '📤 Exportar', wallet_import: '📥 Importar', wallet_import_ok: '{n} adreces importades', wallet_import_err: 'Format no vàlid', wallet_ph_addr: 'Adreça Bitcoin (bc1q…, 1…, 3…)', wallet_ph_name: 'Nom opcional (ex: Cartera freda)', add: 'Afegir',
     wallet_empty: 'Cap adreça guardada', wallet_empty_sub: 'Afegeix fins a 10 adreces per veure el teu saldo total consolidat', wallet_loading: 'Carregant {n} adreces en paral·lel…', wallet_total_balance: 'Saldo total · {addrs}',
     ws_received: 'Total rebut', ws_sent: 'Total enviat', ws_errors: '⚠ Errors', ws_not_loaded: '{n} no carregades', wallet_saved_addrs: 'Adreces guardades', wallet_load_error: 'Error en carregar', wallet_view: 'Veure →',
     alert_active_short: '🔔 Activa', alert_btn: '🔔 Alertes', wallet_recent_txs: 'Últimes transaccions', wallet_from_all: '({n} de totes les adreces)', wallet_no_txs: 'Cap transacció trobada.',
@@ -686,7 +687,7 @@ const I18N = {
     node_location: '📍 Ubicación', node_isp: '🌐 Proveedor (ISP)', node_first_seen: '👁 Visto por primera vez', node_last_update: '🔄 Última actualización', node_sockets: '🔌 Direcciones de conexión', node_info_title: 'Información del nodo',
     node_channels_title: 'Canales', node_channels_showing: 'mostrando {n} de {total}', node_channels_top: 'Mostrando los {n} canales de mayor capacidad de {total}.', node_no_channels: 'No se han podido cargar los canales (o el nodo no tiene activos).', node_graph_data: 'Datos del grafo público de la red vía mempool.space.', node_unknown_peer: 'desconocido', node_no_alias: '(sin alias)',
     node_search_title: 'Nodos Lightning «{q}»', node_search_none: 'Ningún nodo encontrado con este nombre.',
-    wallet_upto: 'Hasta 10 direcciones Bitcoin', wallet_add_btn: '➕ Añadir dirección', wallet_refresh: '🔄 Actualizar', wallet_ph_addr: 'Dirección Bitcoin (bc1q…, 1…, 3…)', wallet_ph_name: 'Nombre opcional (ej: Cartera fría)', add: 'Añadir',
+    wallet_upto: 'Hasta 10 direcciones Bitcoin', wallet_add_btn: '➕ Añadir dirección', wallet_refresh: '🔄 Actualizar', wallet_export: '📤 Exportar', wallet_import: '📥 Importar', wallet_import_ok: '{n} direcciones importadas', wallet_import_err: 'Formato no válido', wallet_ph_addr: 'Dirección Bitcoin (bc1q…, 1…, 3…)', wallet_ph_name: 'Nombre opcional (ej: Cartera fría)', add: 'Añadir',
     wallet_empty: 'Ninguna dirección guardada', wallet_empty_sub: 'Añade hasta 10 direcciones para ver tu saldo total consolidado', wallet_loading: 'Cargando {n} direcciones en paralelo…', wallet_total_balance: 'Saldo total · {addrs}',
     ws_received: 'Total recibido', ws_sent: 'Total enviado', ws_errors: '⚠ Errores', ws_not_loaded: '{n} no cargadas', wallet_saved_addrs: 'Direcciones guardadas', wallet_load_error: 'Error al cargar', wallet_view: 'Ver →',
     alert_active_short: '🔔 Activa', alert_btn: '🔔 Alertas', wallet_recent_txs: 'Últimas transacciones', wallet_from_all: '({n} de todas las direcciones)', wallet_no_txs: 'Ninguna transacción encontrada.',
@@ -791,7 +792,7 @@ const I18N = {
     node_location: '📍 Location', node_isp: '🌐 Provider (ISP)', node_first_seen: '👁 First seen', node_last_update: '🔄 Last update', node_sockets: '🔌 Connection addresses', node_info_title: 'Node info',
     node_channels_title: 'Channels', node_channels_showing: 'showing {n} of {total}', node_channels_top: 'Showing the {n} highest-capacity channels of {total}.', node_no_channels: 'Could not load channels (or the node has no active ones).', node_graph_data: 'Public network graph data via mempool.space.', node_unknown_peer: 'unknown', node_no_alias: '(no alias)',
     node_search_title: 'Lightning nodes «{q}»', node_search_none: 'No node found with that name.',
-    wallet_upto: 'Up to 10 Bitcoin addresses', wallet_add_btn: '➕ Add address', wallet_refresh: '🔄 Refresh', wallet_ph_addr: 'Bitcoin address (bc1q…, 1…, 3…)', wallet_ph_name: 'Optional name (e.g. Cold wallet)', add: 'Add',
+    wallet_upto: 'Up to 10 Bitcoin addresses', wallet_add_btn: '➕ Add address', wallet_refresh: '🔄 Refresh', wallet_export: '📤 Export', wallet_import: '📥 Import', wallet_import_ok: '{n} addresses imported', wallet_import_err: 'Invalid format', wallet_ph_addr: 'Bitcoin address (bc1q…, 1…, 3…)', wallet_ph_name: 'Optional name (e.g. Cold wallet)', add: 'Add',
     wallet_empty: 'No saved addresses', wallet_empty_sub: 'Add up to 10 addresses to see your consolidated total balance', wallet_loading: 'Loading {n} addresses in parallel…', wallet_total_balance: 'Total balance · {addrs}',
     ws_received: 'Total received', ws_sent: 'Total sent', ws_errors: '⚠ Errors', ws_not_loaded: '{n} not loaded', wallet_saved_addrs: 'Saved addresses', wallet_load_error: 'Loading error', wallet_view: 'View →',
     alert_active_short: '🔔 Active', alert_btn: '🔔 Alerts', wallet_recent_txs: 'Latest transactions', wallet_from_all: '({n} from all addresses)', wallet_no_txs: 'No transactions found.',
@@ -1092,7 +1093,7 @@ async function confirmAddAddr() {
 
 // ── Wallet render ─────────────────────────────────────────────────────────────
 function walletTopbarHtml() {
-  return `<div class="wallet-topbar"><span class="wallet-topbar-title">${t('wallet_upto')}</span><div class="wallet-topbar-actions"><button class="wallet-add-btn" onclick="toggleAddForm()">${t('wallet_add_btn')}</button><button class="wallet-refresh-btn" onclick="refreshWallet()">${t('wallet_refresh')}</button></div></div>
+  return `<div class="wallet-topbar"><span class="wallet-topbar-title">${t('wallet_upto')}</span><div class="wallet-topbar-actions"><button class="wallet-add-btn" onclick="toggleAddForm()">${t('wallet_add_btn')}</button><button class="wallet-refresh-btn" onclick="refreshWallet()">${t('wallet_refresh')}</button><button class="wallet-refresh-btn" onclick="exportWallet()">${t('wallet_export')}</button><button class="wallet-refresh-btn" onclick="importWallet()">${t('wallet_import')}</button></div></div>
   <div id="wallet-add-form" class="wallet-add-form" style="display:none">
     <input id="wai" type="text" placeholder="${t('wallet_ph_addr')}" spellcheck="false" autocomplete="off">
     <input id="wan" type="text" placeholder="${t('wallet_ph_name')}" maxlength="30">
@@ -1121,6 +1122,37 @@ async function showWalletSection() {
 }
 
 async function refreshWallet() { walletRefreshing = false; await showWalletSection(); }
+
+function exportWallet() {
+  const w = loadSavedWallet();
+  if (!w.length) return;
+  const blob = new Blob([JSON.stringify(w, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'findbtc-cartera.json'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+function importWallet() {
+  const inp = document.getElementById('wallet-import-file');
+  inp.value = '';
+  inp.onchange = () => {
+    const file = inp.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (!Array.isArray(data) || !data.every(x => typeof x.addr === 'string')) throw new Error();
+        const existing = loadSavedWallet();
+        const existingAddrs = new Set(existing.map(x => x.addr));
+        const toAdd = data.filter(x => !existingAddrs.has(x.addr));
+        const merged = [...existing, ...toAdd].slice(0, 10);
+        saveSavedWallet(merged);
+        showWalletSection();
+        const s = document.getElementById('status'); s.className = ''; s.style.display = 'block'; s.style.color = 'var(--accent)'; s.textContent = '✓ ' + t('wallet_import_ok', { n: toAdd.length }); setTimeout(() => { hideStatus(); s.style.color = ''; }, 3000);
+      } catch { showError(t('wallet_import_err')); }
+    };
+    reader.readAsText(file);
+  };
+  inp.click();
+}
 
 function renderWalletData(wallet, infoResults, txsResults, price) {
   const walletAddrSet = new Set(wallet.map(e => e.addr));
