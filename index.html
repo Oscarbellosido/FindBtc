@@ -99,8 +99,13 @@ button:disabled { background: #555; color: #888; cursor: not-allowed; }
 .history-clear { background: none; border: none; color: var(--text-secondary); font-size: 0.7rem; cursor: pointer; padding: 0; font-family: 'Courier New', monospace; transition: color 0.15s; }
 .history-clear:hover { background: none; color: #e05050; }
 .history-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.hist-item { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 4px; cursor: pointer; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: all 0.15s; font-family: 'Courier New', monospace; }
+.hist-item { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.72rem; padding: 0.25rem 0.4rem 0.25rem 0.6rem; border-radius: 4px; max-width: 260px; display: flex; align-items: center; gap: 0.25rem; transition: all 0.15s; font-family: 'Courier New', monospace; }
 .hist-item:hover { border-color: #f7931a66; color: var(--text-primary); background: var(--bg-secondary); }
+.hist-label { cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.hist-del { background: none; border: none; color: var(--text-secondary); font-size: 0.78rem; cursor: pointer; padding: 0 0.1rem; line-height: 1; opacity: 0.2; flex-shrink: 0; transition: opacity 0.15s, color 0.15s; font-family: inherit; }
+.hist-item:hover .hist-del { opacity: 0.6; }
+.hist-del:hover { color: #e05050 !important; opacity: 1 !important; }
+@media (hover: none) { .hist-del { opacity: 0.5; } }
 
 /* ── Status ────────────────────────────────────────────────────────────────── */
 #status { text-align: center; padding: 1.5rem; color: var(--text-secondary); font-size: 0.9rem; display: none; }
@@ -1297,11 +1302,12 @@ function entityBadgeHtml(addr) { const lbl = getEntityLabel(addr); return lbl ? 
 function loadHistory()   { try { return JSON.parse(localStorage.getItem('findbtc_h') || '[]'); } catch { return []; } }
 function saveHistory(q)  { const h = [q, ...loadHistory().filter(x => x !== q)].slice(0, MAX_HIST); localStorage.setItem('findbtc_h', JSON.stringify(h)); renderHistory(); }
 function clearHistory()  { localStorage.removeItem('findbtc_h'); renderHistory(); }
+function removeHistory(el) { const h = loadHistory().filter(x => x !== el.dataset.q); localStorage.setItem('findbtc_h', JSON.stringify(h)); renderHistory(); }
 function renderHistory() {
   const h = loadHistory(); const sec = document.getElementById('historySection');
   if (!h.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
-  document.getElementById('historyItems').innerHTML = h.map(q => { const label = q.length > 32 ? q.slice(0,12)+'…'+q.slice(-8) : q; return `<span class="hist-item" data-q="${q}" onclick="searchFromHist(this)" title="${q}">${label}</span>`; }).join('');
+  document.getElementById('historyItems').innerHTML = h.map(q => { const label = q.length > 32 ? q.slice(0,12)+'…'+q.slice(-8) : q; const esc = q.replace(/"/g,'&quot;'); return `<span class="hist-item" title="${esc}"><span class="hist-label" onclick="searchFromHist(this)" data-q="${esc}">${label}</span><button class="hist-del" onclick="removeHistory(this)" data-q="${esc}">×</button></span>`; }).join('');
 }
 function searchFromHist(el) { document.getElementById('txInput').value = el.dataset.q; search(); }
 
