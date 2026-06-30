@@ -567,7 +567,7 @@ const I18N = {
     as_from_label: "D'on han sortit els fons", as_to_label: 'Cap a on han anat',
     addr_bitcoin: 'Adreça Bitcoin', alerts_active: '🔔 Alertes actives', alerts_enable: '🔔 Activar alertes', wallet_remove: '🗑️ Treure de la cartera', wallet_save: '👛 Guardar a la cartera',
     stat_received: 'Rebut', stat_sent: 'Enviat', stat_transactions: 'Transaccions', stat_all_confirmed: 'totes confirmades',
-    addr_txs_title: 'Transaccions', addr_txs_recent: '({n} més recents)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sense transaccions.',
+    addr_txs_title: 'Transaccions', addr_txs_recent: '(les {n} més recents de {total})', addr_txs_all: '({n} en total)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sense transaccions.',
     csv_date: 'Data (ISO)', csv_type: 'Tipus', csv_in: 'entrada', csv_out: 'sortida',
     modal_save_title: '👛 Guardar adreça', modal_save_msg: 'Nom per a aquesta adreça (opcional):', save: 'Guardar', cancel: 'Cancel·lar', accept: 'Acceptar', saved_check: '👛 Guardada ✓',
     ln_sum_node: 'el node <strong>{pk}…</strong>', ln_sum_node_generic: 'un node Lightning', ln_sum_amt_open: 'una quantitat oberta',
@@ -677,7 +677,7 @@ const I18N = {
     as_from_label: 'De dónde han salido los fondos', as_to_label: 'Hacia dónde han ido',
     addr_bitcoin: 'Dirección Bitcoin', alerts_active: '🔔 Alertas activas', alerts_enable: '🔔 Activar alertas', wallet_remove: '🗑️ Quitar de la cartera', wallet_save: '👛 Guardar en la cartera',
     stat_received: 'Recibido', stat_sent: 'Enviado', stat_transactions: 'Transacciones', stat_all_confirmed: 'todas confirmadas',
-    addr_txs_title: 'Transacciones', addr_txs_recent: '({n} más recientes)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sin transacciones.',
+    addr_txs_title: 'Transacciones', addr_txs_recent: '(las {n} más recientes de {total})', addr_txs_all: '({n} en total)', export_csv: '⬇️ Exportar CSV', no_txs: 'Sin transacciones.',
     csv_date: 'Fecha (ISO)', csv_type: 'Tipo', csv_in: 'entrada', csv_out: 'salida',
     modal_save_title: '👛 Guardar dirección', modal_save_msg: 'Nombre para esta dirección (opcional):', save: 'Guardar', cancel: 'Cancelar', accept: 'Aceptar', saved_check: '👛 Guardada ✓',
     ln_sum_node: 'el nodo <strong>{pk}…</strong>', ln_sum_node_generic: 'un nodo Lightning', ln_sum_amt_open: 'una cantidad abierta',
@@ -787,7 +787,7 @@ const I18N = {
     as_from_label: 'Where the funds went out from', as_to_label: 'Where they went',
     addr_bitcoin: 'Bitcoin address', alerts_active: '🔔 Alerts active', alerts_enable: '🔔 Enable alerts', wallet_remove: '🗑️ Remove from wallet', wallet_save: '👛 Save to wallet',
     stat_received: 'Received', stat_sent: 'Sent', stat_transactions: 'Transactions', stat_all_confirmed: 'all confirmed',
-    addr_txs_title: 'Transactions', addr_txs_recent: '({n} most recent)', export_csv: '⬇️ Export CSV', no_txs: 'No transactions.',
+    addr_txs_title: 'Transactions', addr_txs_recent: '({n} most recent of {total})', addr_txs_all: '({n} total)', export_csv: '⬇️ Export CSV', no_txs: 'No transactions.',
     csv_date: 'Date (ISO)', csv_type: 'Type', csv_in: 'in', csv_out: 'out',
     modal_save_title: '👛 Save address', modal_save_msg: 'Name for this address (optional):', save: 'Save', cancel: 'Cancel', accept: 'Accept', saved_check: '👛 Saved ✓',
     ln_sum_node: 'node <strong>{pk}…</strong>', ln_sum_node_generic: 'a Lightning node', ln_sum_amt_open: 'an open amount',
@@ -1840,7 +1840,7 @@ function renderAddress(addr, addrType, info, txs, price, utxos = null) {
     ${buildUtxoSection(utxos, price)}
   </div>` + buildAddressSummary(addr, info, txs, price) + `
   <div class="card">
-    <h2 style="justify-content:space-between">${t('addr_txs_title')} <span style="color:#555;font-size:0.8rem">${t('addr_txs_recent', { n: txs.length })}</span><button class="btn-sec" onclick="exportAddrCsv()" style="font-size:0.73rem;padding:0.28rem 0.65rem;margin-left:auto">${t('export_csv')}</button></h2>
+    <h2 style="justify-content:space-between">${t('addr_txs_title')} <span style="color:#555;font-size:0.8rem">${txs.length < cnt ? t('addr_txs_recent', { n: txs.length, total: cnt.toLocaleString(loc()) }) : t('addr_txs_all', { n: txs.length })}</span><button class="btn-sec" onclick="exportAddrCsv()" style="font-size:0.73rem;padding:0.28rem 0.65rem;margin-left:auto">${t('export_csv')}</button></h2>
     <div class="tx-list">`;
 
   if (!txs.length) { html += `<p style="color:#555;text-align:center;padding:1.25rem">${t('no_txs')}</p>`; }
