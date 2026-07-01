@@ -282,6 +282,10 @@ details[open] summary::before { transform: rotate(90deg); }
 .flow-addr.nolink:hover { text-decoration: none; }
 .flow-amt { color: var(--accent); white-space: nowrap; font-weight: bold; }
 .flow-cnt { color: var(--text-secondary); white-space: nowrap; }
+.flowviz { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem; align-items: start; margin-top: 0.75rem; }
+.flowviz-col h3 { color: var(--text-secondary); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.flowviz-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent); padding-top: 1.6rem; }
+@media (max-width: 640px) { .flowviz { grid-template-columns: 1fr; } .flowviz-arrow { transform: rotate(90deg); padding: 0.3rem 0; } }
 .tag { font-size: 0.62rem; padding: 0.12rem 0.45rem; border-radius: 8px; white-space: nowrap; }
 .tag.change  { background: #1a2a3a; color: #64b5f6; }
 .tag.spent   { background: #3a1a1a; color: #e08080; }
@@ -536,7 +540,7 @@ const I18N = {
     ps_distribution: "Distribució massiva: <strong>{inputs}</strong> cap a <strong>{recipients}</strong> per <strong>{btc} BTC</strong> — típic d'un exchange processant retirades, {status}.",
     ps_fee_short: ', comissió {rate} sat/vB', ps_default: '<strong>{inputs}</strong> han mogut <strong>{btc} BTC</strong>{fiat} a <strong>{outputs}</strong>{fee}, {status}.',
     ps_known_dest: ' Els fons han anat a <strong>{dests}</strong>.', join_and: ' i ',
-    sum_title: 'Resum del moviment', sum_coinbase: 'Transacció <strong>coinbase</strong>: BTC de nova creació (recompensa de mineria + tarifes del bloc), sense origen previ.',
+    flow_diagram_title: '🔀 Flux de la transacció', sum_title: 'Resum del moviment', sum_coinbase: 'Transacció <strong>coinbase</strong>: BTC de nova creació (recompensa de mineria + tarifes del bloc), sense origen previ.',
     sum_origins_one: "d'<strong>una única adreça d'origen</strong>", sum_origins_many: "de <strong>{n} adreces d'origen</strong>",
     sum_funds_out: 'Els fons surten {origins} ({inputs}) per un total de <strong>{btc} BTC</strong>.',
     sum_consolidation: 'Patró de <strong>consolidació</strong>: molts UTXOs agrupats en poques sortides.',
@@ -651,7 +655,7 @@ const I18N = {
     ps_distribution: 'Distribución masiva: <strong>{inputs}</strong> hacia <strong>{recipients}</strong> por <strong>{btc} BTC</strong> — típico de un exchange procesando retiros, {status}.',
     ps_fee_short: ', comisión {rate} sat/vB', ps_default: '<strong>{inputs}</strong> han movido <strong>{btc} BTC</strong>{fiat} a <strong>{outputs}</strong>{fee}, {status}.',
     ps_known_dest: ' Los fondos han ido a <strong>{dests}</strong>.', join_and: ' y ',
-    sum_title: 'Resumen del movimiento', sum_coinbase: 'Transacción <strong>coinbase</strong>: BTC de nueva creación (recompensa de minería + tarifas del bloque), sin origen previo.',
+    flow_diagram_title: '🔀 Flujo de la transacción', sum_title: 'Resumen del movimiento', sum_coinbase: 'Transacción <strong>coinbase</strong>: BTC de nueva creación (recompensa de minería + tarifas del bloque), sin origen previo.',
     sum_origins_one: 'de <strong>una única dirección de origen</strong>', sum_origins_many: 'de <strong>{n} direcciones de origen</strong>',
     sum_funds_out: 'Los fondos salen {origins} ({inputs}) por un total de <strong>{btc} BTC</strong>.',
     sum_consolidation: 'Patrón de <strong>consolidación</strong>: muchos UTXOs agrupados en pocas salidas.',
@@ -766,7 +770,7 @@ const I18N = {
     ps_distribution: 'Mass distribution: <strong>{inputs}</strong> to <strong>{recipients}</strong> for <strong>{btc} BTC</strong> — typical of an exchange processing withdrawals, {status}.',
     ps_fee_short: ', fee {rate} sat/vB', ps_default: '<strong>{inputs}</strong> moved <strong>{btc} BTC</strong>{fiat} to <strong>{outputs}</strong>{fee}, {status}.',
     ps_known_dest: ' The funds went to <strong>{dests}</strong>.', join_and: ' and ',
-    sum_title: 'Movement summary', sum_coinbase: '<strong>Coinbase</strong> transaction: newly created BTC (mining reward + block fees), with no prior origin.',
+    flow_diagram_title: '🔀 Transaction flow', sum_title: 'Movement summary', sum_coinbase: '<strong>Coinbase</strong> transaction: newly created BTC (mining reward + block fees), with no prior origin.',
     sum_origins_one: 'from <strong>a single source address</strong>', sum_origins_many: 'from <strong>{n} source addresses</strong>',
     sum_funds_out: 'Funds leave {origins} ({inputs}) for a total of <strong>{btc} BTC</strong>.',
     sum_consolidation: '<strong>Consolidation</strong> pattern: many UTXOs grouped into few outputs.',
@@ -1743,7 +1747,26 @@ function buildTxSummary(tx, price, outspends, inAddrSet, rbf, cpfp) {
     }
   }
   if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(t('sum_no_spent')); else if(spnt>=sp) p.push(t('sum_all_spent')); else p.push(t('sum_some_spent', { spent: spnt, total: sp })); }
-  return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('sum_from_label')}</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">${t('sum_heuristic')}</p></div>`;
+  return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><p class="summary-note">${t('sum_heuristic')}</p></div>`;
+}
+
+// Diagrama visual: adreces d'origen → fletxa → adreces de destí, d'una ullada.
+function buildTxFlowDiagram(tx, price) {
+  const vins = tx.vin||[], outs = tx.vout||[];
+  const isCb = vins.some(v => v.is_coinbase);
+  const insMap = new Map();
+  if (isCb) addFlow(insMap, 'coinbase', outs.reduce((s,o)=>s+(o.value||0),0));
+  else vins.forEach(v => { const a = v.prevout && v.prevout.scriptpubkey_address; addFlow(insMap, a || 'nostd', (v.prevout && v.prevout.value) || 0); });
+  const outsMap = new Map();
+  outs.forEach(o => { if (o.scriptpubkey_type === 'op_return') { addFlow(outsMap, 'op_return', 0); return; } addFlow(outsMap, o.scriptpubkey_address || 'nostd', o.value||0); });
+  return `<div class="card">
+    <h2>${t('flow_diagram_title')}</h2>
+    <div class="flowviz">
+      <div class="flowviz-col"><h3>${t('as_from_label')}</h3>${flowListHtml(insMap, price, 6)}</div>
+      <div class="flowviz-arrow">➜</div>
+      <div class="flowviz-col"><h3>${t('as_to_label')}</h3>${flowListHtml(outsMap, price, 6)}</div>
+    </div>
+  </div>`;
 }
 
 // ── Renderitzadors ────────────────────────────────────────────────────────────
@@ -1830,7 +1853,7 @@ async function renderTx(tx, price) {
         </div>
       </details>
     </div>
-  </div>` + buildTxSummary(tx, price, outspends, inAddrSet, rbfInfo, cpfpInfo) + `
+  </div>` + buildTxFlowDiagram(tx, price) + buildTxSummary(tx, price, outspends, inAddrSet, rbfInfo, cpfpInfo) + `
   <div class="card">
     <div class="outputs-hd"><h2>${t('recipients_title')}</h2><div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> · ${totFiat}</span>` : ''}</div></div>
     <div class="wallet-list">`;
