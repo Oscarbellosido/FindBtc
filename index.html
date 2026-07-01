@@ -549,6 +549,11 @@ const I18N = {
     sum_payment_split: "D'aquests, <strong>{pay} BTC</strong> són el pagament real i <strong>{chg} BTC</strong> tornen com a <strong>canvi</strong> al remitent.",
     sum_opreturn: "Inclou una sortida <strong>OP_RETURN</strong> amb dades incrustades a la blockchain (no transfereix bitcoins).",
     sum_fee: "Comissió de xarxa pagada: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).",
+    sum_rbf_signal: "Aquesta transacció permet ser <strong>reemplaçada per una de comissió més alta</strong> (RBF): el remitent pot accelerar-la si triga a confirmar-se.",
+    sum_rbf_replaces: "Aquesta transacció ha <strong>reemplaçat una versió anterior amb comissió més baixa</strong> (RBF) per accelerar la confirmació.",
+    sum_rbf_replaced: "Aquesta transacció ha estat <strong>reemplaçada per una altra amb comissió més alta</strong> (RBF) i probablement no arribarà a confirmar-se.",
+    sum_cpfp_child: "Aquesta transacció ajuda a <strong>accelerar {n} transaccions pare</strong> sense confirmar, pagant una comissió extra (CPFP). Taxa efectiva conjunta: <strong>{rate} sat/vB</strong>.",
+    sum_cpfp_parent: "Una <strong>transacció filla està pagant una comissió extra</strong> per accelerar la confirmació d'aquesta (CPFP). Taxa efectiva conjunta: <strong>{rate} sat/vB</strong>.",
     sum_from_label: "D'on venen els fons", sum_heuristic: 'Heurística sobre dades públiques de la blockchain.',
     flow_none: '— cap a la mostra analitzada —', flow_mining: '⛏ Mineria (BTC de nova creació)', flow_opreturn: 'OP_RETURN (dades, sense valor)', flow_more: '… i {addrs} més',
     track_title: '📡 Seguiment en temps real', track_stop: '✕ Aturar', loading: 'Carregant…', track_updating: 'Actualitzant en {n}s…',
@@ -659,6 +664,11 @@ const I18N = {
     sum_payment_split: 'De estos, <strong>{pay} BTC</strong> son el pago real y <strong>{chg} BTC</strong> vuelven como <strong>cambio</strong> al remitente.',
     sum_opreturn: 'Incluye una salida <strong>OP_RETURN</strong> con datos incrustados en la blockchain (no transfiere bitcoins).',
     sum_fee: 'Comisión de red pagada: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).',
+    sum_rbf_signal: 'Esta transacción permite ser <strong>reemplazada por una de comisión más alta</strong> (RBF): el remitente puede acelerarla si tarda en confirmarse.',
+    sum_rbf_replaces: 'Esta transacción ha <strong>reemplazado una versión anterior con comisión más baja</strong> (RBF) para acelerar la confirmación.',
+    sum_rbf_replaced: 'Esta transacción ha sido <strong>reemplazada por otra con comisión más alta</strong> (RBF) y probablemente no llegará a confirmarse.',
+    sum_cpfp_child: 'Esta transacción ayuda a <strong>acelerar {n} transacciones padre</strong> sin confirmar, pagando una comisión extra (CPFP). Tasa efectiva conjunta: <strong>{rate} sat/vB</strong>.',
+    sum_cpfp_parent: 'Una <strong>transacción hija está pagando una comisión extra</strong> para acelerar la confirmación de esta (CPFP). Tasa efectiva conjunta: <strong>{rate} sat/vB</strong>.',
     sum_from_label: 'De dónde vienen los fondos', sum_heuristic: 'Heurística sobre datos públicos de la blockchain.',
     flow_none: '— ninguno en la muestra analizada —', flow_mining: '⛏ Minería (BTC de nueva creación)', flow_opreturn: 'OP_RETURN (datos, sin valor)', flow_more: '… y {addrs} más',
     track_title: '📡 Seguimiento en tiempo real', track_stop: '✕ Detener', loading: 'Cargando…', track_updating: 'Actualizando en {n}s…',
@@ -769,6 +779,11 @@ const I18N = {
     sum_payment_split: 'Of these, <strong>{pay} BTC</strong> is the actual payment and <strong>{chg} BTC</strong> returns as <strong>change</strong> to the sender.',
     sum_opreturn: 'Includes an <strong>OP_RETURN</strong> output with data embedded in the blockchain (transfers no bitcoin).',
     sum_fee: 'Network fee paid: <strong>{btc} BTC</strong>{fiat} ({rate} sat/vB).',
+    sum_rbf_signal: 'This transaction can be <strong>replaced by one with a higher fee</strong> (RBF): the sender can speed it up if it takes too long to confirm.',
+    sum_rbf_replaces: 'This transaction has <strong>replaced an earlier, lower-fee version</strong> (RBF) to speed up confirmation.',
+    sum_rbf_replaced: 'This transaction has been <strong>replaced by another with a higher fee</strong> (RBF) and will likely never confirm.',
+    sum_cpfp_child: 'This transaction helps <strong>speed up {n} unconfirmed parent transactions</strong> by paying an extra fee (CPFP). Combined effective rate: <strong>{rate} sat/vB</strong>.',
+    sum_cpfp_parent: 'A <strong>child transaction is paying an extra fee</strong> to speed up this one\'s confirmation (CPFP). Combined effective rate: <strong>{rate} sat/vB</strong>.',
     sum_from_label: 'Where the funds come from', sum_heuristic: 'Heuristic over public blockchain data.',
     flow_none: '— none in the analyzed sample —', flow_mining: '⛏ Mining (newly created BTC)', flow_opreturn: 'OP_RETURN (data, no value)', flow_more: '… and {addrs} more',
     track_title: '📡 Real-time tracking', track_stop: '✕ Stop', loading: 'Loading…', track_updating: 'Updating in {n}s…',
@@ -1313,6 +1328,13 @@ async function apiFetch(path) {
   throw new Error(t('err_no_api'));
 }
 
+// Endpoints propis de mempool.space (RBF, CPFP) sense equivalent a blockstream.info: sense fallback.
+async function mempoolApiGet(path) {
+  const r = await fetch('https://mempool.space/api/v1' + path, { signal: AbortSignal.timeout(8000) });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
 // ── Preu BTC ──────────────────────────────────────────────────────────────────
 async function fetchBtcPrice() {
   if (priceCache && Date.now() - priceCache.ts < PRICE_TTL) return priceCache.price;
@@ -1687,7 +1709,7 @@ function buildAddressSummary(addr, info, txs, price) {
   return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('as_from_label')}</h3>${flowListHtml(origins,price)}</div><div class="flow-col"><h3>${t('as_to_label')}</h3>${flowListHtml(dests,price)}</div></div><p class="summary-note">${partial?t('as_partial', { n: txs.length, total: (cs.tx_count||0).toLocaleString(loc()) }):''}${t('as_heuristic')}</p></div>`;
 }
 
-function buildTxSummary(tx, price, outspends, inAddrSet) {
+function buildTxSummary(tx, price, outspends, inAddrSet, rbf, cpfp) {
   const vins=tx.vin||[], outs=tx.vout||[], isCb=vins.some(v=>v.is_coinbase);
   const origins=new Map(); let totalIn=0;
   if (isCb) { addFlow(origins,'coinbase',outs.reduce((s,o)=>s+(o.value||0),0)); }
@@ -1710,6 +1732,15 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
     else if (selfTransfer) p.push(t('sum_self'));
     if (outs.some(o => o.scriptpubkey_type === 'op_return')) p.push(t('sum_opreturn'));
     if (tx.fee) { const rate = calcFeeRate(tx), ff = price ? fmtFiat(tx.fee, price) : ''; p.push(t('sum_fee', { btc: satsToBtc(tx.fee), fiat: ff ? ` (${ff})` : '', rate: rate || '?' })); }
+    const conf = tx.status && tx.status.confirmed;
+    if (!conf && vins.some(v => typeof v.sequence === 'number' && v.sequence < 0xfffffffe)) p.push(t('sum_rbf_signal'));
+    if (rbf && Array.isArray(rbf.replaces) && rbf.replaces.length) p.push(t('sum_rbf_replaces'));
+    if (rbf && rbf.replacements) p.push(t('sum_rbf_replaced'));
+    if (!conf && cpfp) {
+      const rate = cpfp.effectiveFeePerVsize ? cpfp.effectiveFeePerVsize.toFixed(1) : '?';
+      if (Array.isArray(cpfp.ancestors) && cpfp.ancestors.length) p.push(t('sum_cpfp_child', { n: cpfp.ancestors.length, rate }));
+      else if (Array.isArray(cpfp.descendants) && cpfp.descendants.length) p.push(t('sum_cpfp_parent', { rate }));
+    }
   }
   if (outspends) { const sp=outs.filter(o=>o.scriptpubkey_type!=='op_return').length, spnt=outspends.filter(o=>o&&o.spent).length; if(spnt===0) p.push(t('sum_no_spent')); else if(spnt>=sp) p.push(t('sum_all_spent')); else p.push(t('sum_some_spent', { spent: spnt, total: sp })); }
   return `<div class="card"><h2>${t('sum_title')}</h2><div class="summary-text">${p.map(x=>`<p>${x}</p>`).join('')}</div><div class="flow-grid"><div class="flow-col"><h3>${t('sum_from_label')}</h3>${flowListHtml(origins,price)}</div></div><p class="summary-note">${t('sum_heuristic')}</p></div>`;
@@ -1719,15 +1750,19 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
 async function renderTx(tx, price) {
   const outAddrs = (tx.vout || []).map(o => o.scriptpubkey_address).filter(Boolean);
   let outspends = null;
-  const [osp,, histRes, tipRes] = await Promise.allSettled([
+  const [osp,, histRes, tipRes, rbfRes, cpfpRes] = await Promise.allSettled([
     apiFetch('/tx/' + tx.txid + '/outspends'),
     fetchEntityLabels(outAddrs),
     fetchHistoricalPrice(tx.status?.block_time),
-    tx.status?.confirmed ? fetchTipHeight() : Promise.resolve(null)
+    tx.status?.confirmed ? fetchTipHeight() : Promise.resolve(null),
+    mempoolApiGet('/tx/' + tx.txid + '/rbf'),
+    mempoolApiGet('/cpfp/' + tx.txid)
   ]);
   if (osp.status === 'fulfilled') outspends = osp.value;
   const histPrice = histRes?.status === 'fulfilled' ? histRes.value : null;
   const tipHeightTx = tipRes?.status === 'fulfilled' && tipRes.value ? tipRes.value : null;
+  const rbfInfo = rbfRes.status === 'fulfilled' ? rbfRes.value : null;
+  const cpfpInfo = cpfpRes.status === 'fulfilled' ? cpfpRes.value : null;
   hideStatus();
 
   const outs = tx.vout||[], vins = tx.vin||[];
@@ -1795,7 +1830,7 @@ async function renderTx(tx, price) {
         </div>
       </details>
     </div>
-  </div>` + buildTxSummary(tx, price, outspends, inAddrSet) + `
+  </div>` + buildTxSummary(tx, price, outspends, inAddrSet, rbfInfo, cpfpInfo) + `
   <div class="card">
     <div class="outputs-hd"><h2>${t('recipients_title')}</h2><div class="total-pill">${satsToBtc(total)} BTC${totFiat ? `<span class="fiat"> · ${totFiat}</span>` : ''}</div></div>
     <div class="wallet-list">`;
