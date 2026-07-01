@@ -1155,15 +1155,17 @@ function importWallet() {
       try {
         const data = JSON.parse(e.target.result);
         if (!Array.isArray(data) || !data.every(x => typeof x.addr === 'string')) throw new Error();
+        const valid = data.filter(x => { const det = detectInput(x.addr); return det && det.type === 'address'; });
         const existing = loadSavedWallet();
         const existingAddrs = new Set(existing.map(x => x.addr));
-        const toAdd = data.filter(x => !existingAddrs.has(x.addr));
+        const toAdd = valid.filter(x => !existingAddrs.has(x.addr));
         const merged = [...existing, ...toAdd].slice(0, 10);
         saveSavedWallet(merged);
         showWalletSection();
         const s = document.getElementById('status'); s.className = ''; s.style.display = 'block'; s.style.color = 'var(--accent)'; s.textContent = '✓ ' + t('wallet_import_ok', { n: toAdd.length }); setTimeout(() => { hideStatus(); s.style.color = ''; }, 3000);
       } catch { showError(t('wallet_import_err')); }
     };
+    reader.onerror = () => showError(t('wallet_import_err'));
     reader.readAsText(file);
   };
   inp.click();
@@ -1657,8 +1659,9 @@ function buildAddressSummary(addr, info, txs, price) {
   else if (outTx>0) p.push(t('as_empty'));
   const dEntries=[...dests.entries()].filter(([k])=>k!=='op_return'); const totalOut=dEntries.reduce((s,[,v])=>s+v.sats,0);
   if (totalOut>0) {
-    if (dEntries.length===1) p.push(t('as_swept'));
-    else { const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; const frac=top[1].sats/totalOut; if(frac>0.95) p.push(t('as_swept')); else if(frac>0.7) p.push(t('as_top_dest', { pct: Math.round(frac*100), addr: shortAddr(top[0]) })); }
+    const top=[...dEntries].sort((a,b)=>b[1].sats-a[1].sats)[0]; const frac=top[1].sats/totalOut;
+    if (dEntries.length===1||frac>0.95) { if (outTx>1) p.push(t('as_swept')); }
+    else if (frac>0.7) p.push(t('as_top_dest', { pct: Math.round(frac*100), addr: shortAddr(top[0]) }));
   }
   for (const [k] of origins) { if (dests.has(k)) { p.push(t('as_internal', { addr: shortAddr(k) })); break; } }
   if (firstTs) p.push(t('as_period', { from: new Date(firstTs*1000).toLocaleDateString(loc()), to: new Date(lastTs*1000).toLocaleDateString(loc()) }));
@@ -1678,8 +1681,7 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
     p.push(t('sum_funds_out', { origins: originsStr, inputs: pl(vins.length, 'input'), btc: satsToBtc(totalIn) }));
     const spendOuts = outs.filter(o => o.scriptpubkey_type !== 'op_return');
     const selfTransfer = spendOuts.length > 0 && spendOuts.every(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
-    if (selfTransfer) p.push(t('sum_self'));
-    else if (vins.length>=5&&outs.length<=2) p.push(t('sum_consolidation'));
+    if (vins.length>=5&&outs.length<=2) p.push(t('sum_consolidation'));
     else if (vins.length<=2&&outs.length>=5) p.push(t('sum_batching', { n: outs.length }));
     else if (outs.length===2) {
       const changeOut = outs.find(o => o.scriptpubkey_address && inAddrSet.has(o.scriptpubkey_address));
@@ -1687,6 +1689,7 @@ function buildTxSummary(tx, price, outspends, inAddrSet) {
       p.push(t('sum_payment', { chg: changeOut ? t('sum_change_confirmed') : '' }));
       if (changeOut && payOut) p.push(t('sum_payment_split', { pay: satsToBtc(payOut.value||0), chg: satsToBtc(changeOut.value||0) }));
     }
+    else if (selfTransfer) p.push(t('sum_self'));
     if (outs.some(o => o.scriptpubkey_type === 'op_return')) p.push(t('sum_opreturn'));
     if (tx.fee) { const rate = calcFeeRate(tx), ff = price ? fmtFiat(tx.fee, price) : ''; p.push(t('sum_fee', { btc: satsToBtc(tx.fee), fiat: ff ? ` (${ff})` : '', rate: rate || '?' })); }
   }
