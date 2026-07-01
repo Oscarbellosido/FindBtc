@@ -1643,8 +1643,26 @@ function buildAddressSummary(addr, info, txs, price) {
     if (ts) { if (!firstTs||ts<firstTs) firstTs=ts; if (!lastTs||ts>lastTs) lastTs=ts; }
     const recv = (tx.vout||[]).filter(o => o.scriptpubkey_address===addr).reduce((s,o)=>s+(o.value||0),0);
     const sent = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address===addr).reduce((s,v)=>s+(v.prevout.value||0),0);
-    if (recv > sent) { inTx++; if ((tx.vin||[]).some(v=>v.is_coinbase)) { coinbase=true; addFlow(origins,'coinbase',recv); } else { (tx.vin||[]).forEach(v=>{ const a=v.prevout&&v.prevout.scriptpubkey_address; if(a&&a!==addr) addFlow(origins,a,v.prevout.value||0); }); } }
-    else if (sent > 0) { outTx++; (tx.vout||[]).forEach(o=>{ const a=o.scriptpubkey_address; if(a===addr) return; if(o.scriptpubkey_type==='op_return'){addFlow(dests,'op_return',0);return;} addFlow(dests,a||'nostd',o.value||0); }); }
+    if (recv > sent) {
+      inTx++;
+      if ((tx.vin||[]).some(v=>v.is_coinbase)) { coinbase=true; addFlow(origins,'coinbase',recv); }
+      else {
+        // Prorratejar: si aquesta entrada finança una tx amb múltiples sortides (ex. pagament en lot d'un exchange),
+        // l'origen no ens ha enviat tot el valor de la seva entrada, només la part equivalent al que hem rebut.
+        const nonSelfIns = (tx.vin||[]).filter(v=>v.prevout&&v.prevout.scriptpubkey_address&&v.prevout.scriptpubkey_address!==addr);
+        const totalIn = nonSelfIns.reduce((s,v)=>s+(v.prevout.value||0),0);
+        nonSelfIns.forEach(v=>{ addFlow(origins, v.prevout.scriptpubkey_address, totalIn>0 ? (v.prevout.value||0)*recv/totalIn : 0); });
+      }
+    }
+    else if (sent > 0) {
+      outTx++;
+      if ((tx.vout||[]).some(o=>o.scriptpubkey_type==='op_return')) addFlow(dests,'op_return',0);
+      // Mateix prorrateig per a les sortides: si aquesta tx consolida diverses entrades (ex. sweep d'un exchange),
+      // el destí no ha rebut tot el valor de la seva sortida, només la part que hem enviat nosaltres.
+      const nonSelfOuts = (tx.vout||[]).filter(o=>o.scriptpubkey_address!==addr && o.scriptpubkey_type!=='op_return');
+      const totalOut = nonSelfOuts.reduce((s,o)=>s+(o.value||0),0);
+      nonSelfOuts.forEach(o=>{ addFlow(dests, o.scriptpubkey_address||'nostd', totalOut>0 ? (o.value||0)*sent/totalOut : 0); });
+    }
   }
   const recv = cs.funded_txo_sum||0, sent = cs.spent_txo_sum||0;
   const passthrough = bal<=0 && inTx>0 && outTx>0;
